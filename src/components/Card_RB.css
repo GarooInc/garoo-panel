@@ -1,0 +1,7 @@
+.card-hover-effect {
+    transition: transform 0.3s ease-in-out;
+}
+
+.card-hover-effect:hover {
+    transform: scale(1.05);
+}

@@ -1,0 +1,42 @@
+:root {
+    --light: #ffffff;
+    --gray: #e7e9eb;
+}
+
+
+
+
+
+/* ======================== Mis Clases */
+/* Font size classes moved to individual CSS modules to avoid conflicts */
+
+.wrapper {
+    background: url('/public/img/profile-image.png');
+    background-size: 100%;
+}
+
+/* ======================================= */
+
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+.app-container {
+    display: flex;
+    padding-top: 80px; /* Increased to accommodate header height */
+    min-height: 100vh;
+}
+
+.auth-container {
+    padding-top: 80px; /* Same as app-container to account for header */
+    height: 100vh;
+    overflow: hidden;
+}

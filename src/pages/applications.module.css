@@ -1,0 +1,30 @@
+.fs-7 {
+    font-size: 95% !important;
+}
+
+.fs-8 {
+    font-size: 90% !important;
+}
+
+.fs-9 {
+    font-size: 85% !important;
+}
+
+.fs-10 {
+    font-size: 80% !important;
+}
+
+/* Table styles */
+.table {
+    /* Bootstrap table styles are inherited, this class is for CSS module scoping */
+}
+
+.auto-width-table {
+    table-layout: auto !important;
+}
+
+.auto-width-table th,
+.auto-width-table td {
+    width: auto !important;
+    white-space: nowrap;
+}
