@@ -17,18 +17,18 @@ import {
     getBehance,
     getCV,
     getPortfolio,
-    getEducation,
-    getExperience,
-    getReferences
+    getEducations,
+    getExperiences,
+    getAllReferences
 } from '../utils/workerDataHelpers';
 
 const WorkerModal = ({ show, handleClose, workerData }) => {
     if (!workerData) return null;
 
-    // Get structured data using imported utilities
-    const education = getEducation(workerData);
-    const experience = getExperience(workerData);
-    const references = getReferences(workerData);
+    // Get structured data using imported utilities (arrays)
+    const educations = getEducations(workerData);
+    const experiences = getExperiences(workerData);
+    const allReferences = getAllReferences(workerData);
 
     return (
         <Modal
@@ -128,16 +128,26 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                 Educación
                             </h5>
                             <div className="ps-3">
-                                <h6 className="mb-1">{education.title || 'Sin título especificado'}</h6>
-                                <p className="mb-1 text-muted">
-                                    {education.institution || 'Institución no especificada'}
-                                </p>
-                                <small className="text-muted">
-                                    {formatPeriod(education.startPeriod)} - {formatPeriod(education.endPeriod)}
-                                </small>
-                                <p className="mb-0">
-                                    <strong>Nivel Educativo:</strong> {education.level || 'N/A'}
-                                </p>
+                                {educations && educations.length > 0 ? (
+                                    <div className="d-flex flex-column gap-3">
+                                        {educations.map((education, idx) => (
+                                            <div key={`edu-${idx}`}>
+                                                <h6 className="mb-1">{education.title || 'Sin título especificado'}</h6>
+                                                <p className="mb-1 text-muted">
+                                                    {education.institution || 'Institución no especificada'}
+                                                </p>
+                                                <small className="text-muted">
+                                                    {formatPeriod(education.startPeriod)} - {formatPeriod(education.endPeriod)}
+                                                </small>
+                                                <p className="mb-0">
+                                                    <strong>Nivel Educativo:</strong> {education.level || 'N/A'}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-muted mb-0">Sin registros de educación</p>
+                                )}
                             </div>
                         </section>
 
@@ -148,25 +158,35 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                 Experiencia Laboral
                             </h5>
                             <div className="ps-3">
-                                <h6 className="mb-1">{experience.position || 'Puesto no especificado'}</h6>
-                                <p className="mb-1 text-muted">
-                                    {experience.company || 'Empresa no especificada'}
-                                </p>
-                                <p className="mb-1">
-                                    <strong>Período:</strong> {formatExperienceDate(experience.startMonth, experience.startYear)} - {formatExperienceDate(experience.endMonth, experience.endYear)}
-                                </p>
-                                <p className="mb-1">
-                                    <strong>Salario Final:</strong> {formatSalary(experience.finalSalary)}
-                                </p>
-                                <p className="mb-1">
-                                    <strong>Jefe Inmediato:</strong> {experience.boss || 'N/A'}
-                                </p>
-                                <p className="mb-1">
-                                    <strong>Motivo de Retiro:</strong> {experience.leaveReason || 'N/A'}
-                                </p>
-                                <p className="mb-0">
-                                    <strong>Desempeño:</strong> {experience.performance || 'N/A'}
-                                </p>
+                                {experiences && experiences.length > 0 ? (
+                                    <div className="d-flex flex-column gap-3">
+                                        {experiences.map((experience, idx) => (
+                                            <div key={`exp-${idx}`}>
+                                                <h6 className="mb-1">{experience.position || 'Puesto no especificado'}</h6>
+                                                <p className="mb-1 text-muted">
+                                                    {experience.company || 'Empresa no especificada'}
+                                                </p>
+                                                <p className="mb-1">
+                                                    <strong>Período:</strong> {formatExperienceDate(experience.startMonth, experience.startYear)} - {formatExperienceDate(experience.endMonth, experience.endYear)}
+                                                </p>
+                                                <p className="mb-1">
+                                                    <strong>Salario Final:</strong> {formatSalary(experience.finalSalary)}
+                                                </p>
+                                                <p className="mb-1">
+                                                    <strong>Jefe Inmediato:</strong> {experience.boss || 'N/A'}
+                                                </p>
+                                                <p className="mb-1">
+                                                    <strong>Motivo de Retiro:</strong> {experience.leaveReason || 'N/A'}
+                                                </p>
+                                                <p className="mb-0">
+                                                    <strong>Desempeño:</strong> {experience.performance || 'N/A'}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-muted mb-0">Sin registros de experiencia</p>
+                                )}
                             </div>
                         </section>
 
@@ -181,18 +201,20 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                     <div className="card border-0 bg-light mb-3">
                                         <div className="card-body p-3">
                                             <h6 className="card-title">Laborales</h6>
-                                            <p className="mb-1">
-                                                <strong>Nombre:</strong> {references.work.name || 'N/A'}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Puesto:</strong> {references.work.position || 'N/A'}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Teléfono:</strong> {references.work.phone || 'N/A'}
-                                            </p>
-                                            <p className="mb-0">
-                                                <strong>Email:</strong> {references.work.email || 'N/A'}
-                                            </p>
+                                            {allReferences.work && allReferences.work.length > 0 ? (
+                                                <div className="d-flex flex-column gap-2">
+                                                    {allReferences.work.map((ref, idx) => (
+                                                        <div key={`work-ref-${idx}`} className="border-bottom pb-2">
+                                                            <p className="mb-1"><strong>Nombre:</strong> {ref.name || 'N/A'}</p>
+                                                            <p className="mb-1"><strong>Puesto:</strong> {ref.position || 'N/A'}</p>
+                                                            <p className="mb-1"><strong>Teléfono:</strong> {ref.phone || 'N/A'}</p>
+                                                            <p className="mb-0"><strong>Email:</strong> {ref.email || 'N/A'}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-muted mb-0">Sin referencias laborales</p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -200,18 +222,20 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                     <div className="card border-0 bg-light mb-3">
                                         <div className="card-body p-3">
                                             <h6 className="card-title">Personales</h6>
-                                            <p className="mb-1">
-                                                <strong>Nombre:</strong> {references.personal.name || 'N/A'}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Relación:</strong> {references.personal.relation || 'N/A'}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Teléfono:</strong> {references.personal.phone || 'N/A'}
-                                            </p>
-                                            <p className="mb-0">
-                                                <strong>Email:</strong> {references.personal.email || 'N/A'}
-                                            </p>
+                                            {allReferences.personal && allReferences.personal.length > 0 ? (
+                                                <div className="d-flex flex-column gap-2">
+                                                    {allReferences.personal.map((ref, idx) => (
+                                                        <div key={`personal-ref-${idx}`} className="border-bottom pb-2">
+                                                            <p className="mb-1"><strong>Nombre:</strong> {ref.name || 'N/A'}</p>
+                                                            <p className="mb-1"><strong>Relación:</strong> {ref.relation || 'N/A'}</p>
+                                                            <p className="mb-1"><strong>Teléfono:</strong> {ref.phone || 'N/A'}</p>
+                                                            <p className="mb-0"><strong>Email:</strong> {ref.email || 'N/A'}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-muted mb-0">Sin referencias personales</p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

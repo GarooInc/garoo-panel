@@ -229,43 +229,7 @@ const Workers = () => {
         }
     };
 
-    // Función auxiliar para formatear fechas
-    const formatPeriod = (period) => {
-        try {
-            if (!period) return 'N/A';
-
-            // Si el periodo ya está en el formato deseado
-            if (typeof period === 'string' && period.match(/\d{1,2}\/\d{4}/)) {
-                return period;
-            }
-
-            // Si es un objeto de fecha
-            if (period instanceof Date) {
-                return `${period.getMonth() + 1}/${period.getFullYear()}`;
-            }
-
-            // Si es un número (fecha de Excel)
-            if (typeof period === 'number') {
-                const date = new Date((period - 25569) * 86400 * 1000);
-                return isNaN(date.getTime()) ? 'N/A' : `${date.getMonth() + 1}/${date.getFullYear()}`;
-            }
-
-            return String(period);
-        } catch (error) {
-            console.error('Error al formatear período:', period, error);
-            return 'N/A';
-        }
-    };
-
-    const formatExperienceDate = (month, year) => {
-        try {
-            if (!month || !year) return 'N/A';
-            return `${month}/${year}`;
-        } catch (error) {
-            console.error('Error al formatear fecha de experiencia:', { month, year }, error);
-            return 'N/A';
-        }
-    };
+    // (Eliminadas funciones locales no utilizadas: formatPeriod y formatExperienceDate)
 
     const formatDate = (date) => {
         try {

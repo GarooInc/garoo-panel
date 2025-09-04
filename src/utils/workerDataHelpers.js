@@ -127,21 +127,22 @@ export const getBirthDate = (worker) => {
 };
 
 // Education - Get the most recent education entry
+export const getEducations = (worker) => {
+    if (!worker || !Array.isArray(worker.educacion) || worker.educacion.length === 0) return [];
+    // Map all education entries to a normalized structure
+    return worker.educacion.map((education) => ({
+        title: education?.titulo || null,
+        institution: education?.institucion || null,
+        level: education?.nivel_educativo || null,
+        startPeriod: education?.periodo?.inicio || null,
+        endPeriod: education?.periodo?.fin || null
+    }));
+};
+
+// Backward-compatible: keep single-item helper returning the first entry
 export const getEducation = (worker) => {
-    if (!worker.educacion || !Array.isArray(worker.educacion) || worker.educacion.length === 0) {
-        return { title: null, institution: null, level: null, startPeriod: null, endPeriod: null };
-    }
-
-    // Get the first education entry (most recent)
-    const education = worker.educacion[0];
-
-    return {
-        title: education.titulo || null,
-        institution: education.institucion || null,
-        level: education.nivel_educativo || null,
-        startPeriod: education.periodo?.inicio || null,
-        endPeriod: education.periodo?.fin || null
-    };
+    const list = getEducations(worker);
+    return list[0] || { title: null, institution: null, level: null, startPeriod: null, endPeriod: null };
 };
 
 // Social Links
@@ -182,62 +183,68 @@ export const getPortfolio = (worker) => {
 };
 
 // Experience - Get the most recent experience entry
+export const getExperiences = (worker) => {
+    if (!worker || !Array.isArray(worker.experiencia) || worker.experiencia.length === 0) return [];
+    return worker.experiencia.map((experience) => ({
+        position: experience?.puesto || null,
+        company: experience?.nombre_empresa || null,
+        startMonth: experience?.fecha_ingreso?.mes || null,
+        startYear: experience?.fecha_ingreso?.año || null,
+        endMonth: experience?.fecha_egreso?.mes || null,
+        endYear: experience?.fecha_egreso?.año || null,
+        finalSalary: experience?.salario_final || null,
+        boss: experience?.jefe_inmediato || null,
+        leaveReason: experience?.motivo_retiro || null,
+        performance: experience?.desempeno || null
+    }));
+};
+
+// Backward-compatible
 export const getExperience = (worker) => {
-    if (!worker.experiencia || !Array.isArray(worker.experiencia) || worker.experiencia.length === 0) {
-        return {
-            position: null,
-            company: null,
-            startMonth: null,
-            startYear: null,
-            endMonth: null,
-            endYear: null,
-            finalSalary: null,
-            boss: null,
-            leaveReason: null,
-            performance: null
-        };
-    }
-
-    // Get the first experience entry (most recent)
-    const experience = worker.experiencia[0];
-
-    return {
-        position: experience.puesto || null,
-        company: experience.nombre_empresa || null,
-        startMonth: experience.fecha_ingreso?.mes || null,
-        startYear: experience.fecha_ingreso?.año || null,
-        endMonth: experience.fecha_egreso?.mes || null,
-        endYear: experience.fecha_egreso?.año || null,
-        finalSalary: experience.salario_final || null,
-        boss: experience.jefe_inmediato || null,
-        leaveReason: experience.motivo_retiro || null,
-        performance: experience.desempeno || null
+    const list = getExperiences(worker);
+    return list[0] || {
+        position: null,
+        company: null,
+        startMonth: null,
+        startYear: null,
+        endMonth: null,
+        endYear: null,
+        finalSalary: null,
+        boss: null,
+        leaveReason: null,
+        performance: null
     };
 };
 
 // References
+export const getAllReferences = (worker) => {
+    const workRefs = Array.isArray(worker?.referencias_laborales)
+        ? worker.referencias_laborales.map((r) => ({
+            name: r?.nombre || null,
+            position: r?.puesto || null,
+            phone: r?.telefono || null,
+            email: r?.email || null
+        }))
+        : [];
+
+    const personalRefs = Array.isArray(worker?.referencias_personales)
+        ? worker.referencias_personales.map((r) => ({
+            name: r?.nombre || null,
+            relation: r?.relacion || null,
+            phone: r?.telefono || null,
+            email: r?.email || null
+        }))
+        : [];
+
+    return { work: workRefs, personal: personalRefs };
+};
+
+// Backward-compatible: keep original signature returning first of each list
 export const getReferences = (worker) => {
-    const workRef = worker.referencias_laborales && worker.referencias_laborales.length > 0
-        ? worker.referencias_laborales[0]
-        : {};
-
-    const personalRef = worker.referencias_personales && worker.referencias_personales.length > 0
-        ? worker.referencias_personales[0]
-        : {};
-
+    const { work, personal } = getAllReferences(worker);
     return {
-        work: {
-            name: workRef.nombre || null,
-            position: workRef.puesto || null,
-            phone: workRef.telefono || null,
-            email: workRef.email || null
-        },
-        personal: {
-            name: personalRef.nombre || null,
-            relation: personalRef.relacion || null,
-            phone: personalRef.telefono || null,
-            email: personalRef.email || null
-        }
+        work: work[0] || { name: null, position: null, phone: null, email: null },
+        personal: personal[0] || { name: null, relation: null, phone: null, email: null }
     };
 };
 

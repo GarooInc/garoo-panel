@@ -13,7 +13,7 @@ export const get_applications = (page = 1, limit = 10, filters = {}) => {
     if (filters.sortBy) params.append('sortBy', filters.sortBy);
     if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
 
-    return applicationsInstance.get(`/applications?${params.toString()}`);
+    return applicationsInstance.get(`applications?${params.toString()}`);
 };
 
 //* Logout en el Backend

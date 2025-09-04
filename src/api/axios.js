@@ -14,7 +14,7 @@ const authInstance = axios.create({
 
 const applicationsInstance = axios.create({
     ...commonConfig,
-    baseURL: 'https://rockanrolla-garoo.koyeb.app/',
+    baseURL: 'https://rockanrolla-garoo.koyeb.app',
     withCredentials: false
 });
 

@@ -11,7 +11,6 @@ const ApplicationsTable = ({
     filteredWorkers,
     handleViewDetails,
     handlePDFGeneration,
-    styles,
     searchTerm
 }) => {
     if (filteredWorkers.length === 0) {

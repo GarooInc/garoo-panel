@@ -6,7 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import { ApplicationsProvider } from './config/ApplicationsProvider.jsx';
+import { ApplicationsProvider } from './config/ApplicationsProvider';
 import { FormProvider } from './config/FormProvider.jsx';
 import { DataAgentProvider } from './config/DataAgentProvider.jsx';
 

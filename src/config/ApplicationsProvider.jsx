@@ -23,7 +23,7 @@ export const useApplications = () => {
 export const ApplicationsProvider = ({ children }) => {
 
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
+    const [, setData] = useState([]);
     const [error, setError] = useState(null);
     const [nationalities, setNationalities] = useState([]);
     const [positions, setPositions] = useState([]);

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 
 const ClientSidePagination = ({
@@ -31,15 +31,9 @@ const ClientSidePagination = ({
     }, [data, currentPage, itemsPerPage]);
 
     // Resetear a página 1 cuando cambien los datos
-    useMemo(() => {
+    useEffect(() => {
         setCurrentPage(1);
     }, [data]);
-
-    const goToPage = (page) => {
-        if (page >= 1 && page <= paginationInfo.totalPages) {
-            setCurrentPage(page);
-        }
-    };
 
     const goToPrevious = () => {
         if (paginationInfo.hasPrev) {

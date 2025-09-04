@@ -1,6 +1,6 @@
 import { dataAgentInstance } from "./axios.js";
 
-export const askAgent = () => dataAgentInstance.get(`/ask-agent`);
+export const askAgent = () => dataAgentInstance.get(`ask-agent`);
 
 
 //* Logout en el Backend

@@ -16,9 +16,9 @@ import {
     getBehance,
     getCV,
     getPortfolio,
-    getEducation,
-    getExperience,
-    getReferences,
+    getEducations,
+    getExperiences,
+    getAllReferences,
     getSkills
 } from './workerDataHelpers';
 
@@ -125,10 +125,10 @@ export const generateWorkerPDF = (worker) => {
             }
         };
 
-        // Get structured data
-        const education = getEducation(worker);
-        const experience = getExperience(worker);
-        const references = getReferences(worker);
+        // Get structured data (arrays for multiple entries)
+        const educations = getEducations(worker);
+        const experiences = getExperiences(worker);
+        const allReferences = getAllReferences(worker);
 
         // Personal Data Section
         addSection('Datos Personales', [
@@ -156,52 +156,65 @@ export const generateWorkerPDF = (worker) => {
             })()],
         ]);
 
-        // Education Section
-        if (education.title || education.institution) {
-            addSection('Educación', [
-                ['Título', education.title],
-                ['Institución', education.institution],
-                ['Nivel Educativo', education.level],
-                ['Período', `${formatPeriod(education.startPeriod)} - ${formatPeriod(education.endPeriod)}`]
-            ]);
+        // Education Sections (multiple)
+        if (Array.isArray(educations) && educations.length > 0) {
+            educations.forEach((education, idx) => {
+                const title = `Educación ${educations.length > 1 ? `#${idx + 1}` : ''}`.trim();
+                addSection(title, [
+                    ['Título', education.title],
+                    ['Institución', education.institution],
+                    ['Nivel Educativo', education.level],
+                    ['Período', `${formatPeriod(education.startPeriod)} - ${formatPeriod(education.endPeriod)}`]
+                ]);
+            });
         }
 
-        // Work Experience Section
-        if (experience.company || experience.position) {
-            addSection('Experiencia Laboral', [
-                ['Empresa', experience.company],
-                ['Puesto', experience.position],
-                ['Período', `${formatExperienceDate(experience.startMonth, experience.startYear)} - ${formatExperienceDate(experience.endMonth, experience.endYear)}`],
-                ['Salario Final', formatSalary(experience.finalSalary)],
-                ['Jefe Inmediato', experience.boss],
-                ['Motivo de Retiro', experience.leaveReason],
-                ['Desempeño', experience.performance]
-            ]);
+        // Work Experience Sections (multiple)
+        if (Array.isArray(experiences) && experiences.length > 0) {
+            experiences.forEach((experience, idx) => {
+                const title = `Experiencia Laboral ${experiences.length > 1 ? `#${idx + 1}` : ''}`.trim();
+                addSection(title, [
+                    ['Empresa', experience.company],
+                    ['Puesto', experience.position],
+                    ['Período', `${formatExperienceDate(experience.startMonth, experience.startYear)} - ${formatExperienceDate(experience.endMonth, experience.endYear)}`],
+                    ['Salario Final', formatSalary(experience.finalSalary)],
+                    ['Jefe Inmediato', experience.boss],
+                    ['Motivo de Retiro', experience.leaveReason],
+                    ['Desempeño', experience.performance]
+                ]);
+            });
         }
 
-        // References Section
-        if (references.work.name || references.personal.name) {
+        // References Section (multiple)
+        {
             const referenceData = [];
 
-            if (references.work.name) {
-                referenceData.push(
-                    ['Ref. Laboral - Nombre', references.work.name],
-                    ['Ref. Laboral - Puesto', references.work.position],
-                    ['Ref. Laboral - Teléfono', references.work.phone],
-                    ['Ref. Laboral - Email', references.work.email]
-                );
-            }
+            const workRefs = (allReferences && Array.isArray(allReferences.work)) ? allReferences.work : [];
+            const personalRefs = (allReferences && Array.isArray(allReferences.personal)) ? allReferences.personal : [];
 
-            if (references.personal.name) {
+            workRefs.forEach((ref, idx) => {
+                const label = workRefs.length > 1 ? `Ref. Laboral #${idx + 1}` : 'Ref. Laboral';
                 referenceData.push(
-                    ['Ref. Personal - Nombre', references.personal.name],
-                    ['Ref. Personal - Relación', references.personal.relation],
-                    ['Ref. Personal - Teléfono', references.personal.phone],
-                    ['Ref. Personal - Email', references.personal.email]
+                    [`${label} - Nombre`, ref.name],
+                    [`${label} - Puesto`, ref.position],
+                    [`${label} - Teléfono`, ref.phone],
+                    [`${label} - Email`, ref.email]
                 );
-            }
+            });
 
-            addSection('Referencias', referenceData);
+            personalRefs.forEach((ref, idx) => {
+                const label = personalRefs.length > 1 ? `Ref. Personal #${idx + 1}` : 'Ref. Personal';
+                referenceData.push(
+                    [`${label} - Nombre`, ref.name],
+                    [`${label} - Relación`, ref.relation],
+                    [`${label} - Teléfono`, ref.phone],
+                    [`${label} - Email`, ref.email]
+                );
+            });
+
+            if (referenceData.length > 0) {
+                addSection('Referencias', referenceData);
+            }
         }
 
         // Skills Section
