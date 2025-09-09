@@ -64,7 +64,7 @@ const Applications = () => {
 
    return (
       <div className="bg-light min-vh-100">
-         <Card className="border-0 shadow-sm bg-white">
+         <Card className="border-0 bg-white">
             <Card.Body className="p-1">
                {/* Header simple */}
                <div className="d-flex align-items-center mb-4 pb-3 border-bottom border-light">

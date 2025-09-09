@@ -43,7 +43,7 @@ function AppContent() {
       <Header />
       <div className="app-container">
         <Sidebar />
-        <main className="content p-3 w-100">
+        <main className="content p-5 w-100">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
