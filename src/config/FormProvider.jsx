@@ -28,7 +28,7 @@ export const FormProvider = ({ children }) => {
         try {
             // Para FormData con archivos, no establecer Content-Type manualmente
             // El navegador lo configurará automáticamente con el boundary correcto
-            const response = await fetch('https://n8n.srv853599.hstgr.cloud/webhook-test/8481ab6d-c964-41f6-86a4-17f7e0f84788', {
+            const response = await fetch('https://n8n.srv853599.hstgr.cloud/webhook/8481ab6d-c964-41f6-86a4-17f7e0f84788', {
                 method: 'POST',
                 body: form_data // Enviar FormData directamente, sin JSON.stringify
             });

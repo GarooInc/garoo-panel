@@ -35,10 +35,10 @@ const FormPage = () => {
             const formData = new FormData();
 
             // Agregar todos los campos del formulario
-            formData.append('nombre', data.nombre);
             formData.append('nit', data.nit);
+            formData.append('serie', data.serie);
             formData.append('nroFactura', data.nroFactura);
-            formData.append('ordenFactura', data.ordenFactura);
+            formData.append('nroOrden', data.nroOrden);
 
             if (data.pdf && data.pdf[0]) {
                 formData.append('pdf', data.pdf[0]);
@@ -96,28 +96,28 @@ const FormPage = () => {
             <div className='d-flex gap-5'>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <div className='bg-secondary-subtle p-4 border rounded shadow-sm' style={{ width: "20rem" }}>
-                        <FloatingLabel
-                            controlId="input_name"
-                            label="Nombre"
-                            className="mb-3"
-                        >
-                            <Form.Control
-                                type="text"
-                                placeholder="Juan Perez"
-                                size="sm"
-                                {...register("nombre", { required: true })}
-                            />
-                        </FloatingLabel>
 
                         <FloatingLabel
                             controlId="input_nit"
-                            label="NIT"
+                            label="NIT (Sin guión)"
                             className="mb-3"
                         >
                             <Form.Control
                                 type="text"
                                 placeholder="526349L"
                                 {...register("nit", { required: true })}
+                            />
+                        </FloatingLabel>
+
+                        <FloatingLabel
+                            controlId="serie"
+                            label="Nro. Serie"
+                            className="mb-3"
+                        >
+                            <Form.Control
+                                type="text"
+                                placeholder="526349L"
+                                {...register("serie", { required: true })}
                             />
                         </FloatingLabel>
 
@@ -135,13 +135,13 @@ const FormPage = () => {
 
                         <FloatingLabel
                             controlId="input_orden_factura"
-                            label="Orden de Factura"
+                            label="Nro. Orden de Compra"
                             className="mb-3"
                         >
                             <Form.Control
                                 type="text"
                                 placeholder="A4F22B61"
-                                {...register("ordenFactura", { required: true })}
+                                {...register("nroOrden", { required: true })}
                             />
                         </FloatingLabel>
 
