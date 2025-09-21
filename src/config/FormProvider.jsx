@@ -15,7 +15,6 @@ export const useFormData = () => {
 export const FormProvider = ({ children }) => {
 
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
 
@@ -28,7 +27,7 @@ export const FormProvider = ({ children }) => {
         try {
             // Para FormData con archivos, no establecer Content-Type manualmente
             // El navegador lo configurará automáticamente con el boundary correcto
-            const response = await fetch('https://n8n.srv853599.hstgr.cloud/webhook/8481ab6d-c964-41f6-86a4-17f7e0f84788', {
+            const response = await fetch('https://n8n.srv853599.hstgr.cloud/webhook-test/8481ab6d-c964-41f6-86a4-17f7e0f84788', {
                 method: 'POST',
                 body: form_data // Enviar FormData directamente, sin JSON.stringify
             });
@@ -44,15 +43,22 @@ export const FormProvider = ({ children }) => {
                 }
                 // eslint-disable-next-line no-unused-vars
                 catch (e) {
-
                     // Si no se puede leer el texto del error, usar el mensaje básico
                 }
                 throw new Error(errorMessage);
             }
 
-            const result = await response.json();
-            setData(result);
-            return result;
+            // Si la respuesta es exitosa, intentar leer como JSON
+            try {
+                const result = await response.json();
+                return result;
+            } catch (jsonError) {
+                // Si no es JSON válido, intentar leer como texto
+                const textResult = await response.text();
+                return { message: textResult || 'Operación completada exitosamente' };
+            }
+
+
         }
         catch (err) {
             setError(err.message);
@@ -69,9 +75,7 @@ export const FormProvider = ({ children }) => {
         <FormContext.Provider
             value={{
                 loading,
-                data,
                 error,
-                setData,
                 setLoading,
                 setError,
                 sendData

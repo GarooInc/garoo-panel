@@ -2,10 +2,9 @@
 
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
-import Toast from 'react-bootstrap/Toast';
-import ToastContainer from 'react-bootstrap/ToastContainer';
 import { useForm } from 'react-hook-form';
 import Button_back_RB from '../components/Button_back_RB';
+import RB_Toast from '../components/RB_Toast';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useFormData } from '../config/FormProvider';
@@ -21,9 +20,11 @@ const FormPage = () => {
     const [pdfUrl, setPdfUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
     const [showToast, setShowToast] = useState(false);
+    const [toastTitle, setToastTitle] = useState('');
     const [toastMessage, setToastMessage] = useState('');
-    const [toastVariant, setToastVariant] = useState('success');
+    const [toastVariant, setToastVariant] = useState('');
 
     const onSubmit = async (data) => {
 
@@ -45,18 +46,20 @@ const FormPage = () => {
             }
 
             // Enviar datos usando el provider
-            await sendData(formData);
-
-            // console.log("Formulario enviado exitosamente");
-            setToastMessage('Datos enviados correctamente');
-            setToastVariant('success');
+            const response = await sendData(formData);
+            setToastTitle(`${response.title}`);
+            setToastMessage(`${response.message}`);
+            setToastVariant(response.status === 'ok' ? 'success' : 'danger');
             setShowToast(true);
+
+
         }
         catch (error) {
             console.error("Error al enviar datos:", error);
-            setToastMessage('Error');
-            setToastVariant('danger');
-            setShowToast(true);
+            setToastTitle('Error');
+            setToastMessage(`${error.message}`);
+            // setToastVariant('danger');
+            // setShowToast(true);
         }
         finally {
             setIsLoading(false);
@@ -158,7 +161,7 @@ const FormPage = () => {
 
                         <button
                             type="submit"
-                            className='btn btn-primary w-100'
+                            className='btn btn-lg btn-primary w-100'
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -192,19 +195,16 @@ const FormPage = () => {
                 </div>
             </div>
 
-            <ToastContainer position="top-end" className="p-3">
-                <Toast
-                    show={showToast}
-                    onClose={() => setShowToast(false)}
-                    delay={3000}
-                    autohide
-                    bg={toastVariant}
-                >
-                    <Toast.Body className="text-white">
-                        {toastMessage}
-                    </Toast.Body>
-                </Toast>
-            </ToastContainer>
+            <RB_Toast
+                showToast={showToast}
+                onClose={() => setShowToast(false)}
+                toastVariant={toastVariant}
+                toastTitle={toastTitle}
+                toastMessage={toastMessage}
+                position="middle-center"
+                custom_autohide={false}
+                delay={null}
+            />
         </>
     );
 };
