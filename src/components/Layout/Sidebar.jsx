@@ -1,66 +1,72 @@
 import "./sidebar.css";
 
-import { Link, useLocation } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
+import { Link, useLocation } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 
 const Sidebar = () => {
     const location = useLocation();
 
     const menuItems = [
         {
-            id: 'home',
-            path: '/',
-            icon: 'bi bi-house-door',
-            label: 'Inicio'
+            id: "home",
+            path: "/",
+            icon: "bi bi-house-door",
+            label: "Inicio",
         },
         {
-            id: 'dashboard',
-            path: '/dashboard',
-            icon: 'bi bi-speedometer2',
-            label: 'Dashboard'
+            id: "dashboard",
+            path: "/dashboard",
+            icon: "bi bi-speedometer2",
+            label: "Dashboard",
         },
         {
-            id: 'services',
-            path: '/services',
-            icon: 'bi bi-grid-3x3-gap',
-            label: 'Servicios'
+            id: "services",
+            path: "/services",
+            icon: "bi bi-grid-3x3-gap",
+            label: "Servicios",
         },
         {
-            id: 'applications',
-            path: '/applications',
-            icon: 'bi bi-app-indicator',
-            label: 'Aplicaciones'
+            id: "applications",
+            path: "/applications",
+            icon: "bi bi-app-indicator",
+            label: "Aplicaciones",
         },
         {
-            id: 'form',
-            path: '/form',
-            icon: 'bi bi-file-earmark-text',
-            label: 'Formulario'
+            id: "form",
+            path: "/form",
+            icon: "bi bi-file-earmark-text",
+            label: "Formulario",
         },
         {
-            id: 'gallery',
-            path: '/gallery',
-            icon: 'bi bi-images',
-            label: 'Galería'
+            id: "outbound-call-form",
+            path: "/outbound-call-form",
+            icon: "bi bi-file-earmark-text",
+            label: "Formulario de llamadas",
         },
         {
-            id: 'data-agent',
-            path: '/data-agent',
-            icon: 'bi bi-database',
-            label: 'Data Agent'
+            id: "gallery",
+            path: "/gallery",
+            icon: "bi bi-images",
+            label: "Galería",
         },
         {
-            id: 'ai-tools',
-            path: '/ai-tools',
-            icon: 'bi bi-robot',
-            label: 'Herramientas IA'
+            id: "data-agent",
+            path: "/data-agent",
+            icon: "bi bi-database",
+            label: "Data Agent",
         },
         {
-            id: 'bot',
-            path: '/bot',
-            icon: 'bi bi-chat-dots',
-            label: 'Bot'
-        }
+            id: "ai-tools",
+            path: "/ai-tools",
+            icon: "bi bi-robot",
+            label: "Herramientas IA",
+        },
+        {
+            id: "bot",
+            path: "/bot",
+            icon: "bi bi-chat-dots",
+            label: "Bot",
+        },
     ];
 
     return (
@@ -72,13 +78,14 @@ const Sidebar = () => {
                             <Nav.Link
                                 as={Link}
                                 to={item.path}
-                                className={`d-flex align-items-center gap-2 px-3 py-2 rounded ${location.pathname === item.path
-                                    ? 'bg-primary text-white'
-                                    : 'text-dark'
-                                    }`}
+                                className={`d-flex align-items-center gap-2 px-3 py-2 rounded ${
+                                    location.pathname === item.path
+                                        ? "bg-primary text-white"
+                                        : "text-dark"
+                                }`}
                                 style={{
-                                    textDecoration: 'none',
-                                    transition: 'all 0.2s ease'
+                                    textDecoration: "none",
+                                    transition: "all 0.2s ease",
                                 }}
                             >
                                 <i className={item.icon}></i>

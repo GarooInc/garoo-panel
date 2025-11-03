@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
 
 import { ApplicationsProvider } from "./config/ApplicationsProvider";
 import { FormProvider } from "./config/FormProvider.jsx";
@@ -39,11 +39,15 @@ function App() {
 }
 
 function AppContent() {
+    const location = useLocation();
+    const hideLayoutRoutes = ['/outbound-call-form'];
+    const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
+
     return (
         <>
-            <Header />
+            {!shouldHideLayout && <Header />}
             <div className="app-container">
-                <Sidebar />
+                {!shouldHideLayout && <Sidebar />}
                 <main className="content p-5 w-100">
                     <Routes>
                         <Route path="/" element={<Home />} />
