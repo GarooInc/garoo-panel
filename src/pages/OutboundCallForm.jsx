@@ -38,8 +38,9 @@ const OutboundCallForm = () => {
         setSubmitStatus(null);
 
         try {
+            // Enviar datos y esperar la respuesta
             const response = await axios.post(
-                "https://n8n.srv853599.hstgr.cloud/webhook/b96df0cf-78d8-4442-af2c-c9346bf2a55d",
+                "https://n8n.srv853599.hstgr.cloud/webhook/419bb751-1cc3-43d6-923b-c0b77e078802",
                 {
                     "First Name": formData.firstName,
                     "Last Name": formData.lastName,
@@ -56,13 +57,14 @@ const OutboundCallForm = () => {
                 }
             );
 
-            console.log("Form submitted successfully:", response.data);
+            // Mostrar éxito si la respuesta es exitosa
+            console.log("Form data sent successfully:", response.data);
             setSubmitStatus({
                 type: "success",
-                message: "Form submitted successfully!",
+                message: "¡Formulario enviado exitosamente! Nos pondremos en contacto contigo pronto.",
             });
 
-            // Reset form after successful submission
+            // Resetear formulario
             setFormData({
                 firstName: "",
                 lastName: "",
@@ -72,10 +74,10 @@ const OutboundCallForm = () => {
                 otherProduct: "",
             });
         } catch (error) {
-            console.error("Error submitting form:", error);
+            console.error("Error al enviar el formulario:", error);
             setSubmitStatus({
                 type: "danger",
-                message: "Error submitting form. Please try again.",
+                message: "Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.",
             });
         } finally {
             setSubmitting(false);
