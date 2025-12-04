@@ -1,27 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Configuración común para todas las instancias
 const commonConfig = {
-    baseURL: import.meta.env.VITE_API_URL || 'https://garoo-server.onrender.com',
+    baseURL:
+        import.meta.env.VITE_API_URL || "https://garoo-server.onrender.com",
     timeout: 10000,
 };
 
 // Creamos las instancias para cada servicio
 const authInstance = axios.create({
     ...commonConfig,
-    withCredentials: true
+    withCredentials: true,
 });
 
 const applicationsInstance = axios.create({
     ...commonConfig,
-    baseURL: 'https://rockanrolla-garoo.koyeb.app',
-    withCredentials: false
+    baseURL: "https://rockanrolla-garoo.koyeb.app",
+    withCredentials: false,
 });
 
 const dataAgentInstance = axios.create({
     ...commonConfig,
-    baseURL: 'https://n8n.srv853599.hstgr.cloud/webhook-test/11df5e92-2241-4ec2-ad9d-2ea881670562',
-    withCredentials: false
+    baseURL:
+        "https://agents.redtec.ai/webhook/11df5e92-2241-4ec2-ad9d-2ea881670562",
+    withCredentials: false,
 });
 
 // Función para configurar interceptores
@@ -29,7 +31,7 @@ const setupInterceptors = (instance) => {
     // Interceptor de solicitudes
     instance.interceptors.request.use(
         (config) => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
@@ -43,13 +45,13 @@ const setupInterceptors = (instance) => {
         (response) => response,
         (error) => {
             if (error.response?.status === 401) {
-                console.log('Token inválido detectado en interceptor');
-                localStorage.removeItem('token');
-                
+                console.log("Token inválido detectado en interceptor");
+                localStorage.removeItem("token");
+
                 // Solo redirigir si no estamos ya en login
-                if (window.location.pathname !== '/login') {
-                    console.log('Redirigiendo a login...');
-                    window.location.href = '/login';
+                if (window.location.pathname !== "/login") {
+                    console.log("Redirigiendo a login...");
+                    window.location.href = "/login";
                 }
             }
             return Promise.reject(error);
