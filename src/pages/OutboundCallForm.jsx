@@ -38,8 +38,9 @@ const OutboundCallForm = () => {
         setSubmitStatus(null);
 
         try {
+            // Enviar datos y esperar la respuesta
             const response = await axios.post(
-                "https://n8n.srv853599.hstgr.cloud/webhook/b96df0cf-78d8-4442-af2c-c9346bf2a55d",
+                "https://n8n.srv853599.hstgr.cloud/webhook/419bb751-1cc3-43d6-923b-c0b77e078802",
                 {
                     "First Name": formData.firstName,
                     "Last Name": formData.lastName,
@@ -56,13 +57,14 @@ const OutboundCallForm = () => {
                 }
             );
 
-            console.log("Form submitted successfully:", response.data);
+            // Mostrar éxito si la respuesta es exitosa
+            console.log("Form data sent successfully:", response.data);
             setSubmitStatus({
                 type: "success",
-                message: "Form submitted successfully!",
+                message: "¡Formulario enviado exitosamente! Nos pondremos en contacto contigo pronto.",
             });
 
-            // Reset form after successful submission
+            // Resetear formulario
             setFormData({
                 firstName: "",
                 lastName: "",
@@ -72,10 +74,10 @@ const OutboundCallForm = () => {
                 otherProduct: "",
             });
         } catch (error) {
-            console.error("Error submitting form:", error);
+            console.error("Error al enviar el formulario:", error);
             setSubmitStatus({
                 type: "danger",
-                message: "Error submitting form. Please try again.",
+                message: "Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.",
             });
         } finally {
             setSubmitting(false);
@@ -83,12 +85,12 @@ const OutboundCallForm = () => {
     };
 
     return (
-        <Container className="py-5">
-            <Row className="justify-content-center">
-                <Col md={8} lg={6}>
-                    <div className="text-center mb-4">
-                        <h2>Banco Ficohsa</h2>
-                        <p className="text-muted">Banco Ficohsa Online Form</p>
+        <Container className="py-3 py-md-5">
+            <Row className="justify-content-center mx-1 mx-md-0">
+                <Col xs={12} sm={10} md={8} lg={6}>
+                    <div className="text-center mb-3 mb-md-4">
+                        <h2 className="h3">Banco Ficohsa</h2>
+                        <p className="text-muted mb-0">Formulario en Línea</p>
                     </div>
 
                     {submitStatus && (
@@ -103,7 +105,7 @@ const OutboundCallForm = () => {
 
                     <Form
                         onSubmit={handleSubmit}
-                        className="p-4 border rounded-3 shadow-sm"
+                        className="p-3 p-md-4 border rounded-3 shadow-sm"
                         style={{ backgroundColor: "white" }}
                     >
                         <Form.Group className="mb-3" controlId="firstName">
@@ -206,15 +208,15 @@ const OutboundCallForm = () => {
                                 variant="danger"
                                 type="submit"
                                 size="lg"
-                                className="mt-3"
+                                className="mt-3 py-2"
                                 disabled={submitting}
                                 style={{
-                                    backgroundColor: "#ff6b6b",
-                                    borderColor: "#ff6b6b",
-                                    padding: "12px",
+                                    backgroundColor: "#E41E26",
+                                    border: "none",
+                                    fontSize: '1.1rem'
                                 }}
                             >
-                                {submitting ? "Submitting..." : "Submit"}
+                                {submitting ? "Enviando..." : "Enviar"}
                             </Button>
                         </div>
                     </Form>
