@@ -40,7 +40,7 @@ const OutboundCallForm = () => {
         try {
             // Enviar datos y esperar la respuesta
             const response = await axios.post(
-                "https://n8n.srv853599.hstgr.cloud/webhook/419bb751-1cc3-43d6-923b-c0b77e078802",
+                "https://agents.redtec.ai/webhook/419bb751-1cc3-43d6-923b-c0b77e078802",
                 {
                     "First Name": formData.firstName,
                     "Last Name": formData.lastName,
@@ -61,7 +61,8 @@ const OutboundCallForm = () => {
             console.log("Form data sent successfully:", response.data);
             setSubmitStatus({
                 type: "success",
-                message: "¡Formulario enviado exitosamente! Nos pondremos en contacto contigo pronto.",
+                message:
+                    "¡Formulario enviado exitosamente! Nos pondremos en contacto contigo pronto.",
             });
 
             // Resetear formulario
@@ -77,7 +78,8 @@ const OutboundCallForm = () => {
             console.error("Error al enviar el formulario:", error);
             setSubmitStatus({
                 type: "danger",
-                message: "Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.",
+                message:
+                    "Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.",
             });
         } finally {
             setSubmitting(false);
@@ -213,7 +215,7 @@ const OutboundCallForm = () => {
                                 style={{
                                     backgroundColor: "#E41E26",
                                     border: "none",
-                                    fontSize: '1.1rem'
+                                    fontSize: "1.1rem",
                                 }}
                             >
                                 {submitting ? "Enviando..." : "Enviar"}
