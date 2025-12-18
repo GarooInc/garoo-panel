@@ -114,205 +114,225 @@ const FormPage = () => {
                 className={"postion-absolute top-50 start-0 translate-middle-y"}
             />
 
-            <div className="d-flex gap-5">
+            <div className="d-flex flex-column gap-4">
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <div
-                        className="bg-secondary-subtle p-4 border rounded shadow-sm"
-                        style={{ width: "20rem" }}
-                    >
-                        <FloatingLabel
-                            controlId="input_nit"
-                            label="NIT (Sin guión)"
-                            className="mb-3"
-                        >
-                            <Form.Control
-                                type="text"
-                                placeholder="526349L"
-                                isInvalid={!!errors.nit}
-                                {...register("nit", {
-                                    required: "El NIT es requerido",
-                                    pattern: {
-                                        value: /^[0-9A-Za-z]+$/,
-                                        message:
-                                            "El NIT no debe contener guiones ni caracteres especiales",
-                                    },
-                                    minLength: {
-                                        value: 3,
-                                        message:
-                                            "El NIT debe tener al menos 3 caracteres",
-                                    },
-                                })}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.nit?.message}
-                            </Form.Control.Feedback>
-                        </FloatingLabel>
+                    <div className="bg-secondary-subtle p-4 border rounded shadow-sm">
+                        <div className="row g-3 align-items-end">
+                            <div className="col-12 col-md-3">
+                                <FloatingLabel
+                                    controlId="input_nit"
+                                    label="NIT (Sin guión)"
+                                >
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="526349L"
+                                        isInvalid={!!errors.nit}
+                                        {...register("nit", {
+                                            required: "El NIT es requerido",
+                                            pattern: {
+                                                value: /^[0-9A-Za-z]+$/,
+                                                message:
+                                                    "El NIT no debe contener guiones ni caracteres especiales",
+                                            },
+                                            minLength: {
+                                                value: 3,
+                                                message:
+                                                    "El NIT debe tener al menos 3 caracteres",
+                                            },
+                                        })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.nit?.message}
+                                    </Form.Control.Feedback>
+                                </FloatingLabel>
+                            </div>
 
-                        <FloatingLabel
-                            controlId="serie"
-                            label="Nro. Serie"
-                            className="mb-3"
-                        >
-                            <Form.Control
-                                type="text"
-                                placeholder="526349L"
-                                isInvalid={!!errors.serie}
-                                {...register("serie", {
-                                    required: "El número de serie es requerido",
-                                    minLength: {
-                                        value: 2,
-                                        message:
-                                            "El número de serie debe tener al menos 2 caracteres",
-                                    },
-                                })}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.serie?.message}
-                            </Form.Control.Feedback>
-                        </FloatingLabel>
+                            <div className="col-12 col-md-3">
+                                <FloatingLabel
+                                    controlId="serie"
+                                    label="Nro. Serie"
+                                >
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="526349L"
+                                        isInvalid={!!errors.serie}
+                                        {...register("serie", {
+                                            required:
+                                                "El número de serie es requerido",
+                                            minLength: {
+                                                value: 2,
+                                                message:
+                                                    "El número de serie debe tener al menos 2 caracteres",
+                                            },
+                                        })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.serie?.message}
+                                    </Form.Control.Feedback>
+                                </FloatingLabel>
+                            </div>
 
-                        <Form.Group controlId="input_pdf" className="mb-3">
-                            <Form.Label
-                                className="m-1 fw-bold"
-                                style={{ fontSize: "70%" }}
-                            >
-                                Subir factura en PDF
-                            </Form.Label>
-                            <Form.Control
-                                type="file"
-                                size="md"
-                                accept=".pdf"
-                                isInvalid={!!errors.pdf}
-                                {...register("pdf", {
-                                    required: "El archivo PDF es requerido",
-                                    validate: {
-                                        isPdf: (files) =>
-                                            files[0]?.type ===
-                                                "application/pdf" ||
-                                            "El archivo debe ser un PDF válido",
-                                        maxSize: (files) =>
-                                            files[0]?.size <= 5 * 1024 * 1024 ||
-                                            "El archivo no debe superar los 5MB",
-                                    },
-                                })}
-                                onChange={handlePdfChange}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.pdf?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            <div className="col-12 col-md-3">
+                                <Form.Group controlId="input_pdf">
+                                    <Form.Label
+                                        className="m-1 fw-bold"
+                                        style={{ fontSize: "70%" }}
+                                    >
+                                        Subir factura en PDF
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="file"
+                                        size="md"
+                                        accept=".pdf"
+                                        isInvalid={!!errors.pdf}
+                                        {...register("pdf", {
+                                            required:
+                                                "El archivo PDF es requerido",
+                                            validate: {
+                                                isPdf: (files) =>
+                                                    files[0]?.type ===
+                                                    "application/pdf" ||
+                                                    "El archivo debe ser un PDF válido",
+                                                maxSize: (files) =>
+                                                    files[0]?.size <=
+                                                    5 * 1024 * 1024 ||
+                                                    "El archivo no debe superar los 5MB",
+                                            },
+                                        })}
+                                        onChange={handlePdfChange}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.pdf?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                            </div>
 
-                        <Form.Group controlId="input_xml" className="mb-5">
-                            <Form.Label
-                                className="m-1 fw-bold"
-                                style={{ fontSize: "70%" }}
-                            >
-                                Subir factura en XML
-                            </Form.Label>
-                            <Form.Control
-                                type="file"
-                                size="md"
-                                accept=".xml,text/xml"
-                                isInvalid={!!errors.xml}
-                                {...register("xml", {
-                                    required: "El archivo XML es requerido",
-                                    validate: {
-                                        isXml: (files) =>
-                                            files[0]?.type === "text/xml" ||
-                                            files[0]?.name.endsWith(".xml") ||
-                                            "El archivo debe ser un XML válido",
-                                        maxSize: (files) =>
-                                            files[0]?.size <= 5 * 1024 * 1024 ||
-                                            "El archivo no debe superar los 5MB",
-                                    },
-                                })}
-                                onChange={handleXmlChange}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.xml?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-
-                        <button
-                            type="submit"
-                            className="btn btn-lg btn-primary w-100"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <span
-                                        className="spinner-border spinner-border-sm me-2"
-                                        role="status"
-                                        aria-hidden="true"
-                                    ></span>
-                                    Enviando...
-                                </>
-                            ) : (
-                                "Enviar"
-                            )}
-                        </button>
+                            <div className="col-12 col-md-3">
+                                <Form.Group controlId="input_xml">
+                                    <Form.Label
+                                        className="m-1 fw-bold"
+                                        style={{ fontSize: "70%" }}
+                                    >
+                                        Subir factura en XML
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="file"
+                                        size="md"
+                                        accept=".xml,text/xml"
+                                        isInvalid={!!errors.xml}
+                                        {...register("xml", {
+                                            required:
+                                                "El archivo XML es requerido",
+                                            validate: {
+                                                isXml: (files) =>
+                                                    files[0]?.type ===
+                                                    "text/xml" ||
+                                                    files[0]?.name.endsWith(
+                                                        ".xml"
+                                                    ) ||
+                                                    "El archivo debe ser un XML válido",
+                                                maxSize: (files) =>
+                                                    files[0]?.size <=
+                                                    5 * 1024 * 1024 ||
+                                                    "El archivo no debe superar los 5MB",
+                                            },
+                                        })}
+                                        onChange={handleXmlChange}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.xml?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                            </div>
+                        </div>
                     </div>
                 </Form>
 
+                <div className="d-flex justify-content-end mt-0 mb-3">
+                    <button
+                        type="submit"
+                        className="btn btn-sm btn-success px-4 shadow-sm fw-bold"
+                        disabled={isLoading}
+                        onClick={handleSubmit(onSubmit)}
+                    >
+                        {isLoading ? (
+                            <>
+                                <span
+                                    className="spinner-border spinner-border-sm me-2"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                                Enviando...
+                            </>
+                        ) : (
+                            "Enviar"
+                        )}
+                    </button>
+                </div>
+
                 <div className="w-100">
-                    <div className="d-flex gap-3 mb-3">
-                        <div className="border rounded bg-light p-3 flex-fill">
-                            <h5 className="mb-3">Vista Previa PDF</h5>
-                            {pdfUrl ? (
-                                <div>
-                                    <p className="small text-muted">
-                                        {selectedPdf?.name}
-                                    </p>
-                                    <iframe
-                                        src={pdfUrl}
-                                        width="100%"
-                                        height="300px"
-                                        title="Vista previa del PDF"
-                                        className="border rounded"
-                                    />
-                                </div>
-                            ) : (
-                                <div
-                                    className="text-center text-muted d-flex align-items-center justify-content-center"
-                                    style={{ height: "300px" }}
-                                >
-                                    <p>Selecciona un archivo PDF</p>
-                                </div>
-                            )}
+                    <div className="row g-3 bg-secondary-subtle rounded pb-3 shadow-sm">
+                        <div className="col-12 col-md-6">
+                            <div className="border rounded bg-light p-3 h-100">
+                                <h5 className="mb-3">Vista Previa PDF</h5>
+                                {pdfUrl ? (
+                                    <div>
+                                        <p className="small text-muted">
+                                            {selectedPdf?.name}
+                                        </p>
+                                        <iframe
+                                            src={pdfUrl}
+                                            width="100%"
+                                            height="300px"
+                                            title="Vista previa del PDF"
+                                            className="border rounded"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="text-center text-muted d-flex align-items-center justify-content-center"
+                                        style={{ height: "300px" }}
+                                    >
+                                        <p>Selecciona un archivo PDF</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        <div className="border rounded bg-light p-3 flex-fill">
-                            <h5 className="mb-3">Vista Previa XML</h5>
-                            {xmlContent ? (
-                                <div>
-                                    <p className="small text-muted">
-                                        {selectedXml?.name}
-                                    </p>
-                                    <pre
-                                        style={{
-                                            height: "300px",
-                                            overflow: "auto",
-                                            backgroundColor: "#f8f9fa",
-                                            padding: "10px",
-                                            borderRadius: "4px",
-                                            border: "1px solid #dee2e6",
-                                            whiteSpace: "pre-wrap",
-                                            wordWrap: "break-word",
-                                            fontSize: "12px",
-                                            fontFamily: "monospace",
-                                        }}
+                        <div className="col-12 col-md-6">
+                            <div className="border rounded bg-light p-3 h-100">
+                                <h5 className="mb-3">Vista Previa XML</h5>
+                                {xmlContent ? (
+                                    <div>
+                                        <p className="small text-muted">
+                                            {selectedXml?.name}
+                                        </p>
+                                        <pre
+                                            style={{
+                                                height: "300px",
+                                                overflow: "auto",
+                                                backgroundColor: "#f8f9fa",
+                                                padding: "10px",
+                                                borderRadius: "4px",
+                                                border: "1px solid #dee2e6",
+                                                whiteSpace: "pre-wrap",
+                                                wordWrap: "break-word",
+                                                fontSize: "12px",
+                                                fontFamily: "monospace",
+                                            }}
+                                        >
+                                            {xmlContent}
+                                        </pre>
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="text-center text-muted d-flex align-items-center justify-content-center"
+                                        style={{ height: "300px" }}
                                     >
-                                        {xmlContent}
-                                    </pre>
-                                </div>
-                            ) : (
-                                <div
-                                    className="text-center text-muted d-flex align-items-center justify-content-center"
-                                    style={{ height: "300px" }}
-                                >
-                                    <p>Selecciona un archivo XML</p>
-                                </div>
-                            )}
+                                        <p>Selecciona un archivo XML</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
