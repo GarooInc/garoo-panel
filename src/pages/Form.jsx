@@ -38,12 +38,9 @@ const FormPage = () => {
 
         try {
             const formData = new FormData();
-
-            // Agregar los campos del formulario
             formData.append("nit", data.nit.trim());
             formData.append("serie", data.serie.trim());
 
-            // Validar archivos
             if (!data.pdf?.[0] || !data.xml?.[0]) {
                 throw new Error(
                     "Por favor, complete todos los campos requeridos"
@@ -53,18 +50,38 @@ const FormPage = () => {
             formData.append("pdf", data.pdf[0]);
             formData.append("xml", data.xml[0]);
 
-            // Enviar datos usando el provider
-            const response = await sendData(formData);
-            setToastTitle(`${response.title}`);
-            setToastMessage(`${response.message}`);
-            setToastVariant(response.status === "ok" ? "success" : "danger");
+            // Enviar datos al webhook
+            const response = await fetch(
+                "https://agents.redtec.ai/webhook/facturas",
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        Accept: "application/json",
+                    },
+                }
+            );
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    responseData.message || "Error al enviar los datos"
+                );
+            }
+
+            setToastTitle("Éxito");
+            setToastMessage("Datos enviados correctamente");
+            setToastVariant("success");
             setShowToast(true);
         } catch (error) {
             console.error("Error al enviar datos:", error);
             setToastTitle("Error");
-            setToastMessage(`${error.message}`);
-            // setToastVariant('danger');
-            // setShowToast(true);
+            setToastMessage(
+                error.message || "Ocurrió un error al enviar los datos"
+            );
+            setToastVariant("danger");
+            setShowToast(true);
         } finally {
             setIsLoading(false);
         }
