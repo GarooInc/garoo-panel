@@ -5,7 +5,6 @@ import Button_back_RB from "../components/Button_back_RB";
 import RB_Toast from "../components/RB_Toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useFormData } from "../config/FormProvider";
 
 const FormPage = () => {
     const {
@@ -19,8 +18,6 @@ const FormPage = () => {
             serie: "",
         },
     });
-
-    const { sendData } = useFormData();
 
     const [pdfUrl, setPdfUrl] = useState(null);
     const [selectedPdf, setSelectedPdf] = useState(null);
@@ -43,7 +40,7 @@ const FormPage = () => {
 
             if (!data.pdf?.[0] || !data.xml?.[0]) {
                 throw new Error(
-                    "Por favor, complete todos los campos requeridos"
+                    "Por favor, complete todos los campos requeridos",
                 );
             }
 
@@ -59,14 +56,14 @@ const FormPage = () => {
                     headers: {
                         Accept: "application/json",
                     },
-                }
+                },
             );
 
             const responseData = await response.json();
 
             if (!response.ok) {
                 throw new Error(
-                    responseData.message || "Error al enviar los datos"
+                    responseData.message || "Error al enviar los datos",
                 );
             }
 
@@ -78,7 +75,7 @@ const FormPage = () => {
             console.error("Error al enviar datos:", error);
             setToastTitle("Error");
             setToastMessage(
-                error.message || "Ocurrió un error al enviar los datos"
+                error.message || "Ocurrió un error al enviar los datos",
             );
             setToastVariant("danger");
             setShowToast(true);
@@ -128,7 +125,9 @@ const FormPage = () => {
         <>
             <Button_back_RB
                 onClick={goToDashboard}
-                className={"postion-absolute top-50 start-0 translate-middle-y"}
+                className={
+                    "position-absolute top-50 start-0 translate-middle-y"
+                }
             />
 
             <div className="d-flex flex-column gap-4">
@@ -208,11 +207,11 @@ const FormPage = () => {
                                             validate: {
                                                 isPdf: (files) =>
                                                     files[0]?.type ===
-                                                    "application/pdf" ||
+                                                        "application/pdf" ||
                                                     "El archivo debe ser un PDF válido",
                                                 maxSize: (files) =>
                                                     files[0]?.size <=
-                                                    5 * 1024 * 1024 ||
+                                                        5 * 1024 * 1024 ||
                                                     "El archivo no debe superar los 5MB",
                                             },
                                         })}
@@ -243,14 +242,14 @@ const FormPage = () => {
                                             validate: {
                                                 isXml: (files) =>
                                                     files[0]?.type ===
-                                                    "text/xml" ||
+                                                        "text/xml" ||
                                                     files[0]?.name.endsWith(
-                                                        ".xml"
+                                                        ".xml",
                                                     ) ||
                                                     "El archivo debe ser un XML válido",
                                                 maxSize: (files) =>
                                                     files[0]?.size <=
-                                                    5 * 1024 * 1024 ||
+                                                        5 * 1024 * 1024 ||
                                                     "El archivo no debe superar los 5MB",
                                             },
                                         })}
@@ -263,29 +262,28 @@ const FormPage = () => {
                             </div>
                         </div>
                     </div>
-                </Form>
 
-                <div className="d-flex justify-content-end mt-0 mb-3">
-                    <button
-                        type="submit"
-                        className="btn btn-sm btn-success px-4 shadow-sm fw-bold"
-                        disabled={isLoading}
-                        onClick={handleSubmit(onSubmit)}
-                    >
-                        {isLoading ? (
-                            <>
-                                <span
-                                    className="spinner-border spinner-border-sm me-2"
-                                    role="status"
-                                    aria-hidden="true"
-                                ></span>
-                                Enviando...
-                            </>
-                        ) : (
-                            "Enviar"
-                        )}
-                    </button>
-                </div>
+                    <div className="d-flex justify-content-end mt-3 mb-3">
+                        <button
+                            type="submit"
+                            className="btn btn-sm btn-success px-4 shadow-sm fw-bold"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <span
+                                        className="spinner-border spinner-border-sm me-2"
+                                        role="status"
+                                        aria-hidden="true"
+                                    ></span>
+                                    Enviando...
+                                </>
+                            ) : (
+                                "Enviar"
+                            )}
+                        </button>
+                    </div>
+                </Form>
 
                 <div className="w-100">
                     <div className="row g-3 bg-secondary-subtle rounded pb-3 shadow-sm">
