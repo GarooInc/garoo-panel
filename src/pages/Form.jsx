@@ -52,7 +52,7 @@ const FormPage = () => {
 
             // Enviar datos al webhook
             const response = await fetch(
-                "https://agents.redtec.ai/webhook/facturas",
+                "https://agentsprod.redtec.ai/webhook/facturas",
                 {
                     method: "POST",
                     body: formData,
@@ -167,7 +167,7 @@ const FormPage = () => {
                             <div className="col-12 col-md-3">
                                 <FloatingLabel
                                     controlId="serie"
-                                    label="Nro. Serie"
+                                    label="Nro. Orden Factura"
                                 >
                                     <Form.Control
                                         type="text"
@@ -175,11 +175,11 @@ const FormPage = () => {
                                         isInvalid={!!errors.serie}
                                         {...register("serie", {
                                             required:
-                                                "El número de serie es requerido",
+                                                "El número de orden de factura es requerido",
                                             minLength: {
                                                 value: 2,
                                                 message:
-                                                    "El número de serie debe tener al menos 2 caracteres",
+                                                    "El número de orden de factura debe tener al menos 2 caracteres",
                                             },
                                         })}
                                     />
