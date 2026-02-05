@@ -1,24 +1,18 @@
 :root {
     --light: #ffffff;
     --gray: #e7e9eb;
+    --header-height: 68px;
 }
-
-
-
-
 
 /* ======================== Mis Clases */
 /* Font size classes moved to individual CSS modules to avoid conflicts */
 
 .wrapper {
-    background: url('/public/img/profile-image.png');
+    background: url("/public/img/profile-image.png");
     background-size: 100%;
 }
 
 /* ======================================= */
-
-
-
 
 * {
     margin: 0;
@@ -31,12 +25,23 @@ body {
 
 .app-container {
     display: flex;
-    padding-top: 80px; /* Increased to accommodate header height */
+    padding-top: var(--header-height);
     min-height: 100vh;
 }
 
 .auth-container {
-    padding-top: 80px; /* Same as app-container to account for header */
+    padding-top: var(--header-height);
     height: 100vh;
     overflow: hidden;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 767.98px) {
+    .app-container {
+        padding-top: 60px;
+    }
+
+    .auth-container {
+        padding-top: 60px;
+    }
 }

@@ -1,4 +1,53 @@
 .sidebar {
     min-width: 15%;
     overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Estilos para móviles */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        top: 68px; /* Altura del header */
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        max-width: 80%;
+        z-index: 1040;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    /* Overlay oscuro cuando el sidebar está abierto */
+    .sidebar-overlay {
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1039;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 0.3s ease-in-out,
+            visibility 0.3s ease-in-out;
+    }
+
+    .sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Para tablets y desktop */
+@media (min-width: 992px) {
+    .sidebar {
+        position: relative;
+        top: 0;
+    }
 }

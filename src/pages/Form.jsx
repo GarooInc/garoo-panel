@@ -126,15 +126,15 @@ const FormPage = () => {
             <Button_back_RB
                 onClick={goToDashboard}
                 className={
-                    "position-absolute top-50 start-0 translate-middle-y"
+                    "d-none d-md-block position-absolute top-50 start-0 translate-middle-y"
                 }
             />
 
-            <div className="d-flex flex-column gap-4">
+            <div className="d-flex flex-column gap-3 gap-md-4">
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="bg-secondary-subtle p-4 border rounded shadow-sm">
+                    <div className="bg-secondary-subtle p-3 p-md-4 border rounded shadow-sm">
                         <div className="row g-3 align-items-end">
-                            <div className="col-12 col-md-3">
+                            <div className="col-12 col-sm-6 col-md-3">
                                 <FloatingLabel
                                     controlId="input_nit"
                                     label="NIT (Sin guión)"
@@ -163,7 +163,7 @@ const FormPage = () => {
                                 </FloatingLabel>
                             </div>
 
-                            <div className="col-12 col-md-3">
+                            <div className="col-12 col-sm-6 col-md-3">
                                 <FloatingLabel
                                     controlId="serie"
                                     label="Nro. Orden Factura"
@@ -188,7 +188,7 @@ const FormPage = () => {
                                 </FloatingLabel>
                             </div>
 
-                            <div className="col-12 col-md-3">
+                            <div className="col-12 col-sm-6 col-md-3">
                                 <Form.Group controlId="input_pdf">
                                     <Form.Label
                                         className="m-1 fw-bold"
@@ -223,7 +223,7 @@ const FormPage = () => {
                                 </Form.Group>
                             </div>
 
-                            <div className="col-12 col-md-3">
+                            <div className="col-12 col-sm-6 col-md-3">
                                 <Form.Group controlId="input_xml">
                                     <Form.Label
                                         className="m-1 fw-bold"
@@ -286,10 +286,12 @@ const FormPage = () => {
                 </Form>
 
                 <div className="w-100">
-                    <div className="row g-3 bg-secondary-subtle rounded pb-3 shadow-sm">
-                        <div className="col-12 col-md-6">
-                            <div className="border rounded bg-light p-3 h-100">
-                                <h5 className="mb-3">Vista Previa PDF</h5>
+                    <div className="row g-3 bg-secondary-subtle rounded p-2 p-md-3 shadow-sm">
+                        <div className="col-12 col-lg-6">
+                            <div className="border rounded bg-light p-2 p-md-3 h-100">
+                                <h5 className="mb-3 fs-6 fs-md-5">
+                                    Vista Previa PDF
+                                </h5>
                                 {pdfUrl ? (
                                     <div>
                                         <p className="small text-muted">
@@ -314,9 +316,11 @@ const FormPage = () => {
                             </div>
                         </div>
 
-                        <div className="col-12 col-md-6">
-                            <div className="border rounded bg-light p-3 h-100">
-                                <h5 className="mb-3">Vista Previa XML</h5>
+                        <div className="col-12 col-lg-6">
+                            <div className="border rounded bg-light p-2 p-md-3 h-100">
+                                <h5 className="mb-3 fs-6 fs-md-5">
+                                    Vista Previa XML
+                                </h5>
                                 {xmlContent ? (
                                     <div>
                                         <p className="small text-muted">

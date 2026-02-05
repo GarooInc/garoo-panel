@@ -1,10 +1,16 @@
 import "./App.css";
+import React from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
+import {
+    Route,
+    BrowserRouter as Router,
+    Routes,
+    useLocation,
+} from "react-router-dom";
 
 import { ApplicationsProvider } from "./config/ApplicationsProvider";
 import { FormProvider } from "./config/FormProvider.jsx";
@@ -40,15 +46,26 @@ function App() {
 
 function AppContent() {
     const location = useLocation();
-    const hideLayoutRoutes = ['/outbound-call-form'];
+    const hideLayoutRoutes = ["/outbound-call-form"];
     const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
+    const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    const closeSidebar = () => {
+        setSidebarOpen(false);
+    };
 
     return (
         <>
-            {!shouldHideLayout && <Header />}
+            {!shouldHideLayout && <Header onToggleSidebar={toggleSidebar} />}
             <div className="app-container">
-                {!shouldHideLayout && <Sidebar />}
-                <main className="content p-5 w-100">
+                {!shouldHideLayout && (
+                    <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+                )}
+                <main className="content p-3 p-md-4 p-lg-5 w-100">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/dashboard" element={<Dashboard />} />
