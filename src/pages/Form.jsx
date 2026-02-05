@@ -150,7 +150,7 @@ const FormPage = () => {
 
     return (
         <div
-            style={{ backgroundColor: "#f1f5f9", minHeight: "100vh" }}
+            style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}
             className="main-wrapper"
         >
             <div className="container-fluid px-4 py-4 main-container-dashboard">
@@ -342,7 +342,7 @@ const FormPage = () => {
                                         <div
                                             className="p-3 rounded-0 mb-3"
                                             style={{
-                                                backgroundColor: "#f8fafc",
+                                                backgroundColor: "#ffffff",
                                                 border: `1px solid ${colors.border}`,
                                             }}
                                         >
@@ -354,7 +354,7 @@ const FormPage = () => {
                                                     <Form.Control
                                                         type="text"
                                                         placeholder="NIT"
-                                                        className="border-light-emphasis bg-white"
+                                                        className="high-contrast-input"
                                                         {...register("nit", {
                                                             required: true,
                                                         })}
@@ -370,7 +370,7 @@ const FormPage = () => {
                                                     <Form.Control
                                                         type="text"
                                                         placeholder="Serie"
-                                                        className="border-light-emphasis bg-white"
+                                                        className="high-contrast-input"
                                                         {...register("serie", {
                                                             required: true,
                                                         })}
@@ -410,7 +410,7 @@ const FormPage = () => {
                                         <div
                                             className="p-3 rounded-0"
                                             style={{
-                                                backgroundColor: "#f8fafc",
+                                                backgroundColor: "#ffffff",
                                                 border: `1px solid ${colors.border}`,
                                             }}
                                         >
@@ -532,9 +532,34 @@ const FormPage = () => {
                 .x-small {
                     font-size: 0.75rem;
                 }
-                .form-control:focus {
+                input.high-contrast-input, 
+                .form-control.high-contrast-input {
+                    color: #000000 !important;
+                    background-color: #ffffff !important;
+                    background: #ffffff !important;
+                    border: 2px solid #94a3b8 !important;
+                    font-size: 1.15rem !important;
+                    font-weight: 700 !important;
+                    height: calc(3.5rem + 2px) !important;
+                    padding: 1.625rem 0.75rem 0.625rem 0.75rem !important;
+                }
+                .high-contrast-input:focus {
                     border-color: #3b82f6 !important;
-                    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.1) !important;
+                    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.2) !important;
+                    background-color: #ffffff !important;
+                    color: #000000 !important;
+                }
+                .form-floating > label {
+                    color: #475569 !important;
+                    font-weight: 500 !important;
+                    opacity: 0.8 !important;
+                }
+                .form-floating > .form-control:focus ~ label,
+                .form-floating > .form-control:not(:placeholder-shown) ~ label {
+                    color: #2563eb !important;
+                    font-weight: 700 !important;
+                    opacity: 1 !important;
+                    transform: scale(0.85) translateY(-0.75rem) translateX(0.15rem) !important;
                 }
                 .card {
                     transition: transform 0.2s ease, box-shadow 0.2s ease;
