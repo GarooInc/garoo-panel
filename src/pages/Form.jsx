@@ -496,17 +496,6 @@ const FormPage = () => {
                                         )}
                                     </button>
                                 </div>
-
-                                <div className="card-footer bg-light border-0 text-center py-3">
-                                    <p
-                                        className="text-muted mb-0"
-                                        style={{ fontSize: "0.75rem" }}
-                                    >
-                                        <i className="bi bi-lock-fill me-1"></i>
-                                        Conexión segura cifrada de extremo a
-                                        extremo
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     </div>
