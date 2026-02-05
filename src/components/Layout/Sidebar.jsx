@@ -44,12 +44,14 @@ const Sidebar = ({ isOpen, onClose }) => {
             path: "/form",
             icon: "bi bi-file-earmark-text",
             label: "Formulario",
+            openInNewTab: true,
         },
         {
             id: "outbound-call-form",
             path: "/outbound-call-form",
             icon: "bi bi-file-earmark-text",
             label: "Formulario de llamadas",
+            openInNewTab: true,
         },
         {
             id: "gallery",
@@ -92,22 +94,42 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <Nav className="flex-column">
                         {menuItems.map((item) => (
                             <Nav.Item key={item.id} className="mb-2">
-                                <Nav.Link
-                                    as={Link}
-                                    to={item.path}
-                                    className={`d-flex align-items-center gap-2 px-3 py-2 rounded ${
-                                        location.pathname === item.path
-                                            ? "bg-primary text-white"
-                                            : "text-dark"
-                                    }`}
-                                    style={{
-                                        textDecoration: "none",
-                                        transition: "all 0.2s ease",
-                                    }}
-                                >
-                                    <i className={item.icon}></i>
-                                    <span>{item.label}</span>
-                                </Nav.Link>
+                                {item.openInNewTab ? (
+                                    <a
+                                        href={item.path}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`nav-link d-flex align-items-center gap-2 px-3 py-2 rounded ${
+                                            location.pathname === item.path
+                                                ? "bg-primary text-white"
+                                                : "text-dark"
+                                        }`}
+                                        style={{
+                                            textDecoration: "none",
+                                            transition: "all 0.2s ease",
+                                        }}
+                                    >
+                                        <i className={item.icon}></i>
+                                        <span>{item.label}</span>
+                                    </a>
+                                ) : (
+                                    <Nav.Link
+                                        as={Link}
+                                        to={item.path}
+                                        className={`d-flex align-items-center gap-2 px-3 py-2 rounded ${
+                                            location.pathname === item.path
+                                                ? "bg-primary text-white"
+                                                : "text-dark"
+                                        }`}
+                                        style={{
+                                            textDecoration: "none",
+                                            transition: "all 0.2s ease",
+                                        }}
+                                    >
+                                        <i className={item.icon}></i>
+                                        <span>{item.label}</span>
+                                    </Nav.Link>
+                                )}
                             </Nav.Item>
                         ))}
                     </Nav>

@@ -1,12 +1,22 @@
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
-import Button_back_RB from "../components/Button_back_RB";
 import RB_Toast from "../components/RB_Toast";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const FormPage = () => {
+    // Definimos una paleta de colores profesional
+    const colors = {
+        primary: "#1e293b", // Slate 800
+        accent: "#3b82f6", // Blue 500
+        border: "#e2e8f0", // Slate 200
+        bgSubtle: "#f8fafc", // Slate 50
+        text: "#0f172a", // Slate 900
+        textMuted: "#64748b", // Slate 500
+        danger: "#ef4444", // Red 500
+        success: "#10b981", // Emerald 500
+    };
+
     const {
         register,
         handleSubmit,
@@ -34,20 +44,25 @@ const FormPage = () => {
         setIsLoading(true);
 
         try {
-            const formData = new FormData();
-            formData.append("nit", data.nit.trim());
-            formData.append("serie", data.serie.trim());
-
             if (!data.pdf?.[0] || !data.xml?.[0]) {
                 throw new Error(
                     "Por favor, complete todos los campos requeridos",
                 );
             }
 
-            formData.append("pdf", data.pdf[0]);
-            formData.append("xml", data.xml[0]);
+            const pdfFile = data.pdf[0];
+            const xmlFile = data.xml[0];
 
-            // Enviar datos al webhook
+            const formData = new FormData();
+            formData.append("nit", data.nit.trim());
+            formData.append("serie", data.serie.trim());
+
+            const pdfBlob = new Blob([pdfFile], { type: "application/pdf" });
+            formData.append("pdf", pdfBlob, pdfFile.name);
+
+            const xmlBlob = new Blob([xmlFile], { type: "text/xml" });
+            formData.append("xml", xmlBlob, xmlFile.name);
+
             const response = await fetch(
                 "https://agentsprod.redtec.ai/webhook/facturas",
                 {
@@ -59,11 +74,24 @@ const FormPage = () => {
                 },
             );
 
-            const responseData = await response.json();
+            let responseData;
+            const contentType = response.headers.get("content-type");
+
+            try {
+                if (contentType && contentType.includes("application/json")) {
+                    responseData = await response.json();
+                } else {
+                    const text = await response.text();
+                    responseData = { message: text };
+                }
+            } catch {
+                responseData = { message: "Respuesta del servidor inválida" };
+            }
 
             if (!response.ok) {
                 throw new Error(
-                    responseData.message || "Error al enviar los datos",
+                    responseData.message ||
+                        `Error del servidor (${response.status}): ${response.statusText}`,
                 );
             }
 
@@ -72,7 +100,6 @@ const FormPage = () => {
             setToastVariant("success");
             setShowToast(true);
         } catch (error) {
-            console.error("Error al enviar datos:", error);
             setToastTitle("Error");
             setToastMessage(
                 error.message || "Ocurrió un error al enviar los datos",
@@ -84,16 +111,8 @@ const FormPage = () => {
         }
     };
 
-    const navigateTo = useNavigate();
-
-    const goToDashboard = () => {
-        navigateTo("/services");
-    };
-
-    // Función para manejar el cambio de archivo PDF
     const handlePdfChange = (e) => {
         const file = e.target.files[0];
-
         if (file && file.type === "application/pdf") {
             const url = URL.createObjectURL(file);
             setPdfUrl(url);
@@ -104,17 +123,25 @@ const FormPage = () => {
         }
     };
 
-    // Función para manejar el cambio de archivo XML
     const handleXmlChange = (e) => {
         const file = e.target.files[0];
-
-        if (file && (file.type === "text/xml" || file.name.endsWith(".xml"))) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setXmlContent(event.target.result);
-                setSelectedXml(file);
-            };
-            reader.readAsText(file);
+        if (file) {
+            const fileName = file.name.toLowerCase();
+            if (
+                fileName.endsWith(".xml") ||
+                file.type === "text/xml" ||
+                file.type === "application/xml"
+            ) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const content = event.target.result;
+                    if (content.trim().startsWith("<")) {
+                        setXmlContent(content);
+                        setSelectedXml(file);
+                    }
+                };
+                reader.readAsText(file, "UTF-8");
+            }
         } else {
             setXmlContent(null);
             setSelectedXml(null);
@@ -122,239 +149,368 @@ const FormPage = () => {
     };
 
     return (
-        <>
-            <Button_back_RB
-                onClick={goToDashboard}
-                className={
-                    "d-none d-md-block position-absolute top-50 start-0 translate-middle-y"
-                }
-            />
+        <div
+            style={{ backgroundColor: "#f1f5f9", minHeight: "100vh" }}
+            className="main-wrapper"
+        >
+            <div className="container-fluid px-4 py-4 main-container-dashboard">
+                {/* Título principal profesional */}
+                <div className="text-start mb-4 ps-1">
+                    <h2
+                        className="fw-bold mb-1 responsive-title"
+                        style={{
+                            color: colors.primary,
+                            letterSpacing: "-0.5px",
+                        }}
+                    >
+                        Gestión Documental de Facturas
+                    </h2>
+                    <p className="text-muted small mb-0">
+                        Portal corporativo para la carga y validación de
+                        documentos tributarios.
+                    </p>
+                </div>
 
-            <div className="d-flex flex-column gap-3 gap-md-4">
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="bg-secondary-subtle p-3 p-md-4 border rounded shadow-sm">
-                        <div className="row g-3 align-items-end">
-                            <div className="col-12 col-sm-6 col-md-3">
-                                <FloatingLabel
-                                    controlId="input_nit"
-                                    label="NIT (Sin guión)"
+                <Form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex-fill-content"
+                >
+                    <div className="row g-4 h-100">
+                        {/* Columna de vistas previas */}
+                        <div className="col-12 col-lg-7 order-2 order-lg-1 h-100-lg">
+                            {/* Card PDF */}
+                            <div className="card shadow border-1 border-danger mb-3 overflow-hidden preview-card-half">
+                                <div
+                                    className="card-header border-0 py-3 bg-white"
+                                    style={{
+                                        borderBottom: `1px solid ${colors.border}`,
+                                    }}
                                 >
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="526349L"
-                                        isInvalid={!!errors.nit}
-                                        {...register("nit", {
-                                            required: "El NIT es requerido",
-                                            pattern: {
-                                                value: /^[0-9A-Za-z]+$/,
-                                                message:
-                                                    "El NIT no debe contener guiones ni caracteres especiales",
-                                            },
-                                            minLength: {
-                                                value: 3,
-                                                message:
-                                                    "El NIT debe tener al menos 3 caracteres",
-                                            },
-                                        })}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.nit?.message}
-                                    </Form.Control.Feedback>
-                                </FloatingLabel>
-                            </div>
-
-                            <div className="col-12 col-sm-6 col-md-3">
-                                <FloatingLabel
-                                    controlId="serie"
-                                    label="Nro. Orden Factura"
-                                >
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="526349L"
-                                        isInvalid={!!errors.serie}
-                                        {...register("serie", {
-                                            required:
-                                                "El número de orden de factura es requerido",
-                                            minLength: {
-                                                value: 2,
-                                                message:
-                                                    "El número de orden de factura debe tener al menos 2 caracteres",
-                                            },
-                                        })}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.serie?.message}
-                                    </Form.Control.Feedback>
-                                </FloatingLabel>
-                            </div>
-
-                            <div className="col-12 col-sm-6 col-md-3">
-                                <Form.Group controlId="input_pdf">
-                                    <Form.Label
-                                        className="m-1 fw-bold"
-                                        style={{ fontSize: "70%" }}
+                                    <h6
+                                        className="mb-0 fw-bold d-flex align-items-center"
+                                        style={{ color: colors.primary }}
                                     >
-                                        Subir factura en PDF
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="file"
-                                        size="md"
-                                        accept=".pdf"
-                                        isInvalid={!!errors.pdf}
-                                        {...register("pdf", {
-                                            required:
-                                                "El archivo PDF es requerido",
-                                            validate: {
-                                                isPdf: (files) =>
-                                                    files[0]?.type ===
-                                                        "application/pdf" ||
-                                                    "El archivo debe ser un PDF válido",
-                                                maxSize: (files) =>
-                                                    files[0]?.size <=
-                                                        5 * 1024 * 1024 ||
-                                                    "El archivo no debe superar los 5MB",
-                                            },
-                                        })}
-                                        onChange={handlePdfChange}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.pdf?.message}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </div>
-
-                            <div className="col-12 col-sm-6 col-md-3">
-                                <Form.Group controlId="input_xml">
-                                    <Form.Label
-                                        className="m-1 fw-bold"
-                                        style={{ fontSize: "70%" }}
-                                    >
-                                        Subir factura en XML
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="file"
-                                        size="md"
-                                        accept=".xml,text/xml"
-                                        isInvalid={!!errors.xml}
-                                        {...register("xml", {
-                                            required:
-                                                "El archivo XML es requerido",
-                                            validate: {
-                                                isXml: (files) =>
-                                                    files[0]?.type ===
-                                                        "text/xml" ||
-                                                    files[0]?.name.endsWith(
-                                                        ".xml",
-                                                    ) ||
-                                                    "El archivo debe ser un XML válido",
-                                                maxSize: (files) =>
-                                                    files[0]?.size <=
-                                                        5 * 1024 * 1024 ||
-                                                    "El archivo no debe superar los 5MB",
-                                            },
-                                        })}
-                                        onChange={handleXmlChange}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.xml?.message}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="d-flex justify-content-end mt-3 mb-3">
-                        <button
-                            type="submit"
-                            className="btn btn-sm btn-success px-4 shadow-sm fw-bold"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <span
-                                        className="spinner-border spinner-border-sm me-2"
-                                        role="status"
-                                        aria-hidden="true"
-                                    ></span>
-                                    Enviando...
-                                </>
-                            ) : (
-                                "Enviar"
-                            )}
-                        </button>
-                    </div>
-                </Form>
-
-                <div className="w-100">
-                    <div className="row g-3 bg-secondary-subtle rounded p-2 p-md-3 shadow-sm">
-                        <div className="col-12 col-lg-6">
-                            <div className="border rounded bg-light p-2 p-md-3 h-100">
-                                <h5 className="mb-3 fs-6 fs-md-5">
-                                    Vista Previa PDF
-                                </h5>
-                                {pdfUrl ? (
-                                    <div>
-                                        <p className="small text-muted">
-                                            {selectedPdf?.name}
-                                        </p>
+                                        <i
+                                            className="bi bi-file-earmark-pdf-fill me-2"
+                                            style={{ color: colors.danger }}
+                                        ></i>
+                                        Visualización de Archivo PDF
+                                    </h6>
+                                </div>
+                                <div className="card-body p-0 flex-grow-1 overflow-auto">
+                                    {pdfUrl ? (
                                         <iframe
                                             src={pdfUrl}
                                             width="100%"
-                                            height="300px"
-                                            title="Vista previa del PDF"
-                                            className="border rounded"
-                                        />
-                                    </div>
-                                ) : (
-                                    <div
-                                        className="text-center text-muted d-flex align-items-center justify-content-center"
-                                        style={{ height: "300px" }}
-                                    >
-                                        <p>Selecciona un archivo PDF</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="col-12 col-lg-6">
-                            <div className="border rounded bg-light p-2 p-md-3 h-100">
-                                <h5 className="mb-3 fs-6 fs-md-5">
-                                    Vista Previa XML
-                                </h5>
-                                {xmlContent ? (
-                                    <div>
-                                        <p className="small text-muted">
-                                            {selectedXml?.name}
-                                        </p>
-                                        <pre
+                                            height="100%"
+                                            title="PDF Preview"
                                             style={{
-                                                height: "300px",
+                                                border: "none",
+                                                minHeight: "200px",
+                                            }}
+                                        />
+                                    ) : (
+                                        <div
+                                            className="d-flex flex-column align-items-center justify-content-center h-100"
+                                            style={{
+                                                backgroundColor:
+                                                    colors.bgSubtle,
+                                            }}
+                                        >
+                                            <i
+                                                className="bi bi-file-earmark-pdf text-light-emphasis mb-2"
+                                                style={{ fontSize: "2.5rem" }}
+                                            ></i>
+                                            <p className="text-muted small">
+                                                No se ha cargado ningún archivo
+                                                PDF
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Card XML */}
+                            <div className="card shadow border-1 border-primary mb-0 overflow-hidden preview-card-half">
+                                <div
+                                    className="card-header border-0 py-3 bg-white"
+                                    style={{
+                                        borderBottom: `1px solid ${colors.border}`,
+                                    }}
+                                >
+                                    <h6
+                                        className="mb-0 fw-bold d-flex align-items-center"
+                                        style={{ color: colors.primary }}
+                                    >
+                                        <i
+                                            className="bi bi-code-slash me-2"
+                                            style={{ color: colors.accent }}
+                                        ></i>
+                                        Estructura de Datos XML
+                                    </h6>
+                                </div>
+
+                                <div className="card-body p-0 flex-grow-1 overflow-auto">
+                                    {xmlContent ? (
+                                        <pre
+                                            className="mb-0"
+                                            style={{
+                                                height: "100%",
                                                 overflow: "auto",
-                                                backgroundColor: "#f8f9fa",
-                                                padding: "10px",
-                                                borderRadius: "4px",
-                                                border: "1px solid #dee2e6",
-                                                whiteSpace: "pre-wrap",
-                                                wordWrap: "break-word",
-                                                fontSize: "12px",
-                                                fontFamily: "monospace",
+                                                backgroundColor: "#1e293b", // Slate 800 for code
+                                                color: "#f8fafc",
+                                                padding: "1.5rem",
+                                                fontSize: "0.8rem",
+                                                fontFamily:
+                                                    "'JetBrains Mono', 'Fira Code', monospace",
+                                                margin: 0,
                                             }}
                                         >
                                             {xmlContent}
                                         </pre>
-                                    </div>
-                                ) : (
-                                    <div
-                                        className="text-center text-muted d-flex align-items-center justify-content-center"
-                                        style={{ height: "300px" }}
+                                    ) : (
+                                        <div
+                                            className="d-flex flex-column align-items-center justify-content-center h-100"
+                                            style={{
+                                                backgroundColor:
+                                                    colors.bgSubtle,
+                                            }}
+                                        >
+                                            <i
+                                                className="bi bi-code-square text-light-emphasis mb-2"
+                                                style={{ fontSize: "2.5rem" }}
+                                            ></i>
+                                            <p className="text-muted small">
+                                                No se ha cargado ningún archivo
+                                                XML
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Columna de Formulario */}
+                        <div className="col-12 col-lg-5 px-xxl-5 px-xl-4 px-lg-3 px-md-5 px-2 order-1 order-lg-2 h-100-lg">
+                            <div
+                                className="card shadow h-100 overflow-hidden"
+                                style={{
+                                    borderColor: "gray",
+                                    border: "1px solid gray",
+                                }}
+                            >
+                                <div
+                                    className="card-header border-0 py-3 bg-white"
+                                    style={{
+                                        borderBottom: `1px solid ${colors.border}`,
+                                    }}
+                                >
+                                    <h6
+                                        className="mb-0 fw-bold d-flex align-items-center"
+                                        style={{ color: colors.primary }}
                                     >
-                                        <p>Selecciona un archivo XML</p>
+                                        <i className="bi bi-pencil-square me-2"></i>
+                                        Formulario de Registro
+                                    </h6>
+                                </div>
+
+                                <div className="card-body p-4 overflow-auto">
+                                    {/* Sección: Identificación */}
+                                    <div className="mb-4">
+                                        <div className="d-flex align-items-center mb-3">
+                                            <div
+                                                style={{
+                                                    width: "4px",
+                                                    height: "16px",
+                                                    backgroundColor:
+                                                        colors.accent,
+                                                    borderRadius: "0",
+                                                    marginRight: "10px",
+                                                }}
+                                            ></div>
+                                            <p
+                                                className="text-uppercase fw-bold mb-0"
+                                                style={{
+                                                    fontSize: "0.7rem",
+                                                    color: colors.primary,
+                                                    letterSpacing: "1px",
+                                                }}
+                                            >
+                                                Información General
+                                            </p>
+                                        </div>
+                                        <div
+                                            className="p-3 rounded-0 mb-3"
+                                            style={{
+                                                backgroundColor: "#f8fafc",
+                                                border: `1px solid ${colors.border}`,
+                                            }}
+                                        >
+                                            <div className="mb-3">
+                                                <FloatingLabel
+                                                    controlId="nit"
+                                                    label="NIT Emisor"
+                                                >
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="NIT"
+                                                        className="border-light-emphasis bg-white"
+                                                        {...register("nit", {
+                                                            required: true,
+                                                        })}
+                                                        isInvalid={!!errors.nit}
+                                                    />
+                                                </FloatingLabel>
+                                            </div>
+                                            <div>
+                                                <FloatingLabel
+                                                    controlId="serie"
+                                                    label="Serie / Número de Orden"
+                                                >
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Serie"
+                                                        className="border-light-emphasis bg-white"
+                                                        {...register("serie", {
+                                                            required: true,
+                                                        })}
+                                                        isInvalid={
+                                                            !!errors.serie
+                                                        }
+                                                    />
+                                                </FloatingLabel>
+                                            </div>
+                                        </div>
                                     </div>
-                                )}
+
+                                    {/* Sección: Carga de Archivos */}
+                                    <div className="mb-4">
+                                        <div className="d-flex align-items-center mb-3">
+                                            <div
+                                                style={{
+                                                    width: "4px",
+                                                    height: "16px",
+                                                    backgroundColor:
+                                                        colors.accent,
+                                                    borderRadius: "0",
+                                                    marginRight: "10px",
+                                                }}
+                                            ></div>
+                                            <p
+                                                className="text-uppercase fw-bold mb-0"
+                                                style={{
+                                                    fontSize: "0.7rem",
+                                                    color: colors.primary,
+                                                    letterSpacing: "1px",
+                                                }}
+                                            >
+                                                Documentación Adjunta
+                                            </p>
+                                        </div>
+                                        <div
+                                            className="p-3 rounded-0"
+                                            style={{
+                                                backgroundColor: "#f8fafc",
+                                                border: `1px solid ${colors.border}`,
+                                            }}
+                                        >
+                                            <div className="mb-3">
+                                                <label className="form-label small fw-bold text-secondary mb-1">
+                                                    Archivo PDF Oficial
+                                                </label>
+                                                <Form.Control
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    {...register("pdf", {
+                                                        required: true,
+                                                    })}
+                                                    onChange={handlePdfChange}
+                                                    isInvalid={!!errors.pdf}
+                                                    className="bg-white"
+                                                    style={{
+                                                        fontSize: "0.9rem",
+                                                    }}
+                                                />
+                                                {selectedPdf && (
+                                                    <div className="mt-1 small text-success">
+                                                        ✓ {selectedPdf.name}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="mb-0">
+                                                <label className="form-label small fw-bold text-secondary mb-1">
+                                                    Archivo XML (Estructura)
+                                                </label>
+                                                <Form.Control
+                                                    type="file"
+                                                    accept=".xml"
+                                                    {...register("xml", {
+                                                        required: true,
+                                                    })}
+                                                    onChange={handleXmlChange}
+                                                    isInvalid={!!errors.xml}
+                                                    className="bg-white"
+                                                    style={{
+                                                        fontSize: "0.9rem",
+                                                    }}
+                                                />
+                                                {selectedXml && (
+                                                    <div className="mt-1 small text-success">
+                                                        ✓ {selectedXml.name}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr
+                                        className="my-4"
+                                        style={{
+                                            opacity: 0.1,
+                                            borderTop: `1px solid ${colors.primary}`,
+                                        }}
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        className="btn w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center transform-active"
+                                        disabled={isLoading}
+                                        style={{
+                                            backgroundColor: colors.primary,
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "0",
+                                            transition: "all 0.2s ease",
+                                        }}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <span className="spinner-border spinner-border-sm me-2" />
+                                                Procesando Información...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="bi bi-shield-check me-2"></i>
+                                                Validar y Enviar Factura
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+
+                                <div className="card-footer bg-light border-0 text-center py-3">
+                                    <p
+                                        className="text-muted mb-0"
+                                        style={{ fontSize: "0.75rem" }}
+                                    >
+                                        <i className="bi bi-lock-fill me-1"></i>
+                                        Conexión segura cifrada de extremo a
+                                        extremo
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Form>
             </div>
 
             <RB_Toast
@@ -363,11 +519,90 @@ const FormPage = () => {
                 toastVariant={toastVariant}
                 toastTitle={toastTitle}
                 toastMessage={toastMessage}
-                position="middle-center"
-                custom_autohide={false}
-                delay={null}
+                position="top-end"
             />
-        </>
+
+            <style>{`
+                .card, .card-header, .card-footer, .form-control, .btn, .rounded, .rounded-1, .rounded-2, .rounded-3, .rounded-4, .rounded-5 {
+                    border-radius: 0 !important;
+                }
+                .transform-active:active {
+                    transform: scale(0.98);
+                }
+                .x-small {
+                    font-size: 0.75rem;
+                }
+                .form-control:focus {
+                    border-color: #3b82f6 !important;
+                    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.1) !important;
+                }
+                .card {
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .card:hover {
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+                }
+                
+                @media (min-width: 992px) {
+                    .main-wrapper {
+                        height: 100vh;
+                        overflow: hidden;
+                    }
+                    .main-container-dashboard {
+                        height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .flex-fill-content {
+                        flex: 1;
+                        overflow: hidden;
+                        padding-bottom: 30px;
+                    }
+                    .h-100-lg {
+                        height: 100% !important;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .preview-card-half {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        min-height: 0;
+                    }
+                    /* Ocultamos scroll de la página pero permitimos interno */
+                    body {
+                        overflow: hidden;
+                    }
+                }
+
+                @media (max-width: 991px) {
+                    .responsive-preview-container {
+                        height: 350px;
+                    }
+                    .main-wrapper {
+                        overflow-y: auto;
+                    }
+                }
+                @media (max-width: 576px) {
+                    .responsive-preview-container {
+                        height: 300px;
+                    }
+                    .responsive-title {
+                        font-size: 1.5rem;
+                    }
+                    .container-fluid {
+                        padding-left: 1rem !important;
+                        padding-right: 1rem !important;
+                    }
+                }
+                @media (min-width: 1400px) {
+                   .container-fluid {
+                       padding-left: 6rem !important;
+                       padding-right: 6rem !important;
+                   }
+                }
+            `}</style>
+        </div>
     );
 };
 

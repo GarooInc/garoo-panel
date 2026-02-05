@@ -46,7 +46,7 @@ function App() {
 
 function AppContent() {
     const location = useLocation();
-    const hideLayoutRoutes = ["/outbound-call-form"];
+    const hideLayoutRoutes = ["/outbound-call-form", "/form"];
     const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
@@ -61,11 +61,18 @@ function AppContent() {
     return (
         <>
             {!shouldHideLayout && <Header onToggleSidebar={toggleSidebar} />}
-            <div className="app-container">
+            <div
+                className="app-container"
+                style={{ paddingTop: shouldHideLayout ? 0 : undefined }}
+            >
                 {!shouldHideLayout && (
                     <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
                 )}
-                <main className="content p-3 p-md-4 p-lg-5 w-100">
+                <main
+                    className={`content w-100 ${
+                        shouldHideLayout ? "p-0" : "p-3 p-md-4 p-lg-5"
+                    }`}
+                >
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/dashboard" element={<Dashboard />} />
