@@ -519,11 +519,11 @@ const FormPage = () => {
                 toastVariant={toastVariant}
                 toastTitle={toastTitle}
                 toastMessage={toastMessage}
-                position="top-end"
+                position="middle-center"
             />
 
             <style>{`
-                .card, .card-header, .card-footer, .form-control, .btn, .rounded, .rounded-1, .rounded-2, .rounded-3, .rounded-4, .rounded-5 {
+                .card, .card-header, .card-footer, .form-control, .btn, .rounded, .rounded-1, .rounded-2, .rounded-3, .rounded-4, .rounded-5, .toast, .toast-header {
                     border-radius: 0 !important;
                 }
                 .transform-active:active {
