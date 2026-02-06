@@ -44,10 +44,16 @@ const FormPage = () => {
         setIsLoading(true);
 
         try {
+            // Validación de campos requeridos
             if (!data.pdf?.[0] || !data.xml?.[0]) {
-                throw new Error(
-                    "Por favor, complete todos los campos requeridos",
+                setToastTitle("Campos Incompletos");
+                setToastMessage(
+                    "Por favor, complete todos los campos requeridos (NIT, Serie, PDF y XML)",
                 );
+                setToastVariant("warning");
+                setShowToast(true);
+                setIsLoading(false);
+                return;
             }
 
             const pdfFile = data.pdf[0];
@@ -63,16 +69,29 @@ const FormPage = () => {
             const xmlBlob = new Blob([xmlFile], { type: "text/xml" });
             formData.append("xml", xmlBlob, xmlFile.name);
 
-            const response = await fetch(
-                "https://agentsprod.redtec.ai/webhook/facturas",
-                {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        Accept: "application/json",
+            let response;
+            try {
+                response = await fetch(
+                    "https://agentsprod.redtec.ai/webhook/facturas",
+                    {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            Accept: "application/json",
+                        },
                     },
-                },
-            );
+                );
+            } catch {
+                // Error de red (sin conexión, timeout, etc.)
+                setToastTitle("Error de Conexión");
+                setToastMessage(
+                    "No se pudo conectar con el servidor. Verifique su conexión a internet e intente nuevamente.",
+                );
+                setToastVariant("danger");
+                setShowToast(true);
+                setIsLoading(false);
+                return;
+            }
 
             let responseData;
             const contentType = response.headers.get("content-type");
@@ -82,27 +101,63 @@ const FormPage = () => {
                     responseData = await response.json();
                 } else {
                     const text = await response.text();
-                    responseData = { message: text };
+                    responseData = {
+                        status: "error",
+                        title: "Error del Servidor",
+                        message: text || "Respuesta del servidor inválida",
+                    };
                 }
             } catch {
-                responseData = { message: "Respuesta del servidor inválida" };
+                responseData = {
+                    status: "error",
+                    title: "Error de Formato",
+                    message: "No se pudo interpretar la respuesta del servidor",
+                };
             }
 
-            if (!response.ok) {
-                throw new Error(
-                    responseData.message ||
-                        `Error del servidor (${response.status}): ${response.statusText}`,
+            // Manejar respuesta según el campo "status" de n8n
+            if (responseData.status === "ok") {
+                // Respuesta exitosa de n8n
+                setToastTitle(responseData.title || "Éxito");
+                setToastMessage(
+                    responseData.message || "Datos enviados correctamente",
                 );
+                setToastVariant("success");
+                setShowToast(true);
+            } else if (responseData.status === "error") {
+                // Respuesta de error de n8n (factura duplicada, etc.)
+                setToastTitle(responseData.title || "Error");
+                setToastMessage(
+                    responseData.message ||
+                        "Ha ocurrido un error al procesar la factura",
+                );
+                setToastVariant("danger");
+                setShowToast(true);
+            } else if (!response.ok) {
+                // Error HTTP (4xx, 5xx) sin estructura de n8n
+                setToastTitle("Error del Servidor");
+                setToastMessage(
+                    responseData.message ||
+                        `Error ${response.status}: ${response.statusText}`,
+                );
+                setToastVariant("danger");
+                setShowToast(true);
+            } else {
+                // Respuesta exitosa pero sin estructura esperada
+                setToastTitle("Enviado");
+                setToastMessage(
+                    responseData.message ||
+                        "La solicitud se procesó correctamente",
+                );
+                setToastVariant("success");
+                setShowToast(true);
             }
-
-            setToastTitle("Éxito");
-            setToastMessage("Datos enviados correctamente");
-            setToastVariant("success");
-            setShowToast(true);
         } catch (error) {
-            setToastTitle("Error");
+            // Cualquier otro error no manejado
+            setToastTitle("Error Inesperado");
             setToastMessage(
-                error.message || "Ocurrió un error al enviar los datos",
+                error.message ||
+                    "Ocurrió un error inesperado al enviar los datos",
             );
             setToastVariant("danger");
             setShowToast(true);
