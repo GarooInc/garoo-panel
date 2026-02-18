@@ -1,41 +1,46 @@
 .sidebar {
-    min-width: 15%;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+    position: sticky;
+    top: var(--header-height);
+    background-color: var(--bg-white);
+    border-right: 1px solid var(--border-color);
     overflow-y: auto;
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
 }
 
 /* Estilos para móviles */
 @media (max-width: 991.98px) {
     .sidebar {
         position: fixed;
-        top: 68px; /* Altura del header */
+        top: 0;
         left: 0;
         bottom: 0;
+        height: 100vh;
         width: 280px;
-        max-width: 80%;
-        z-index: 1040;
+        z-index: 1050;
         transform: translateX(-100%);
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
     }
 
     .sidebar.show {
         transform: translateX(0);
     }
 
-    /* Overlay oscuro cuando el sidebar está abierto */
     .sidebar-overlay {
         position: fixed;
-        top: 68px;
+        top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1039;
+        background-color: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 1040;
         opacity: 0;
         visibility: hidden;
-        transition:
-            opacity 0.3s ease-in-out,
-            visibility 0.3s ease-in-out;
+        transition: all 0.3s ease;
     }
 
     .sidebar-overlay.show {
@@ -47,7 +52,6 @@
 /* Para tablets y desktop */
 @media (min-width: 992px) {
     .sidebar {
-        position: relative;
-        top: 0;
+        transform: none !important;
     }
 }

@@ -7,20 +7,13 @@ import { useEffect } from "react";
 const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
 
-    // Cerrar el sidebar cuando cambie la ruta (en móviles)
     useEffect(() => {
         if (window.innerWidth < 992) {
             onClose?.();
         }
-    }, [location.pathname, onClose]);
+    }, [location.pathname]);
 
     const menuItems = [
-        {
-            id: "home",
-            path: "/",
-            icon: "bi bi-house-door",
-            label: "Inicio",
-        },
         {
             id: "dashboard",
             path: "/dashboard",
@@ -53,88 +46,69 @@ const Sidebar = ({ isOpen, onClose }) => {
             label: "Formulario de llamadas",
             openInNewTab: true,
         },
-        {
-            id: "gallery",
-            path: "/gallery",
-            icon: "bi bi-images",
-            label: "Galería",
-        },
-        {
-            id: "data-agent",
-            path: "/data-agent",
-            icon: "bi bi-database",
-            label: "Data Agent",
-        },
-        {
-            id: "ai-tools",
-            path: "/ai-tools",
-            icon: "bi bi-robot",
-            label: "Herramientas IA",
-        },
-        {
-            id: "bot",
-            path: "/bot",
-            icon: "bi bi-chat-dots",
-            label: "Bot",
-        },
     ];
 
     return (
         <>
-            {/* Overlay para cerrar el sidebar en móviles */}
             <div
                 className={`sidebar-overlay ${isOpen ? "show" : ""}`}
                 onClick={onClose}
             />
 
-            <div
-                className={`bg-light border-end h-100 sidebar ${isOpen ? "show" : ""}`}
-            >
-                <div className="p-3">
-                    <Nav className="flex-column">
-                        {menuItems.map((item) => (
-                            <Nav.Item key={item.id} className="mb-2">
-                                {item.openInNewTab ? (
-                                    <a
-                                        href={item.path}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`nav-link d-flex align-items-center gap-2 px-3 py-2 rounded ${
-                                            location.pathname === item.path
-                                                ? "bg-primary text-white"
-                                                : "text-dark"
-                                        }`}
-                                        style={{
-                                            textDecoration: "none",
-                                            transition: "all 0.2s ease",
-                                        }}
-                                    >
-                                        <i className={item.icon}></i>
-                                        <span>{item.label}</span>
-                                    </a>
-                                ) : (
-                                    <Nav.Link
-                                        as={Link}
-                                        to={item.path}
-                                        className={`d-flex align-items-center gap-2 px-3 py-2 rounded ${
-                                            location.pathname === item.path
-                                                ? "bg-primary text-white"
-                                                : "text-dark"
-                                        }`}
-                                        style={{
-                                            textDecoration: "none",
-                                            transition: "all 0.2s ease",
-                                        }}
-                                    >
-                                        <i className={item.icon}></i>
-                                        <span>{item.label}</span>
-                                    </Nav.Link>
-                                )}
-                            </Nav.Item>
-                        ))}
+            <div className={`sidebar ${isOpen ? "show" : ""}`}>
+                <div className="py-4 px-3">
+                    <Nav className="flex-column gap-1">
+                        {menuItems.map((item) => {
+                            const isActive = location.pathname === item.path;
+
+                            const linkContent = (
+                                <>
+                                    <i className={`${item.icon} fs-5`}></i>
+                                    <span style={{ fontWeight: isActive ? "600" : "400" }}>
+                                        {item.label}
+                                    </span>
+                                </>
+                            );
+
+                            const commonProps = {
+                                className: `nav-link d-flex align-items-center gap-3 px-3 py-2 rounded-3 transition-all ${isActive ? "bg-primary-subtle text-primary" : "text-secondary hover-bg-light"
+                                    }`,
+                                style: {
+                                    fontSize: "0.95rem",
+                                    transition: "all 0.2s ease",
+                                    backgroundColor: isActive ? "var(--primary-light)" : "transparent",
+                                    color: isActive ? "var(--primary-color)" : "var(--text-secondary)",
+                                    borderRadius: "8px",
+                                }
+                            };
+
+                            return (
+                                <Nav.Item key={item.id}>
+                                    {item.openInNewTab ? (
+                                        <a href={item.path} target="_blank" rel="noopener noreferrer" {...commonProps}>
+                                            {linkContent}
+                                        </a>
+                                    ) : (
+                                        <Nav.Link as={Link} to={item.path} {...commonProps}>
+                                            {linkContent}
+                                        </Nav.Link>
+                                    )}
+                                </Nav.Item>
+                            );
+                        })}
                     </Nav>
                 </div>
             </div>
+
+            <style>{`
+                .hover-bg-light:hover {
+                    background-color: #f1f5f9 !important;
+                    color: var(--text-main) !important;
+                }
+                .transition-all {
+                    transition: all 0.2s ease;
+                }
+            `}</style>
         </>
     );
 };

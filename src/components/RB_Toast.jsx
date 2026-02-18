@@ -7,99 +7,93 @@ const RB_Toast = ({
     toastVariant,
     toastTitle,
     toastMessage,
-    position,
+    position = "top-center",
     custom_autohide,
     delay,
 }) => {
-    // Definimos los temas para asegurar consistencia total
     const themes = {
         success: {
-            color: "#10b981", // Esmeralda
+            bg: "#ecfdf5",
+            color: "#059669",
             icon: "bi-check-circle-fill",
         },
         danger: {
-            color: "#ef4444", // Rojo
+            bg: "#fef2f2",
+            color: "#dc2626",
             icon: "bi-exclamation-triangle-fill",
         },
         warning: {
-            color: "#f59e0b", // Ámbar
+            bg: "#fffbeb",
+            color: "#d97706",
             icon: "bi-exclamation-circle-fill",
         },
         info: {
-            color: "#3b82f6", // Azul
+            bg: "#eff6ff",
+            color: "#2563eb",
             icon: "bi-info-circle-fill",
         },
     };
 
-    // Obtenemos el tema actual, por defecto usamos info si no existe el variant
     const theme = themes[toastVariant] || themes.info;
 
     return (
         <ToastContainer
             position={position}
-            className="p-0"
-            style={{
-                zIndex: 10000,
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "auto",
-            }}
+            className="p-4"
+            style={{ zIndex: 10000, position: "fixed" }}
         >
             <Toast
                 show={showToast}
                 onClose={onClose}
                 autohide={custom_autohide ?? true}
-                delay={delay ?? 5000}
-                className="shadow border-0 overflow-hidden"
+                delay={delay ?? 4000}
+                className="border-0 shadow-lg rounded-4 overflow-hidden"
                 style={{
-                    minWidth: "480px",
+                    minWidth: "350px",
                     maxWidth: "90vw",
-                    borderRadius: "0",
-                    border: `1px solid ${theme.color}`,
-                    backgroundColor: "white",
+                    background: "rgba(255, 255, 255, 0.95)",
+                    backdropFilter: "blur(8px)",
                 }}
             >
-                <div
-                    className="d-flex align-items-stretch"
-                    style={{ minHeight: "130px" }}
-                >
-                    {/* Barra lateral de color con ícono grande */}
+                <div className="d-flex align-items-center p-3">
                     <div
-                        className="d-flex align-items-center justify-content-center px-4"
+                        className="rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0"
                         style={{
-                            backgroundColor: theme.color,
-                            color: "white",
-                            fontSize: "3rem",
+                            width: "40px",
+                            height: "40px",
+                            backgroundColor: theme.bg,
+                            color: theme.color,
+                            fontSize: "1.25rem"
                         }}
                     >
                         <i className={`bi ${theme.icon}`}></i>
                     </div>
 
-                    <div className="flex-grow-1 p-4 d-flex flex-column justify-content-center">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                            <h3
-                                className="fw-bold mb-0"
-                                style={{
-                                    color: "#1e293b",
-                                    letterSpacing: "-0.5px",
-                                }}
-                            >
-                                {toastTitle}
-                            </h3>
-                            <button
-                                type="button"
-                                className="btn-close ms-2"
-                                onClick={onClose}
-                                style={{ fontSize: "0.9rem" }}
-                            ></button>
-                        </div>
-                        <p className="mb-0 text-muted fs-5 lh-sm">
+                    <div className="flex-grow-1 pr-3">
+                        <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: "0.95rem" }}>
+                            {toastTitle}
+                        </h6>
+                        <p className="mb-0 text-secondary small" style={{ lineHeight: "1.4" }}>
                             {toastMessage}
                         </p>
                     </div>
+
+                    <button
+                        type="button"
+                        className="btn-close ms-2 smaller"
+                        onClick={onClose}
+                        aria-label="Close"
+                    ></button>
                 </div>
+                <div
+                    className="toast-progress-bar"
+                    style={{
+                        height: "3px",
+                        width: "100%",
+                        backgroundColor: theme.color,
+                        opacity: 0.3
+                    }}
+                ></div>
             </Toast>
         </ToastContainer>
     );

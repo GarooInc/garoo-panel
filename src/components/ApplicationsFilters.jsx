@@ -1,4 +1,4 @@
-import { Button, Form, InputGroup, Row, Col } from 'react-bootstrap';
+import React from 'react';
 
 const ApplicationsFilters = ({
     searchTerm,
@@ -11,140 +11,108 @@ const ApplicationsFilters = ({
     setPositionFilter,
     salaryFilter,
     setSalaryFilter,
-    dateFilter,
-    setDateFilter,
     nationalities,
     positions,
     handleResetFilters,
     filteredWorkers
 }) => {
     return (
-        <div className="mb-4 p-3 bg-light rounded border">
-            {/* Header con controles principales */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <Button
-                    variant="outline-dark"
-                    size="sm"
-                    onClick={handleResetFilters}
-                    className="d-flex align-items-center gap-2 border-0 text-muted"
-                    style={{ backgroundColor: 'transparent' }}
-                >
-                    <i className="bi bi-arrow-clockwise"></i>
-                    Resetear filtros
-                </Button>
+        <div className="mb-4">
+            <div className="d-flex align-items-center justify-content-between mb-4">
+                <div className="d-flex align-items-center gap-3 flex-grow-1" style={{ maxWidth: '400px' }}>
+                    <div className="position-relative w-100">
+                        <i className="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                        <input
+                            type="text"
+                            className="form-control ps-5 border-0 bg-light rounded-3 py-2"
+                            placeholder="Buscar por nombre..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{ fontSize: '0.9rem' }}
+                        />
+                    </div>
+                </div>
 
-                <div className="d-flex align-items-center gap-2">
-                    <small className="text-muted fw-medium">
-                        {filteredWorkers.length} registro{filteredWorkers.length !== 1 ? 's' : ''} encontrado{filteredWorkers.length !== 1 ? 's' : ''}
-                    </small>
+                <button
+                    onClick={handleResetFilters}
+                    className="btn btn-link text-secondary text-decoration-none small d-flex align-items-center gap-2 shadow-none"
+                    style={{ fontSize: '0.85rem' }}
+                >
+                    <i className="bi bi-arrow-counterclockwise"></i>
+                    Limpiar Filtros
+                </button>
+            </div>
+
+            <div className="row g-3">
+                <div className="col-12 col-md-6 col-lg-2">
+                    <label className="form-label smaller text-secondary fw-bold text-uppercase mb-1">Ordenar</label>
+                    <select
+                        className="form-select border-0 bg-light rounded-3 py-2 small"
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
+                    >
+                        <option value="">Orden Alfabético</option>
+                        <option value="1">A → Z</option>
+                        <option value="1-desc">Z → A</option>
+                    </select>
+                </div>
+
+                <div className="col-12 col-md-6 col-lg-2">
+                    <label className="form-label smaller text-secondary fw-bold text-uppercase mb-1">Salario</label>
+                    <select
+                        className="form-select border-0 bg-light rounded-3 py-2 small"
+                        value={salaryFilter}
+                        onChange={(e) => setSalaryFilter(e.target.value)}
+                    >
+                        <option value="">Rango Salarial</option>
+                        <option value="desc">Mayor a Menor</option>
+                        <option value="asc">Menor a Mayor</option>
+                    </select>
+                </div>
+
+                <div className="col-12 col-md-6 col-lg-3">
+                    <label className="form-label smaller text-secondary fw-bold text-uppercase mb-1">Puesto</label>
+                    <select
+                        className="form-select border-0 bg-light rounded-3 py-2 small"
+                        value={positionFilter}
+                        onChange={(e) => setPositionFilter(e.target.value)}
+                    >
+                        <option value="">Todos los Puestos</option>
+                        {positions.map(p => <option key={p} value={p}>{p}</option>)}
+                    </select>
+                </div>
+
+                <div className="col-12 col-md-6 col-lg-3">
+                    <label className="form-label smaller text-secondary fw-bold text-uppercase mb-1">Nacionalidad</label>
+                    <select
+                        className="form-select border-0 bg-light rounded-3 py-2 small"
+                        value={nationalityFilter}
+                        onChange={(e) => setNationalityFilter(e.target.value)}
+                    >
+                        <option value="">Todas las Naciones</option>
+                        {nationalities.map(n => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                </div>
+
+                <div className="col-12 col-md-12 col-lg-2 d-flex align-items-end justify-content-lg-end">
+                    <div className="text-secondary small fw-medium mb-2">
+                        {filteredWorkers.length} resultados
+                    </div>
                 </div>
             </div>
 
-            {/* Filtros en grid responsivo */}
-            <Row className="g-3 mb-3">
-                <Col xs={12} sm={6} md={4} lg={2}>
-                    <Form.Label className="small fw-medium text-dark mb-1">Nombre</Form.Label>
-                    <Form.Select
-                        size="sm"
-                        value={sortOption}
-                        onChange={(e) => setSortOption(e.target.value)}
-                        className="border-0 bg-white shadow-sm text-muted"
-                    >
-                        <option value="">Sin ordenar</option>
-                        <option value="1">A-Z</option>
-                        <option value="1-desc">Z-A</option>
-                    </Form.Select>
-                </Col>
-
-                <Col xs={12} sm={6} md={4} lg={2}>
-                    <Form.Label className="small fw-medium text-dark mb-1">Salario</Form.Label>
-                    <Form.Select
-                        size="sm"
-                        value={salaryFilter}
-                        onChange={(e) => setSalaryFilter(e.target.value)}
-                        className="border-0 bg-white shadow-sm text-muted"
-                    >
-                        <option value="">Sin ordenar</option>
-                        <option value="desc">Mayor a Menor</option>
-                        <option value="asc">Menor a Mayor</option>
-                    </Form.Select>
-                </Col>
-
-                <Col xs={12} sm={6} md={4} lg={2}>
-                    <Form.Label className="small fw-medium text-dark mb-1">Fecha</Form.Label>
-                    <Form.Select
-                        size="sm"
-                        value={dateFilter}
-                        onChange={(e) => setDateFilter(e.target.value)}
-                        className="border-0 bg-white shadow-sm text-muted"
-                    >
-                        <option value="">Sin ordenar</option>
-                        <option value="desc">Más reciente</option>
-                        <option value="asc">Más antigua</option>
-                    </Form.Select>
-                </Col>
-
-                <Col xs={12} sm={6} md={4} lg={3}>
-                    <Form.Label className="small fw-medium text-dark mb-1">Nacionalidad</Form.Label>
-                    <Form.Select
-                        size="sm"
-                        value={nationalityFilter}
-                        onChange={(e) => setNationalityFilter(e.target.value)}
-                        className="border-0 bg-white shadow-sm text-muted"
-                    >
-                        <option value="">Todas</option>
-                        {nationalities.map(nationality => (
-                            <option key={nationality} value={nationality}>
-                                {nationality}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </Col>
-
-                <Col xs={12} sm={6} md={4} lg={3}>
-                    <Form.Label className="small fw-medium text-dark mb-1">Puesto</Form.Label>
-                    <Form.Select
-                        size="sm"
-                        value={positionFilter}
-                        onChange={(e) => setPositionFilter(e.target.value)}
-                        className="border-0 bg-white shadow-sm text-muted"
-                    >
-                        <option value="">Todos</option>
-                        {positions.map(position => (
-                            <option key={position} value={position}>
-                                {position}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </Col>
-            </Row>
-
-            {/* Barra de búsqueda */}
-            <div className="mb-2">
-                <InputGroup className="shadow-sm">
-                    <InputGroup.Text className="bg-white border-0 text-muted">
-                        <i className="bi bi-search"></i>
-                    </InputGroup.Text>
-                    <Form.Control
-                        placeholder="Buscar trabajadores..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="border-0 bg-white"
-                        style={{ boxShadow: 'none' }}
-                    />
-                    {searchTerm && (
-                        <Button
-                            variant="link"
-                            onClick={() => setSearchTerm('')}
-                            className="border-0 text-muted"
-                            style={{ backgroundColor: 'white' }}
-                        >
-                            <i className="bi bi-x"></i>
-                        </Button>
-                    )}
-                </InputGroup>
-
-            </div>
+            <style>{`
+                .smaller {
+                    font-size: 0.65rem;
+                    letter-spacing: 0.5px;
+                }
+                .form-select, .form-control {
+                    box-shadow: none !important;
+                }
+                .form-select:focus, .form-control:focus {
+                    background-color: #f1f5f9 !important;
+                }
+            `}</style>
         </div>
     );
 };

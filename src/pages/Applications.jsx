@@ -35,7 +35,6 @@ const Applications = () => {
    const [showModal, setShowModal] = useState(false);
    const [selectedWorker, setSelectedWorker] = useState(null);
 
-   // Event handlers with useCallback for performance
    const handleViewDetails = useCallback((worker) => {
       setSelectedWorker(worker);
       setShowModal(true);
@@ -56,73 +55,59 @@ const Applications = () => {
       }
    }, []);
 
-   const navigateTo = useNavigate();
-
-   const goToDashboard = () => {
-      navigateTo('/services');
-   };
-
    return (
-      <div className="bg-light min-vh-100">
-         <Card className="border-0 bg-white">
-            <Card.Body className="p-1">
-               {/* Header simple */}
-               <div className="d-flex align-items-center mb-4 pb-3 border-bottom border-light">
-                  <Button_back_RB onClick={goToDashboard} className="me-3" />
-                  <h2 className="text-dark mb-0 fw-light">RocknRolla Jobs</h2>
-               </div>
+      <div className="container-fluid p-0">
+         <div className="mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+               <h2 className="fw-bold mb-1" style={{ letterSpacing: "-0.5px" }}>Gestión de Aplicaciones</h2>
+               <p className="text-secondary small mb-0">Administra y filtra los aplicantes para las vacantes disponibles.</p>
+            </div>
+            {error && (
+               <Alert variant="danger" className="m-0 py-2 border-0 shadow-sm small">
+                  {error.message}
+               </Alert>
+            )}
+         </div>
 
-               <div>
-                  {error && (
-                     <Alert variant="danger" className="mt-3">
-                        <Alert.Heading>Error</Alert.Heading>
-                        <p>{error.message}</p>
-                     </Alert>
-                  )}
+         <div className="bg-white rounded-4 border shadow-sm overflow-hidden min-vh-75">
+            <Tabs
+               defaultActiveKey="workers"
+               id="applications-tabs"
+               className="px-3 pt-3 border-bottom bg-light bg-opacity-50"
+               style={{ borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}
+            >
+               <Tab
+                  eventKey="workers"
+                  title={<div className="d-flex align-items-center gap-2 px-2 py-1"><i className="bi bi-person-lines-fill"></i><span>Candidatos</span></div>}
+               >
+                  <div className="p-3 p-md-4">
+                     {loading ? (
+                        <div className="d-flex flex-column justify-content-center align-items-center py-5">
+                           <Spinner animation="border" variant="primary" className="mb-3" />
+                           <p className="text-secondary fw-semibold">Cargando base de datos...</p>
+                        </div>
+                     ) : (
+                        <>
+                           <ApplicationsFilters
+                              searchTerm={searchTerm}
+                              setSearchTerm={setSearchTerm}
+                              sortOption={sortOption}
+                              setSortOption={setSortOption}
+                              nationalityFilter={nationalityFilter}
+                              setNationalityFilter={setNationalityFilter}
+                              positionFilter={positionFilter}
+                              setPositionFilter={setPositionFilter}
+                              salaryFilter={salaryFilter}
+                              setSalaryFilter={setSalaryFilter}
+                              dateFilter={dateFilter}
+                              setDateFilter={setDateFilter}
+                              nationalities={nationalities}
+                              positions={positions}
+                              handleResetFilters={handleResetFilters}
+                              filteredWorkers={filteredWorkers}
+                           />
 
-                  <Tabs
-                     defaultActiveKey="workers"
-                     transition={false}
-                     id="workers-tabs"
-                     className="mb-4 border-0"
-                     variant="pills"
-                     style={{
-                        '--bs-nav-pills-link-active-bg': '#212529',
-                        '--bs-nav-link-padding-x': '0.75rem',
-                        '--bs-nav-link-padding-y': '0.375rem'
-                     }}
-                  >
-                     <Tab eventKey="workers" title={<span className="small">Aplicaciones</span>} className="text-muted">
-                        {loading ? (
-                           <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '300px' }}>
-                              <div className="text-center">
-                                 <Spinner animation="border" role="status" className="mb-3">
-                                    <span className="visually-hidden">Cargando...</span>
-                                 </Spinner>
-                                 <p className="text-muted">Cargando aplicaciones...</p>
-                              </div>
-                           </div>
-                        ) : (
-                           <>
-                              <ApplicationsFilters
-                                 searchTerm={searchTerm}
-                                 setSearchTerm={setSearchTerm}
-                                 sortOption={sortOption}
-                                 setSortOption={setSortOption}
-                                 nationalityFilter={nationalityFilter}
-                                 setNationalityFilter={setNationalityFilter}
-                                 positionFilter={positionFilter}
-                                 setPositionFilter={setPositionFilter}
-                                 salaryFilter={salaryFilter}
-                                 setSalaryFilter={setSalaryFilter}
-                                 dateFilter={dateFilter}
-                                 setDateFilter={setDateFilter}
-                                 nationalities={nationalities}
-                                 positions={positions}
-                                 handleResetFilters={handleResetFilters}
-                                 filteredWorkers={filteredWorkers}
-                              />
-
+                           <div className="mt-4">
                               <ClientSidePagination
                                  data={filteredWorkers}
                                  itemsPerPage={10}
@@ -136,26 +121,31 @@ const Applications = () => {
                                     />
                                  )}
                               />
-                           </>
-                        )}
-                     </Tab>
-
-                     <Tab eventKey="response" title={<span className="small">Datos</span>} className="text-muted">
-                        <div className="mt-4">
-                           <h5 className="text-dark fw-light mb-3">Respuesta del servidor</h5>
-                           <div className="bg-light border rounded p-3 overflow-auto" style={{ maxHeight: '400px' }}>
-                              <pre className="mb-0 small text-muted">
-                                 {JSON.stringify(data, null, 2)}
-                              </pre>
                            </div>
-                        </div>
-                     </Tab>
-                  </Tabs>
-               </div>
-            </Card.Body>
-         </Card>
+                        </>
+                     )}
+                  </div>
+               </Tab>
 
-         {/* Modal de detalles del trabajador */}
+               <Tab
+                  eventKey="response"
+                  title={<div className="d-flex align-items-center gap-2 px-2 py-1"><i className="bi bi-code-square"></i><span>API Data</span></div>}
+               >
+                  <div className="p-4">
+                     <div className="d-flex align-items-center justify-content-between mb-3">
+                        <h6 className="fw-bold mb-0">Raw Server JSON</h6>
+                        <span className="badge bg-light text-dark border">{data?.length || 0} objetos</span>
+                     </div>
+                     <div className="rounded-3 bg-dark p-3 overflow-auto" style={{ maxHeight: '500px' }}>
+                        <pre className="mb-0 small text-info" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem' }}>
+                           {JSON.stringify(data, null, 2)}
+                        </pre>
+                     </div>
+                  </div>
+               </Tab>
+            </Tabs>
+         </div>
+
          {selectedWorker && (
             <WorkerModal
                show={showModal}
@@ -163,6 +153,30 @@ const Applications = () => {
                workerData={selectedWorker}
             />
          )}
+
+         <style>{`
+            .nav-tabs .nav-link {
+                border: none;
+                color: var(--text-secondary);
+                font-weight: 500;
+                font-size: 0.9rem;
+                padding: 12px 20px;
+                border-bottom: 2px solid transparent;
+                transition: all 0.2s ease;
+            }
+            .nav-tabs .nav-link:hover {
+                color: var(--text-main);
+                background-color: transparent;
+            }
+            .nav-tabs .nav-link.active {
+                color: var(--primary-color) !important;
+                background-color: transparent !important;
+                border-bottom: 2px solid var(--primary-color) !important;
+            }
+            .min-vh-75 {
+                min-height: 75vh;
+            }
+         `}</style>
       </div>
    );
 };

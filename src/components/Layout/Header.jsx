@@ -2,36 +2,50 @@ import garooLogo from "../../assets/img/garoo-logo.png";
 
 const Header = ({ onToggleSidebar }) => {
     return (
-        <header className="border-bottom py-2 px-3 px-md-4 d-flex align-items-center gap-2 gap-md-3 bg-light fixed-top">
+        <header
+            className="fixed-top d-flex align-items-center gap-3 px-3 px-md-4"
+            style={{
+                height: "var(--header-height)",
+                backgroundColor: "var(--bg-white)",
+                borderBottom: "1px solid var(--border-color)",
+                zIndex: 1100,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.02)"
+            }}
+        >
             {/* Botón hamburguesa para móviles */}
             <button
-                className="btn btn-link d-lg-none p-0 text-dark"
+                className="btn btn-link d-lg-none p-0 text-slate-800"
                 onClick={onToggleSidebar}
-                style={{ fontSize: "1.5rem" }}
+                style={{ fontSize: "1.5rem", color: "#1e293b" }}
                 aria-label="Toggle sidebar"
             >
                 <i className="bi bi-list"></i>
             </button>
 
-            <div>
+            <div className="d-flex align-items-center gap-2">
                 <img
                     src={garooLogo}
                     alt="Logo de Garoo Servicios"
-                    className="img-fluid rounded-circle"
-                    width="50"
-                    height="50"
-                    style={{ width: "50px", height: "50px" }}
+                    className="rounded-circle shadow-sm"
+                    width="42"
+                    height="42"
+                    style={{ objectFit: "cover" }}
                 />
-            </div>
-
-            <div className="d-flex flex-column">
-                <b className="fs-4 fs-md-3 fs-lg-2">Garoo Servicios</b>
+                <span
+                    className="fw-bold d-none d-sm-block"
+                    style={{ fontSize: "1.25rem", color: "var(--text-main)", letterSpacing: "-0.5px" }}
+                >
+                    Garoo Servicios
+                </span>
             </div>
 
             <div className="ms-auto d-none d-md-block">
-                <span className="text-muted small">
-                    Bienvenido a Garoo Servicios
-                </span>
+                <div
+                    className="px-3 py-1 rounded-pill bg-light border"
+                    style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}
+                >
+                    Portal de Administración
+                </div>
             </div>
         </header>
     );

@@ -16,10 +16,12 @@ const ApplicationsTable = ({
     if (filteredWorkers.length === 0) {
         return (
             <div className="text-center py-5">
-                <i className="bi bi-inbox display-4 display-md-3 display-lg-2 display-xl-1 text-muted"></i>
-                <h4 className="text-muted mt-3 fs-5 fs-md-4 fs-lg-3">No se encontraron aplicaciones</h4>
-                <p className="text-muted fs-6 fs-md-5">
-                    {searchTerm ? 'Intenta con otros términos de búsqueda' : 'No hay aplicaciones disponibles en este momento'}
+                <div className="bg-light d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style={{ width: '80px', height: '80px' }}>
+                    <i className="bi bi-person-x fs-1 text-secondary"></i>
+                </div>
+                <h4 className="fw-bold text-dark">No se encontraron candidatos</h4>
+                <p className="text-secondary mx-auto" style={{ maxWidth: '300px' }}>
+                    {searchTerm ? `No hay resultados para "${searchTerm}"` : 'Aún no se han recibido aplicaciones para esta vacante.'}
                 </p>
             </div>
         );
@@ -27,160 +29,189 @@ const ApplicationsTable = ({
 
     return (
         <>
-            {/* Vista de tabla para pantallas medianas y grandes */}
-            <div className="table-responsive d-none d-md-block shadow-sm rounded">
-                <Table
-                    hover
-                    className="mb-0 fs-6 fs-md-5 fs-lg-6 fs-xl-5 bg-white table-sm"
-                    style={{
-                        '--bs-table-cell-padding-y': '0.25rem',
-                        '--bs-table-cell-padding-x': '0.5rem'
-                    }}
-                >
-                    <thead className="table-dark">
-                        <tr className="fs-6 fs-lg-5" style={{ height: '35px' }}>
-                            <th className="text-center small fw-medium border-0 p-1">#</th>
-                            <th className="small fw-medium border-0 p-1">Nombre Completo</th>
-                            <th className="d-none d-lg-table-cell small fw-medium border-0 p-1">Puesto</th>
-                            <th className="d-none d-xl-table-cell small fw-medium border-0 p-1">Nacionalidad</th>
-                            <th className="d-none d-lg-table-cell small fw-medium border-0 p-1">Salario</th>
-                            <th className="d-none d-xl-table-cell small fw-medium border-0 p-1">Fecha</th>
-                            <th className="text-center small fw-medium border-0 p-1">Acciones</th>
+            <div className="table-responsive d-none d-md-block">
+                <table className="table align-middle custom-table">
+                    <thead>
+                        <tr>
+                            <th className="ps-4" style={{ width: '30%' }}>Candidato</th>
+                            <th style={{ width: '35%' }}>Puesto</th>
+                            <th className="text-center" style={{ width: '15%' }}>Nacionalidad</th>
+                            <th className="text-end" style={{ width: '10%' }}>Expectativa</th>
+                            <th className="text-center" style={{ width: '10%' }}>Acciones</th>
                         </tr>
                     </thead>
-
-                    <tbody className="fs-6 fs-lg-5">
+                    <tbody>
                         {filteredWorkers.map((worker, index) => {
                             const fullName = getFullName(worker);
                             const position = getPosition(worker);
                             const nationality = getNationality(worker);
                             const salaryExpectation = getSalaryExpectation(worker);
-                            const applicationDate = getApplicationDate(worker);
+                            const date = getApplicationDate(worker);
 
                             return (
-                                <tr key={worker.id || index} className="align-middle border-0" style={{ borderBottom: '1px solid #f1f5f9', height: '38px' }}>
-                                    <td className="text-center fw-medium small text-muted p-1">{index + 1}</td>
-                                    <td className="small p-1">
-                                        <div style={{ lineHeight: '1.2' }}>
-                                            <strong className="text-dark" style={{ fontSize: '0.8rem' }}>{fullName || 'N/A'}</strong>
-                                            <div className="d-lg-none small text-muted">
-                                                <i className="bi bi-briefcase me-1"></i>
-                                                {position || 'N/A'}
+                                <tr key={worker.id || index}>
+                                    <td className="ps-4 py-3">
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div
+                                                className="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                                                style={{ width: '40px', height: '40px', fontSize: '0.9rem', backgroundColor: 'var(--primary-light)' }}
+                                            >
+                                                {fullName ? fullName.charAt(0).toUpperCase() : '?'}
+                                            </div>
+                                            <div className="text-truncate">
+                                                <div className="fw-bold text-dark mb-0 line-clamp-1" style={{ fontSize: '0.95rem' }} title={fullName}>
+                                                    {fullName || 'N/A'}
+                                                </div>
+                                                <div className="text-secondary smaller" style={{ whiteSpace: 'nowrap' }}>
+                                                    <i className="bi bi-calendar3 me-1"></i>
+                                                    {date}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="d-none d-lg-table-cell small text-muted p-1">{position || 'N/A'}</td>
-                                    <td className="d-none d-xl-table-cell small text-muted p-1">{nationality || 'N/A'}</td>
-                                    <td className="d-none d-lg-table-cell fw-medium small text-dark p-1">
-                                        {salaryExpectation ? `Q${Number(salaryExpectation).toLocaleString()}` : 'Q N/A'}
+                                    <td>
+                                        <div className="text-truncate" style={{ maxWidth: '300px' }}>
+                                            <span
+                                                className="badge bg-light text-dark border fw-normal py-1 px-2 text-truncate d-inline-block mw-100"
+                                                title={position}
+                                            >
+                                                {position || 'No definido'}
+                                            </span>
+                                        </div>
                                     </td>
-                                    <td className="d-none d-xl-table-cell small text-muted p-1">{applicationDate || 'N/A'}</td>
-                                    <td className="text-center p-1">
-                                        <div className="d-flex gap-1 justify-content-center">
-                                            <Button
-                                                variant="dark"
-                                                size="sm"
-                                                title="Ver detalles"
+                                    <td className="text-center text-secondary small">{nationality || 'N/A'}</td>
+                                    <td className="text-end fw-bold text-dark" style={{ whiteSpace: 'nowrap' }}>
+                                        {salaryExpectation ? `Q${Number(salaryExpectation).toLocaleString()}` : '—'}
+                                    </td>
+                                    <td>
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            <button
+                                                className="btn btn-icon-light"
                                                 onClick={() => handleViewDetails(worker)}
-                                                className="px-1 py-0"
-                                                style={{ fontSize: '0.7rem', lineHeight: '1', minHeight: '24px', minWidth: '28px' }}
+                                                title="Ver Detalles"
                                             >
                                                 <i className="bi bi-eye"></i>
-                                            </Button>
-                                            <Button
-                                                variant="dark"
-                                                size="sm"
-                                                title="Descargar PDF"
+                                            </button>
+                                            <button
+                                                className="btn btn-icon-light"
                                                 onClick={() => handlePDFGeneration(worker)}
-                                                className="px-1 py-0"
-                                                style={{ fontSize: '0.7rem', lineHeight: '1', minHeight: '24px', minWidth: '28px' }}
+                                                title="Descargar PDF"
                                             >
                                                 <i className="bi bi-file-earmark-pdf"></i>
-                                            </Button>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
                             );
                         })}
                     </tbody>
-                </Table>
+                </table>
             </div>
 
-            {/* Vista de tarjetas para móviles */}
-            <div className="d-md-none">
+            <div className="d-md-none d-flex flex-column gap-3">
                 {filteredWorkers.map((worker, index) => {
-                    const fullName = getFullName(worker);
+                    const fullName = getFullName(worker) || '';
+                    const salary = getSalaryExpectation(worker);
                     const position = getPosition(worker);
-                    const nationality = getNationality(worker);
-                    const salaryExpectation = getSalaryExpectation(worker);
-                    const applicationDate = getApplicationDate(worker);
+                    const date = getApplicationDate(worker);
 
                     return (
-                        <div key={worker.id || index} className="card mb-3 border-0 shadow-sm bg-white">
-                            <div className="card-body p-4">
-                                <div className="d-flex justify-content-between align-items-start mb-3">
-                                    <div className="flex-grow-1">
-                                        <h6 className="card-title mb-1 fw-medium text-dark fs-6">
-                                            <span className="badge bg-light text-muted me-2 fs-6 fw-normal">#{index + 1}</span>
-                                            {fullName || 'N/A'}
-                                        </h6>
-                                        <p className="card-text mb-0 small text-muted">
-                                            <i className="bi bi-briefcase me-1"></i>
-                                            {position || 'N/A'}
-                                        </p>
+                        <div key={worker.id || index} className="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                            <div className="d-flex align-items-center justify-content-between mb-3">
+                                <div className="d-flex align-items-center gap-3">
+                                    <div className="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style={{ width: '40px', height: '40px', backgroundColor: 'var(--primary-light)' }}>
+                                        {fullName ? fullName.charAt(0).toUpperCase() : '?'}
                                     </div>
-                                    <div className="d-flex gap-1 flex-shrink-0">
-                                        <Button
-                                            variant="dark"
-                                            size="sm"
-                                            title="Ver detalles"
-                                            onClick={() => handleViewDetails(worker)}
-                                            className="px-2 py-1"
-                                        >
-                                            <i className="bi bi-eye"></i>
-                                        </Button>
-                                        <Button
-                                            variant="dark"
-                                            size="sm"
-                                            title="Descargar PDF"
-                                            onClick={() => handlePDFGeneration(worker)}
-                                            className="px-2 py-1"
-                                        >
-                                            <i className="bi bi-file-earmark-pdf"></i>
-                                        </Button>
-                                    </div>
+                                    <h6 className="fw-bold mb-0 text-truncate" style={{ maxWidth: '150px' }}>{fullName || 'N/A'}</h6>
                                 </div>
-
-                                <div className="row g-3 small">
-                                    <div className="col-6">
-                                        <div className="text-muted mb-1 fw-medium">
-                                            <i className="bi bi-flag me-1"></i>
-                                            Nacionalidad
-                                        </div>
-                                        <div className="text-dark">{nationality || 'N/A'}</div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="text-muted mb-1 fw-medium">
-                                            <i className="bi bi-currency-dollar me-1"></i>
-                                            Salario
-                                        </div>
-                                        <div className="fw-medium text-dark">
-                                            {salaryExpectation ? `Q${Number(salaryExpectation).toLocaleString()}` : 'Q N/A'}
-                                        </div>
-                                    </div>
-                                    <div className="col-12 mt-3">
-                                        <div className="text-muted mb-1 fw-medium">
-                                            <i className="bi bi-calendar me-1"></i>
-                                            Fecha de aplicación
-                                        </div>
-                                        <div className="text-dark">{applicationDate || 'N/A'}</div>
-                                    </div>
+                                <span className="badge bg-light text-dark border">
+                                    {salary ? `Q${Number(salary).toLocaleString()}` : '—'}
+                                </span>
+                            </div>
+                            <div className="d-flex flex-column gap-2 mb-3">
+                                <div className="small text-secondary d-flex align-items-start">
+                                    <i className="bi bi-briefcase me-2 mt-1"></i>
+                                    <span className="line-clamp-2">{position || 'No definido'}</span>
                                 </div>
+                                <div className="small text-secondary">
+                                    <i className="bi bi-calendar-event me-2"></i>
+                                    {date || 'N/A'}
+                                </div>
+                            </div>
+                            <div className="d-flex gap-2">
+                                <button className="btn btn-primary flex-grow-1 rounded-3 py-2" onClick={() => handleViewDetails(worker)}>
+                                    Ver Detalles
+                                </button>
+                                <button className="btn btn-light border py-2 px-3 rounded-3" onClick={() => handlePDFGeneration(worker)}>
+                                    <i className="bi bi-file-pdf"></i>
+                                </button>
                             </div>
                         </div>
                     );
                 })}
-            </div >
+            </div>
+
+            <style>{`
+                .custom-table {
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    table-layout: fixed;
+                    width: 100%;
+                }
+                .custom-table thead th {
+                    background-color: transparent;
+                    border-bottom: 1px solid var(--border-color);
+                    color: var(--text-secondary);
+                    font-weight: 500;
+                    text-transform: uppercase;
+                    font-size: 0.75rem;
+                    letter-spacing: 0.5px;
+                    padding: 1.25rem 0.5rem;
+                }
+                .custom-table tbody tr {
+                    transition: all 0.2s ease;
+                }
+                .custom-table tbody tr:hover {
+                    background-color: #f8fafc;
+                }
+                .custom-table tbody td {
+                    border-bottom: 1px solid #f1f5f9;
+                    vertical-align: middle;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .line-clamp-1 {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+                .line-clamp-2 {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+                .btn-icon-light {
+                    width: 34px;
+                    height: 34px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 10px;
+                    background-color: transparent;
+                    color: var(--text-secondary);
+                    border: none;
+                    transition: all 0.2s;
+                }
+                .btn-icon-light:hover {
+                    background-color: var(--primary-light);
+                    color: var(--primary-color);
+                }
+                .smaller {
+                    font-size: 0.8rem;
+                }
+            `}</style>
         </>
     );
 };

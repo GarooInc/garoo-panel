@@ -54,37 +54,33 @@ const ClientSidePagination = ({
 
             {/* Controles de paginación */}
             {paginationInfo.totalItems > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3 p-3 bg-light rounded">
-                    <small className="text-muted fw-medium">
-                        Mostrando {paginationInfo.startRecord} - {paginationInfo.endRecord} de {paginationInfo.totalItems} registros
-                    </small>
+                <div className="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+                    <div className="text-secondary small fw-medium">
+                        Mostrando <span className="text-dark">{paginationInfo.startRecord}</span> - <span className="text-dark">{paginationInfo.endRecord}</span> de <span className="text-dark">{paginationInfo.totalItems}</span>
+                    </div>
 
                     <div className="d-flex align-items-center gap-2">
-                        <Button
-                            variant="outline-dark"
-                            size="sm"
+                        <button
                             disabled={!paginationInfo.hasPrev}
                             onClick={goToPrevious}
-                            className="border-0 text-muted"
-                            style={{ backgroundColor: 'white' }}
+                            className="btn btn-light border-0 py-2 px-3 rounded-3 small text-secondary"
+                            style={{ backgroundColor: paginationInfo.hasPrev ? '#ffffff' : 'transparent', opacity: paginationInfo.hasPrev ? 1 : 0.5 }}
                         >
-                            <i className="bi bi-chevron-left"></i> Anterior
-                        </Button>
+                            <i className="bi bi-chevron-left"></i>
+                        </button>
 
-                        <span className="px-3 py-2 bg-white rounded fw-medium text-dark shadow-sm">
-                            Página {paginationInfo.currentPage} de {paginationInfo.totalPages}
-                        </span>
+                        <div className="px-3 py-2 bg-white border rounded-3 small fw-bold text-dark shadow-sm">
+                            {paginationInfo.currentPage} <span className="text-secondary fw-normal mx-1">/</span> {paginationInfo.totalPages}
+                        </div>
 
-                        <Button
-                            variant="outline-dark"
-                            size="sm"
+                        <button
                             disabled={!paginationInfo.hasNext}
                             onClick={goToNext}
-                            className="border-0 text-muted"
-                            style={{ backgroundColor: 'white' }}
+                            className="btn btn-light border-0 py-2 px-3 rounded-3 small text-secondary"
+                            style={{ backgroundColor: paginationInfo.hasNext ? '#ffffff' : 'transparent', opacity: paginationInfo.hasNext ? 1 : 0.5 }}
                         >
-                            Siguiente <i className="bi bi-chevron-right"></i>
-                        </Button>
+                            <i className="bi bi-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
             )}
