@@ -44,8 +44,11 @@ const FormPage = () => {
         setIsLoading(true);
 
         try {
+            const pdfFile = data.pdf?.[0] || selectedPdf;
+            const xmlFile = data.xml?.[0] || selectedXml;
+
             // Validación de campos requeridos
-            if (!data.pdf?.[0] || !data.xml?.[0]) {
+            if (!pdfFile || !xmlFile || !data.nit || !data.serie) {
                 setToastTitle("Campos Incompletos");
                 setToastMessage(
                     "Por favor, complete todos los campos requeridos (NIT, Serie, PDF y XML)",
@@ -55,9 +58,6 @@ const FormPage = () => {
                 setIsLoading(false);
                 return;
             }
-
-            const pdfFile = data.pdf[0];
-            const xmlFile = data.xml[0];
 
             const formData = new FormData();
             formData.append("nit", data.nit.trim());
@@ -129,7 +129,7 @@ const FormPage = () => {
                 setToastTitle(responseData.title || "Error");
                 setToastMessage(
                     responseData.message ||
-                        "Ha ocurrido un error al procesar la factura",
+                    "Ha ocurrido un error al procesar la factura",
                 );
                 setToastVariant("danger");
                 setShowToast(true);
@@ -138,7 +138,7 @@ const FormPage = () => {
                 setToastTitle("Error del Servidor");
                 setToastMessage(
                     responseData.message ||
-                        `Error ${response.status}: ${response.statusText}`,
+                    `Error ${response.status}: ${response.statusText}`,
                 );
                 setToastVariant("danger");
                 setShowToast(true);
@@ -147,7 +147,7 @@ const FormPage = () => {
                 setToastTitle("Enviado");
                 setToastMessage(
                     responseData.message ||
-                        "La solicitud se procesó correctamente",
+                    "La solicitud se procesó correctamente",
                 );
                 setToastVariant("success");
                 setShowToast(true);
@@ -157,7 +157,7 @@ const FormPage = () => {
             setToastTitle("Error Inesperado");
             setToastMessage(
                 error.message ||
-                    "Ocurrió un error inesperado al enviar los datos",
+                "Ocurrió un error inesperado al enviar los datos",
             );
             setToastVariant("danger");
             setShowToast(true);
@@ -478,8 +478,8 @@ const FormPage = () => {
                                                     accept=".pdf"
                                                     {...register("pdf", {
                                                         required: true,
+                                                        onChange: handlePdfChange
                                                     })}
-                                                    onChange={handlePdfChange}
                                                     isInvalid={!!errors.pdf}
                                                     className="bg-white"
                                                     style={{
@@ -501,8 +501,8 @@ const FormPage = () => {
                                                     accept=".xml"
                                                     {...register("xml", {
                                                         required: true,
+                                                        onChange: handleXmlChange
                                                     })}
-                                                    onChange={handleXmlChange}
                                                     isInvalid={!!errors.xml}
                                                     className="bg-white"
                                                     style={{
