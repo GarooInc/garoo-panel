@@ -108,21 +108,21 @@ const FormPage = () => {
                 setToastTitle(responseData.title || "Error");
                 setToastMessage(
                     responseData.message ||
-                        "Ha ocurrido un error al procesar la factura",
+                    "Ha ocurrido un error al procesar la factura",
                 );
                 setToastVariant("danger");
             } else if (!response.ok) {
                 setToastTitle("Error del Servidor");
                 setToastMessage(
                     responseData.message ||
-                        `Error ${response.status}: ${response.statusText}`,
+                    `Error ${response.status}: ${response.statusText}`,
                 );
                 setToastVariant("danger");
             } else {
                 setToastTitle("Enviado");
                 setToastMessage(
                     responseData.message ||
-                        "La solicitud se procesó correctamente",
+                    "La solicitud se procesó correctamente",
                 );
                 setToastVariant("success");
             }
@@ -131,7 +131,7 @@ const FormPage = () => {
             setToastTitle("Error Inesperado");
             setToastMessage(
                 error.message ||
-                    "Ocurrió un error inesperado al enviar los datos",
+                "Ocurrió un error inesperado al enviar los datos",
             );
             setToastVariant("danger");
             setShowToast(true);
@@ -231,13 +231,24 @@ const FormPage = () => {
                     flex-shrink: 0;
                 }
 
-                .mvf-topbar-logo {
+                .mvf-logo-ring {
                     width: 38px;
                     height: 38px;
                     border-radius: 50%;
-                    object-fit: cover;
-                    border: 1.5px solid rgba(16,185,129,0.35);
+                    background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05));
+                    border: 1.5px solid rgba(16,185,129,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     box-shadow: 0 0 14px rgba(16,185,129,0.2);
+                    flex-shrink: 0;
+                }
+
+                .mvf-logo-ring img {
+                    width: 26px;
+                    height: 26px;
+                    border-radius: 50%;
+                    object-fit: cover;
                 }
 
                 .mvf-topbar-info { flex: 1; }
@@ -681,11 +692,9 @@ const FormPage = () => {
             <div className="mvf-page">
                 {/* ── Top bar ── */}
                 <div className="mvf-topbar">
-                    <img
-                        src={garooLogo}
-                        alt="Garoo"
-                        className="mvf-topbar-logo"
-                    />
+                    <div className="mvf-logo-ring">
+                        <img src={garooLogo} alt="Garoo" />
+                    </div>
                     <div className="mvf-topbar-info">
                         <p className="mvf-topbar-title">
                             Gestión Documental de Facturas

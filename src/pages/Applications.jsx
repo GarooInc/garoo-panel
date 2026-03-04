@@ -105,12 +105,19 @@ const Applications = () => {
                     position: relative; z-index: 20;
                 }
 
-                .ap-logo {
-                    width: 34px; height: 34px;
-                    border-radius: 50%; object-fit: cover;
-                    border: 1.5px solid rgba(59,130,246,.4);
-                    box-shadow: 0 0 12px rgba(59,130,246,.2);
+                .ap-logo-ring {
+                    width: 38px; height: 38px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, rgba(59,130,246,.25), rgba(59,130,246,.1));
+                    border: 1.5px solid rgba(59,130,246,.35);
+                    display: flex; align-items: center; justify-content: center;
+                    box-shadow: 0 0 12px rgba(59,130,246,.25);
                     flex-shrink: 0;
+                }
+
+                .ap-logo-ring img {
+                    width: 26px; height: 26px;
+                    border-radius: 50%; object-fit: cover;
                 }
 
                 .ap-topbar-title {
@@ -532,7 +539,9 @@ const Applications = () => {
             <div className="ap-root">
                 {/* ── Topbar ── */}
                 <header className="ap-topbar">
-                    <img src={garooLogo} alt="Garoo" className="ap-logo" />
+                    <div className="ap-logo-ring">
+                        <img src={garooLogo} alt="Garoo" />
+                    </div>
                     <h1 className="ap-topbar-title">Gestor de Aplicaciones</h1>
                     <div className="ap-topbar-divider" />
                     <span className="ap-pill ap-pill-blue">RocknRolla</span>

@@ -328,227 +328,245 @@ const Workers = () => {
         : [];
 
     return (
-        <div className="mt-4">
-            <Card>
-                <Card.Body className="">
-                    <Card.Title className="mb-5 d-flex justify-content-between mx-1">
-                        <span className="fs-1 fw-bold">Gestión de Talento</span>
-                        <Image
-                            src={garooLogo}
-                            roundedCircle
-                            fluid
-                            width={100}
-                            height={100}
-                            className="border border-primary border-2"
-                        />
-                    </Card.Title>
+        <>
+            <style>{`
+                .wrk-logo-ring {
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05));
+                    border: 1.5px solid rgba(59,130,246,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 1.25rem;
+                    box-shadow: 0 0 30px rgba(59,130,246,0.15);
+                }
 
-                    <div className="mx-4">
-                        <Button
-                            variant="primary"
-                            onClick={handleClick}
-                            disabled={loading}
-                            className="mb-3"
-                        >
-                            {loading ? (
-                                <>
-                                    <Spinner
-                                        as="span"
-                                        animation="border"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"
-                                        className="me-2"
-                                    />
-                                    Procesando...
-                                </>
-                            ) : (
-                                "Actualizar Datos"
-                            )}
-                        </Button>
+                .wrk-logo-ring img {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+            `}</style>
+            <div className="mt-4">
+                <Card>
+                    <Card.Body className="">
+                        <Card.Title className="mb-5 d-flex justify-content-between mx-1">
+                            <span className="fs-1 fw-bold">Gestión de Talento</span>
+                            <div className="wrk-logo-ring">
+                                <img src={garooLogo} alt="Garoo" />
+                            </div>
+                        </Card.Title>
 
-                        {error && (
-                            <Alert variant="danger" className="mt-3">
-                                <Alert.Heading>Error</Alert.Heading>
-                                <p>{error.message}</p>
-                            </Alert>
-                        )}
-
-                        <Tabs
-                            defaultActiveKey="workers"
-                            transition={false}
-                            id="workers-tabs"
-                            className="mb-3"
-                        >
-                            <Tab eventKey="workers" title="Tabla">
-                                <div className="mt-5 mb-3 w-25">
-                                    <InputGroup className="border border-dark rounded">
-                                        <InputGroup.Text id="search-workers">
-                                            <i className="bi bi-search"></i>
-                                        </InputGroup.Text>
-                                        <Form.Control
-                                            placeholder="Buscar trabajadores..."
-                                            aria-label="Buscar trabajadores"
-                                            aria-describedby="search-workers"
-                                            className="bg-light"
-                                            value={searchTerm}
-                                            onChange={(e) =>
-                                                setSearchTerm(e.target.value)
-                                            }
-                                        />
-                                        {searchTerm && (
-                                            <Button
-                                                variant="outline-dark"
-                                                onClick={() =>
-                                                    setSearchTerm("")
-                                                }
-                                                aria-label="Limpiar búsqueda"
-                                            >
-                                                <i className="bi bi-lg bi-x"></i>
-                                            </Button>
-                                        )}
-                                    </InputGroup>
-
-                                    <small className="text-muted">
-                                        {filteredWorkers.length} registro
-                                        {filteredWorkers.length !== 1
-                                            ? "s"
-                                            : ""}{" "}
-                                        encontrado
-                                        {filteredWorkers.length !== 1
-                                            ? "s"
-                                            : ""}
-                                    </small>
-                                </div>
-
-                                <div className="table-responsive">
-                                    <Table
-                                        hover
-                                        className={`${styles["table"]} ${styles["fs-10"]}`}
-                                    >
-                                        <thead className="table-secondary">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Nombre Completo</th>
-                                                <th>Puesto</th>
-                                                <th>Nacionalidad</th>
-                                                <th>Disponibilidad</th>
-                                                <th>Pretención Salarial</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {filteredWorkers.length === 0 &&
-                                                !loading ? (
-                                                <tr>
-                                                    <td
-                                                        colSpan="7"
-                                                        className="text-center py-4"
-                                                    >
-                                                        <i className="bi bi-inbox display-4 text-muted d-block mb-2"></i>
-                                                        <span className="text-muted">
-                                                            {searchTerm
-                                                                ? "No se encontraron trabajadores con esos criterios"
-                                                                : "No hay trabajadores disponibles"}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                filteredWorkers.map(
-                                                    (worker, index) => (
-                                                        <tr
-                                                            key={
-                                                                worker.id ||
-                                                                index
-                                                            }
-                                                        >
-                                                            <td>{index + 1}</td>
-                                                            <td>
-                                                                {worker.nombre_completo ||
-                                                                    "N/A"}
-                                                            </td>
-                                                            <td>
-                                                                {worker.puesto_solicitud ||
-                                                                    "N/A"}
-                                                            </td>
-                                                            <td>
-                                                                {worker.nacionalidad ||
-                                                                    "N/A"}
-                                                            </td>
-                                                            <td>
-                                                                {worker.disponibilidad_laboral ||
-                                                                    "No especificada"}
-                                                            </td>
-                                                            <td>
-                                                                {worker.pretencion_salarial
-                                                                    ? `Q${Number(worker.pretencion_salarial).toLocaleString()}`
-                                                                    : "Q N/A"}
-                                                            </td>
-
-                                                            <td>
-                                                                <div className="d-flex gap-1">
-                                                                    <Button
-                                                                        variant="primary"
-                                                                        size="sm"
-                                                                        className="me-1"
-                                                                        title="Ver detalles"
-                                                                        onClick={() =>
-                                                                            handleViewDetails(
-                                                                                worker,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <i className="bi bi-eye"></i>
-                                                                    </Button>
-
-                                                                    <Button
-                                                                        variant="success"
-                                                                        size="sm"
-                                                                        title="Descargar PDF"
-                                                                        onClick={() =>
-                                                                            generateWorkerPDF(
-                                                                                worker,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <i className="bi bi-file-earmark-pdf"></i>
-                                                                    </Button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ),
-                                                )
-                                            )}
-                                        </tbody>
-                                    </Table>
-                                </div>
-                            </Tab>
-                            <Tab
-                                eventKey="response"
-                                title="Respuesta del servidor"
+                        <div className="mx-4">
+                            <Button
+                                variant="primary"
+                                onClick={handleClick}
+                                disabled={loading}
+                                className="mb-3"
                             >
-                                <div className="mt-4">
-                                    <h4>Respuesta del servidor:</h4>
-                                    <pre className="bg-light p-3 rounded">
-                                        {JSON.stringify(data, null, 2)}
-                                    </pre>
-                                </div>
-                            </Tab>
-                        </Tabs>
-                    </div>
-                </Card.Body>
-            </Card>
+                                {loading ? (
+                                    <>
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                            className="me-2"
+                                        />
+                                        Procesando...
+                                    </>
+                                ) : (
+                                    "Actualizar Datos"
+                                )}
+                            </Button>
 
-            {/* Modal de detalles del trabajador */}
-            {selectedWorker && (
-                <WorkerModal
-                    show={showModal}
-                    handleClose={handleCloseModal}
-                    workerData={selectedWorker}
-                />
-            )}
-        </div>
+                            {error && (
+                                <Alert variant="danger" className="mt-3">
+                                    <Alert.Heading>Error</Alert.Heading>
+                                    <p>{error.message}</p>
+                                </Alert>
+                            )}
+
+                            <Tabs
+                                defaultActiveKey="workers"
+                                transition={false}
+                                id="workers-tabs"
+                                className="mb-3"
+                            >
+                                <Tab eventKey="workers" title="Tabla">
+                                    <div className="mt-5 mb-3 w-25">
+                                        <InputGroup className="border border-dark rounded">
+                                            <InputGroup.Text id="search-workers">
+                                                <i className="bi bi-search"></i>
+                                            </InputGroup.Text>
+                                            <Form.Control
+                                                placeholder="Buscar trabajadores..."
+                                                aria-label="Buscar trabajadores"
+                                                aria-describedby="search-workers"
+                                                className="bg-light"
+                                                value={searchTerm}
+                                                onChange={(e) =>
+                                                    setSearchTerm(e.target.value)
+                                                }
+                                            />
+                                            {searchTerm && (
+                                                <Button
+                                                    variant="outline-dark"
+                                                    onClick={() =>
+                                                        setSearchTerm("")
+                                                    }
+                                                    aria-label="Limpiar búsqueda"
+                                                >
+                                                    <i className="bi bi-lg bi-x"></i>
+                                                </Button>
+                                            )}
+                                        </InputGroup>
+
+                                        <small className="text-muted">
+                                            {filteredWorkers.length} registro
+                                            {filteredWorkers.length !== 1
+                                                ? "s"
+                                                : ""}{" "}
+                                            encontrado
+                                            {filteredWorkers.length !== 1
+                                                ? "s"
+                                                : ""}
+                                        </small>
+                                    </div>
+
+                                    <div className="table-responsive">
+                                        <Table
+                                            hover
+                                            className={`${styles["table"]} ${styles["fs-10"]}`}
+                                        >
+                                            <thead className="table-secondary">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Nombre Completo</th>
+                                                    <th>Puesto</th>
+                                                    <th>Nacionalidad</th>
+                                                    <th>Disponibilidad</th>
+                                                    <th>Pretención Salarial</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {filteredWorkers.length === 0 &&
+                                                    !loading ? (
+                                                    <tr>
+                                                        <td
+                                                            colSpan="7"
+                                                            className="text-center py-4"
+                                                        >
+                                                            <i className="bi bi-inbox display-4 text-muted d-block mb-2"></i>
+                                                            <span className="text-muted">
+                                                                {searchTerm
+                                                                    ? "No se encontraron trabajadores con esos criterios"
+                                                                    : "No hay trabajadores disponibles"}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ) : (
+                                                    filteredWorkers.map(
+                                                        (worker, index) => (
+                                                            <tr
+                                                                key={
+                                                                    worker.id ||
+                                                                    index
+                                                                }
+                                                            >
+                                                                <td>{index + 1}</td>
+                                                                <td>
+                                                                    {worker.nombre_completo ||
+                                                                        "N/A"}
+                                                                </td>
+                                                                <td>
+                                                                    {worker.puesto_solicitud ||
+                                                                        "N/A"}
+                                                                </td>
+                                                                <td>
+                                                                    {worker.nacionalidad ||
+                                                                        "N/A"}
+                                                                </td>
+                                                                <td>
+                                                                    {worker.disponibilidad_laboral ||
+                                                                        "No especificada"}
+                                                                </td>
+                                                                <td>
+                                                                    {worker.pretencion_salarial
+                                                                        ? `Q${Number(worker.pretencion_salarial).toLocaleString()}`
+                                                                        : "Q N/A"}
+                                                                </td>
+
+                                                                <td>
+                                                                    <div className="d-flex gap-1">
+                                                                        <Button
+                                                                            variant="primary"
+                                                                            size="sm"
+                                                                            className="me-1"
+                                                                            title="Ver detalles"
+                                                                            onClick={() =>
+                                                                                handleViewDetails(
+                                                                                    worker,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <i className="bi bi-eye"></i>
+                                                                        </Button>
+
+                                                                        <Button
+                                                                            variant="success"
+                                                                            size="sm"
+                                                                            title="Descargar PDF"
+                                                                            onClick={() =>
+                                                                                generateWorkerPDF(
+                                                                                    worker,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <i className="bi bi-file-earmark-pdf"></i>
+                                                                        </Button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ),
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </Tab>
+                                <Tab
+                                    eventKey="response"
+                                    title="Respuesta del servidor"
+                                >
+                                    <div className="mt-4">
+                                        <h4>Respuesta del servidor:</h4>
+                                        <pre className="bg-light p-3 rounded">
+                                            {JSON.stringify(data, null, 2)}
+                                        </pre>
+                                    </div>
+                                </Tab>
+                            </Tabs>
+                        </div>
+                    </Card.Body>
+                </Card>
+
+                {/* Modal de detalles del trabajador */}
+                {selectedWorker && (
+                    <WorkerModal
+                        show={showModal}
+                        handleClose={handleCloseModal}
+                        workerData={selectedWorker}
+                    />
+                )}
+            </div>
+        </>
     );
 };
 

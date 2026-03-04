@@ -153,11 +153,19 @@ export default function SpectrumLeads() {
                     position: relative; z-index: 20;
                 }
 
-                .sl-logo {
-                    width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
-                    border: 1.5px solid rgba(139,92,246,.4);
-                    box-shadow: 0 0 14px rgba(139,92,246,.2);
+                .sl-logo-ring {
+                    width: 38px; height: 38px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, rgba(139,92,246,.25), rgba(139,130,246,.1));
+                    border: 1.5px solid rgba(139,92,246,.35);
+                    display: flex; align-items: center; justify-content: center;
+                    box-shadow: 0 0 14px rgba(139,92,246,.25);
                     flex-shrink: 0;
+                }
+
+                .sl-logo-ring img {
+                    width: 26px; height: 26px;
+                    border-radius: 50%; object-fit: cover;
                 }
 
                 .sl-title {
@@ -412,7 +420,9 @@ export default function SpectrumLeads() {
             <div className="sl-root">
                 {/* ── Topbar ── */}
                 <header className="sl-topbar">
-                    <img src={garooLogo} alt="Garoo" className="sl-logo" />
+                    <div className="sl-logo-ring">
+                        <img src={garooLogo} alt="Garoo" />
+                    </div>
                     <h1 className="sl-title">Leads Dashboard</h1>
                     <div className="sl-divider" />
                     <span className="sl-badge">Spectrum</span>
