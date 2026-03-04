@@ -1,3 +1,6 @@
+/* ============================================
+   SIDEBAR
+   ============================================ */
 .sidebar {
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
@@ -7,11 +10,135 @@
     background-color: var(--bg-white);
     border-right: 1px solid var(--border-color);
     overflow-y: auto;
+    overflow-x: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Estilos para móviles */
+/* ---- Brand / Logo ---- */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.sidebar-logo-img {
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.sidebar-brand-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+}
+
+/* ---- Scrollable content area ---- */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ---- Section (General / Servicios) ---- */
+.sidebar-section {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-section-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    padding: 0 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+/* ---- Divider between sections ---- */
+.sidebar-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 1rem 0.75rem;
+    opacity: 0.7;
+}
+
+/* ---- Nav links ---- */
+.sidebar-link {
+    text-decoration: none !important;
+    position: relative;
+}
+
+.sidebar-link:hover {
+    background-color: #f1f5f9 !important;
+    color: var(--text-main) !important;
+}
+
+/* ---- Service icon pill (colored mini icon) ---- */
+.sidebar-service-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+/* ---- Two-line service label ---- */
+.sidebar-service-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.2;
+}
+
+.sidebar-service-name {
+    font-size: 0.85rem;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-service-client {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---- Footer ---- */
+.sidebar-footer {
+    flex-shrink: 0;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-white);
+}
+
+.sidebar-footer-text {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE
+   ============================================ */
 @media (max-width: 991.98px) {
     .sidebar {
         position: fixed;
@@ -22,7 +149,7 @@
         width: 280px;
         z-index: 1050;
         transform: translateX(-100%);
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
     }
 
     .sidebar.show {
@@ -47,11 +174,23 @@
         opacity: 1;
         visibility: visible;
     }
+
+    .sidebar-brand {
+        /* on mobile, brand is inside the sidebar, so pad from top */
+        padding-top: 1.5rem;
+    }
 }
 
-/* Para tablets y desktop */
+/* ============================================
+   RESPONSIVE — DESKTOP
+   ============================================ */
 @media (min-width: 992px) {
     .sidebar {
         transform: none !important;
+    }
+
+    /* hide overlay on desktop completely */
+    .sidebar-overlay {
+        display: none;
     }
 }

@@ -1,32 +1,16 @@
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import RB_Toast from "../components/RB_Toast";
 import { useState } from "react";
+import garooLogo from "../assets/img/garoo-logo.png";
 
 const FormPage = () => {
-    // Definimos una paleta de colores profesional
-    const colors = {
-        primary: "#1e293b", // Slate 800
-        accent: "#3b82f6", // Blue 500
-        border: "#e2e8f0", // Slate 200
-        bgSubtle: "#f8fafc", // Slate 50
-        text: "#0f172a", // Slate 900
-        textMuted: "#64748b", // Slate 500
-        danger: "#ef4444", // Red 500
-        success: "#10b981", // Emerald 500
-    };
-
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
         mode: "onChange",
-        defaultValues: {
-            nit: "",
-            serie: "",
-        },
+        defaultValues: { nit: "", serie: "" },
     });
 
     const [pdfUrl, setPdfUrl] = useState(null);
@@ -47,7 +31,6 @@ const FormPage = () => {
             const pdfFile = data.pdf?.[0] || selectedPdf;
             const xmlFile = data.xml?.[0] || selectedXml;
 
-            // Validación de campos requeridos
             if (!pdfFile || !xmlFile || !data.nit || !data.serie) {
                 setToastTitle("Campos Incompletos");
                 setToastMessage(
@@ -62,12 +45,16 @@ const FormPage = () => {
             const formData = new FormData();
             formData.append("nit", data.nit.trim());
             formData.append("serie", data.serie.trim());
-
-            const pdfBlob = new Blob([pdfFile], { type: "application/pdf" });
-            formData.append("pdf", pdfBlob, pdfFile.name);
-
-            const xmlBlob = new Blob([xmlFile], { type: "text/xml" });
-            formData.append("xml", xmlBlob, xmlFile.name);
+            formData.append(
+                "pdf",
+                new Blob([pdfFile], { type: "application/pdf" }),
+                pdfFile.name,
+            );
+            formData.append(
+                "xml",
+                new Blob([xmlFile], { type: "text/xml" }),
+                xmlFile.name,
+            );
 
             let response;
             try {
@@ -76,16 +63,13 @@ const FormPage = () => {
                     {
                         method: "POST",
                         body: formData,
-                        headers: {
-                            Accept: "application/json",
-                        },
+                        headers: { Accept: "application/json" },
                     },
                 );
             } catch {
-                // Error de red (sin conexión, timeout, etc.)
                 setToastTitle("Error de Conexión");
                 setToastMessage(
-                    "No se pudo conectar con el servidor. Verifique su conexión a internet e intente nuevamente.",
+                    "No se pudo conectar con el servidor. Verifique su conexión e intente nuevamente.",
                 );
                 setToastVariant("danger");
                 setShowToast(true);
@@ -95,7 +79,6 @@ const FormPage = () => {
 
             let responseData;
             const contentType = response.headers.get("content-type");
-
             try {
                 if (contentType && contentType.includes("application/json")) {
                     responseData = await response.json();
@@ -115,49 +98,40 @@ const FormPage = () => {
                 };
             }
 
-            // Manejar respuesta según el campo "status" de n8n
             if (responseData.status === "ok") {
-                // Respuesta exitosa de n8n
                 setToastTitle(responseData.title || "Éxito");
                 setToastMessage(
                     responseData.message || "Datos enviados correctamente",
                 );
                 setToastVariant("success");
-                setShowToast(true);
             } else if (responseData.status === "error") {
-                // Respuesta de error de n8n (factura duplicada, etc.)
                 setToastTitle(responseData.title || "Error");
                 setToastMessage(
                     responseData.message ||
-                    "Ha ocurrido un error al procesar la factura",
+                        "Ha ocurrido un error al procesar la factura",
                 );
                 setToastVariant("danger");
-                setShowToast(true);
             } else if (!response.ok) {
-                // Error HTTP (4xx, 5xx) sin estructura de n8n
                 setToastTitle("Error del Servidor");
                 setToastMessage(
                     responseData.message ||
-                    `Error ${response.status}: ${response.statusText}`,
+                        `Error ${response.status}: ${response.statusText}`,
                 );
                 setToastVariant("danger");
-                setShowToast(true);
             } else {
-                // Respuesta exitosa pero sin estructura esperada
                 setToastTitle("Enviado");
                 setToastMessage(
                     responseData.message ||
-                    "La solicitud se procesó correctamente",
+                        "La solicitud se procesó correctamente",
                 );
                 setToastVariant("success");
-                setShowToast(true);
             }
+            setShowToast(true);
         } catch (error) {
-            // Cualquier otro error no manejado
             setToastTitle("Error Inesperado");
             setToastMessage(
                 error.message ||
-                "Ocurrió un error inesperado al enviar los datos",
+                    "Ocurrió un error inesperado al enviar los datos",
             );
             setToastVariant("danger");
             setShowToast(true);
@@ -169,8 +143,7 @@ const FormPage = () => {
     const handlePdfChange = (e) => {
         const file = e.target.files[0];
         if (file && file.type === "application/pdf") {
-            const url = URL.createObjectURL(file);
-            setPdfUrl(url);
+            setPdfUrl(URL.createObjectURL(file));
             setSelectedPdf(file);
         } else {
             setPdfUrl(null);
@@ -204,357 +177,799 @@ const FormPage = () => {
     };
 
     return (
-        <div
-            style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}
-            className="main-wrapper"
-        >
-            <div className="container-fluid px-4 py-4 main-container-dashboard">
-                {/* Título principal profesional */}
-                <div className="text-start mb-4 ps-1">
-                    <h2
-                        className="fw-bold mb-1 responsive-title"
-                        style={{
-                            color: colors.primary,
-                            letterSpacing: "-0.5px",
-                        }}
-                    >
-                        Gestión Documental de Facturas
-                    </h2>
-                    <p className="text-muted small mb-0">
-                        Portal corporativo para la carga y validación de
-                        documentos tributarios.
-                    </p>
+        <>
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+                * { box-sizing: border-box; }
+
+                .mvf-page {
+                    min-height: 100vh;
+                    background: linear-gradient(135deg, #0a1628 0%, #0f2d1a 50%, #0a1628 100%);
+                    display: flex;
+                    flex-direction: column;
+                    font-family: 'Inter', system-ui, sans-serif;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .mvf-page::before {
+                    content: '';
+                    position: absolute;
+                    top: -20%;
+                    left: -10%;
+                    width: 700px;
+                    height: 700px;
+                    background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 65%);
+                    filter: blur(80px);
+                    pointer-events: none;
+                }
+
+                .mvf-page::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -20%;
+                    right: -10%;
+                    width: 600px;
+                    height: 600px;
+                    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 65%);
+                    filter: blur(80px);
+                    pointer-events: none;
+                }
+
+                /* ── Top bar ── */
+                .mvf-topbar {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.85rem;
+                    padding: 1.1rem 2rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.07);
+                    background: rgba(0,0,0,0.2);
+                    backdrop-filter: blur(10px);
+                    position: relative;
+                    z-index: 10;
+                    flex-shrink: 0;
+                }
+
+                .mvf-topbar-logo {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 1.5px solid rgba(16,185,129,0.35);
+                    box-shadow: 0 0 14px rgba(16,185,129,0.2);
+                }
+
+                .mvf-topbar-info { flex: 1; }
+
+                .mvf-topbar-title {
+                    font-size: 1.3rem;
+                    font-weight: 700;
+                    color: #f1f5f9;
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    line-height: 1.2;
+                }
+
+                .mvf-topbar-sub {
+                    font-size: 0.72rem;
+                    color: #64748b;
+                    margin: 0;
+                }
+
+                .mvf-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    background: rgba(16,185,129,0.12);
+                    border: 1px solid rgba(16,185,129,0.25);
+                    color: #34d399;
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    letter-spacing: 0.07em;
+                    text-transform: uppercase;
+                    padding: 4px 10px;
+                    border-radius: 100px;
+                }
+
+                .mvf-badge::before {
+                    content: '';
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    background: #10b981;
+                    box-shadow: 0 0 6px #10b981;
+                    animation: mvf-pulse 2s ease-in-out infinite;
+                }
+
+                @keyframes mvf-pulse {
+                    0%, 100% { opacity: 1; transform: scale(1); }
+                    50%       { opacity: 0.5; transform: scale(0.75); }
+                }
+
+                /* ── Main content layout ── */
+                .mvf-body {
+                    flex: 1;
+                    display: flex;
+                    gap: 1.5rem;
+                    padding: 1.75rem 2rem;
+                    position: relative;
+                    z-index: 1;
+                    overflow: hidden;
+                    min-height: 0;
+                }
+
+                /* ── Previews column ── */
+                .mvf-previews {
+                    flex: 1 1 60%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.25rem;
+                    min-height: 0;
+                    min-width: 0;
+                }
+
+                .mvf-preview-card {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: 18px;
+                    overflow: hidden;
+                    min-height: 0;
+                }
+
+                .mvf-preview-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    padding: 0.85rem 1.25rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.07);
+                    flex-shrink: 0;
+                }
+
+                .mvf-preview-header-icon {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                    flex-shrink: 0;
+                }
+
+                .mvf-preview-header-icon.pdf {
+                    background: rgba(239,68,68,0.12);
+                    color: #f87171;
+                }
+
+                .mvf-preview-header-icon.xml {
+                    background: rgba(59,130,246,0.12);
+                    color: #60a5fa;
+                }
+
+                .mvf-preview-label {
+                    font-size: 0.82rem;
+                    font-weight: 600;
+                    color: #cbd5e1;
+                }
+
+                .mvf-preview-body {
+                    flex: 1;
+                    overflow: auto;
+                    min-height: 0;
+                }
+
+                .mvf-empty-state {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    gap: 0.65rem;
+                    padding: 2rem;
+                    min-height: 140px;
+                }
+
+                .mvf-empty-icon {
+                    width: 52px;
+                    height: 52px;
+                    border-radius: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.4rem;
+                }
+
+                .mvf-empty-icon.pdf {
+                    background: rgba(239,68,68,0.08);
+                    color: rgba(239,68,68,0.5);
+                    border: 1.5px dashed rgba(239,68,68,0.2);
+                }
+
+                .mvf-empty-icon.xml {
+                    background: rgba(59,130,246,0.08);
+                    color: rgba(59,130,246,0.5);
+                    border: 1.5px dashed rgba(59,130,246,0.2);
+                }
+
+                .mvf-empty-text {
+                    font-size: 0.8rem;
+                    color: #475569;
+                    text-align: center;
+                    margin: 0;
+                }
+
+                /* ── Form column ── */
+                .mvf-form-col {
+                    width: 340px;
+                    flex-shrink: 0;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .mvf-form-card {
+                    background: rgba(255,255,255,0.035);
+                    border: 1px solid rgba(255,255,255,0.09);
+                    border-radius: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    height: 100%;
+                }
+
+                .mvf-form-header {
+                    padding: 1.1rem 1.4rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.07);
+                    flex-shrink: 0;
+                }
+
+                .mvf-form-header-title {
+                    font-size: 0.88rem;
+                    font-weight: 700;
+                    color: #e2e8f0;
+                    margin: 0 0 0.15rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .mvf-form-header-sub {
+                    font-size: 0.72rem;
+                    color: #64748b;
+                    margin: 0;
+                }
+
+                .mvf-form-body {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 1.4rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0;
+                }
+
+                /* ── Section labels ── */
+                .mvf-section-label {
+                    font-size: 0.68rem;
+                    font-weight: 700;
+                    letter-spacing: 0.09em;
+                    text-transform: uppercase;
+                    color: #10b981;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-bottom: 0.85rem;
+                }
+
+                .mvf-section-label::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: rgba(16,185,129,0.2);
+                }
+
+                /* ── Inputs ── */
+                .mvf-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.4rem;
+                    margin-bottom: 1rem;
+                }
+
+                .mvf-label {
+                    font-size: 0.78rem;
+                    font-weight: 600;
+                    color: #94a3b8;
+                }
+
+                .mvf-label .req { color: #10b981; margin-left: 2px; }
+
+                .mvf-input,
+                .mvf-file {
+                    background: rgba(255,255,255,0.05);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    border-radius: 10px;
+                    padding: 0.6rem 0.85rem;
+                    font-size: 0.88rem;
+                    color: #f1f5f9;
+                    font-family: inherit;
+                    transition: all 0.2s ease;
+                    outline: none;
+                    width: 100%;
+                }
+
+                .mvf-input::placeholder { color: #334155; }
+
+                .mvf-input:focus {
+                    border-color: rgba(16,185,129,0.5);
+                    background: rgba(16,185,129,0.05);
+                    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+                }
+
+                .mvf-input.err {
+                    border-color: rgba(239,68,68,0.5);
+                    background: rgba(239,68,68,0.05);
+                }
+
+                .mvf-err-msg {
+                    font-size: 0.72rem;
+                    color: #f87171;
+                    margin: 0;
+                }
+
+                /* File input */
+                .mvf-file-wrapper {
+                    position: relative;
+                }
+
+                .mvf-file-custom {
+                    background: rgba(255,255,255,0.04);
+                    border: 1.5px dashed rgba(255,255,255,0.12);
+                    border-radius: 10px;
+                    padding: 0.75rem 1rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .mvf-file-custom:hover {
+                    border-color: rgba(16,185,129,0.4);
+                    background: rgba(16,185,129,0.05);
+                }
+
+                .mvf-file-custom input[type="file"] {
+                    position: absolute;
+                    inset: 0;
+                    opacity: 0;
+                    cursor: pointer;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .mvf-file-icon {
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                }
+
+                .mvf-file-icon.pdf { background: rgba(239,68,68,0.12); color: #f87171; }
+                .mvf-file-icon.xml { background: rgba(59,130,246,0.12); color: #60a5fa; }
+
+                .mvf-file-text { flex: 1; min-width: 0; }
+                .mvf-file-text p { margin: 0; }
+                .mvf-file-text .main { font-size: 0.78rem; font-weight: 600; color: #94a3b8; }
+                .mvf-file-text .sub  { font-size: 0.68rem; color: #475569; }
+                .mvf-file-text .chosen { font-size: 0.72rem; color: #34d399; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+                /* ── Divider ── */
+                .mvf-divider {
+                    height: 1px;
+                    background: rgba(255,255,255,0.07);
+                    margin: 1.1rem 0;
+                }
+
+                /* ── Submit button ── */
+                .mvf-btn {
+                    width: 100%;
+                    padding: 0.75rem 1rem;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    border: none;
+                    border-radius: 12px;
+                    color: #fff;
+                    font-size: 0.88rem;
+                    font-weight: 700;
+                    font-family: inherit;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.55rem;
+                    box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+                    letter-spacing: 0.01em;
+                    margin-top: auto;
+                }
+
+                .mvf-btn:hover:not(:disabled) {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(16,185,129,0.4);
+                    background: linear-gradient(135deg, #34d399, #10b981);
+                }
+
+                .mvf-btn:active:not(:disabled) { transform: translateY(0); }
+                .mvf-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+                .mvf-spinner {
+                    width: 15px;
+                    height: 15px;
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-top-color: #fff;
+                    border-radius: 50%;
+                    animation: mvf-spin 0.7s linear infinite;
+                    flex-shrink: 0;
+                }
+
+                @keyframes mvf-spin { to { transform: rotate(360deg); } }
+
+                /* iframe / pre */
+                .mvf-preview-body iframe {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    display: block;
+                    min-height: 140px;
+                }
+
+                .mvf-preview-body pre {
+                    margin: 0;
+                    padding: 1.25rem;
+                    font-size: 0.75rem;
+                    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+                    color: #94a3b8;
+                    background: transparent;
+                    height: 100%;
+                    overflow: auto;
+                    white-space: pre-wrap;
+                    word-break: break-all;
+                }
+
+                /* ── Responsive ── */
+                @media (max-width: 1024px) {
+                    .mvf-form-col { width: 300px; }
+                }
+
+                @media (max-width: 768px) {
+                    .mvf-body {
+                        flex-direction: column;
+                        padding: 1.25rem 1rem;
+                        overflow: auto;
+                        min-height: unset;
+                    }
+                    .mvf-form-col {
+                        width: 100%;
+                        flex-shrink: unset;
+                    }
+                    .mvf-form-card { height: auto; }
+                    .mvf-previews {
+                        min-height: unset;
+                    }
+                    .mvf-preview-card { min-height: 220px; }
+                    .mvf-topbar { padding: 0.9rem 1rem; }
+                    .mvf-badge { display: none; }
+                }
+
+                @media (max-width: 480px) {
+                    .mvf-topbar-title { font-size: 0.88rem; }
+                }
+
+                @media (min-width: 769px) {
+                    .mvf-page { height: 100vh; overflow: hidden; }
+                    .mvf-body { height: calc(100vh - 65px); }
+                }
+            `}</style>
+
+            <div className="mvf-page">
+                {/* ── Top bar ── */}
+                <div className="mvf-topbar">
+                    <img
+                        src={garooLogo}
+                        alt="Garoo"
+                        className="mvf-topbar-logo"
+                    />
+                    <div className="mvf-topbar-info">
+                        <p className="mvf-topbar-title">
+                            Gestión Documental de Facturas
+                        </p>
+                    </div>
+                    <span className="mvf-badge">Portal Activo</span>
                 </div>
 
-                <Form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="flex-fill-content"
-                >
-                    <div className="row g-4 h-100">
-                        {/* Columna de vistas previas */}
-                        <div className="col-12 col-lg-7 order-2 order-lg-1 h-100-lg">
-                            {/* Card PDF */}
-                            <div className="card shadow border-1 border-danger mb-3 overflow-hidden preview-card-half">
-                                <div
-                                    className="card-header border-0 py-3 bg-white"
-                                    style={{
-                                        borderBottom: `1px solid ${colors.border}`,
-                                    }}
-                                >
-                                    <h6
-                                        className="mb-0 fw-bold d-flex align-items-center"
-                                        style={{ color: colors.primary }}
+                {/* ── Main layout ── */}
+                <div className="mvf-body">
+                    {/* Left — Previews */}
+                    <div className="mvf-previews">
+                        {/* PDF Preview */}
+                        <div className="mvf-preview-card">
+                            <div className="mvf-preview-header">
+                                <span className="mvf-preview-header-icon pdf">
+                                    <i className="bi bi-file-earmark-pdf-fill"></i>
+                                </span>
+                                <span className="mvf-preview-label">
+                                    Visualización PDF
+                                </span>
+                                {selectedPdf && (
+                                    <span
+                                        style={{
+                                            marginLeft: "auto",
+                                            fontSize: "0.7rem",
+                                            color: "#34d399",
+                                            fontWeight: 600,
+                                        }}
                                     >
-                                        <i
-                                            className="bi bi-file-earmark-pdf-fill me-2"
-                                            style={{ color: colors.danger }}
-                                        ></i>
-                                        Visualización de Archivo PDF
-                                    </h6>
-                                </div>
-                                <div className="card-body p-0 flex-grow-1 overflow-auto">
-                                    {pdfUrl ? (
-                                        <iframe
-                                            src={pdfUrl}
-                                            width="100%"
-                                            height="100%"
-                                            title="PDF Preview"
-                                            style={{
-                                                border: "none",
-                                                minHeight: "200px",
-                                            }}
-                                        />
-                                    ) : (
-                                        <div
-                                            className="d-flex flex-column align-items-center justify-content-center h-100"
-                                            style={{
-                                                backgroundColor:
-                                                    colors.bgSubtle,
-                                            }}
-                                        >
-                                            <i
-                                                className="bi bi-file-earmark-pdf text-light-emphasis mb-2"
-                                                style={{ fontSize: "2.5rem" }}
-                                            ></i>
-                                            <p className="text-muted small">
-                                                No se ha cargado ningún archivo
-                                                PDF
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                                        ✓ {selectedPdf.name}
+                                    </span>
+                                )}
                             </div>
-
-                            {/* Card XML */}
-                            <div className="card shadow border-1 border-primary mb-0 overflow-hidden preview-card-half">
-                                <div
-                                    className="card-header border-0 py-3 bg-white"
-                                    style={{
-                                        borderBottom: `1px solid ${colors.border}`,
-                                    }}
-                                >
-                                    <h6
-                                        className="mb-0 fw-bold d-flex align-items-center"
-                                        style={{ color: colors.primary }}
-                                    >
-                                        <i
-                                            className="bi bi-code-slash me-2"
-                                            style={{ color: colors.accent }}
-                                        ></i>
-                                        Estructura de Datos XML
-                                    </h6>
-                                </div>
-
-                                <div className="card-body p-0 flex-grow-1 overflow-auto">
-                                    {xmlContent ? (
-                                        <pre
-                                            className="mb-0"
-                                            style={{
-                                                height: "100%",
-                                                overflow: "auto",
-                                                backgroundColor: "#1e293b", // Slate 800 for code
-                                                color: "#f8fafc",
-                                                padding: "1.5rem",
-                                                fontSize: "0.8rem",
-                                                fontFamily:
-                                                    "'JetBrains Mono', 'Fira Code', monospace",
-                                                margin: 0,
-                                            }}
-                                        >
-                                            {xmlContent}
-                                        </pre>
-                                    ) : (
-                                        <div
-                                            className="d-flex flex-column align-items-center justify-content-center h-100"
-                                            style={{
-                                                backgroundColor:
-                                                    colors.bgSubtle,
-                                            }}
-                                        >
-                                            <i
-                                                className="bi bi-code-square text-light-emphasis mb-2"
-                                                style={{ fontSize: "2.5rem" }}
-                                            ></i>
-                                            <p className="text-muted small">
-                                                No se ha cargado ningún archivo
-                                                XML
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                            <div className="mvf-preview-body">
+                                {pdfUrl ? (
+                                    <iframe src={pdfUrl} title="PDF Preview" />
+                                ) : (
+                                    <div className="mvf-empty-state">
+                                        <span className="mvf-empty-icon pdf">
+                                            <i className="bi bi-file-earmark-pdf"></i>
+                                        </span>
+                                        <p className="mvf-empty-text">
+                                            Sube un archivo PDF para
+                                            previsualizar su contenido aquí
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* Columna de Formulario */}
-                        <div className="col-12 col-lg-5 px-xxl-5 px-xl-4 px-lg-3 px-md-5 px-2 order-1 order-lg-2 h-100-lg">
-                            <div
-                                className="card shadow h-100 overflow-hidden"
-                                style={{
-                                    borderColor: "gray",
-                                    border: "1px solid gray",
-                                }}
-                            >
-                                <div
-                                    className="card-header border-0 py-3 bg-white"
-                                    style={{
-                                        borderBottom: `1px solid ${colors.border}`,
-                                    }}
-                                >
-                                    <h6
-                                        className="mb-0 fw-bold d-flex align-items-center"
-                                        style={{ color: colors.primary }}
-                                    >
-                                        <i className="bi bi-pencil-square me-2"></i>
-                                        Formulario de Registro
-                                    </h6>
-                                </div>
-
-                                <div className="card-body p-4 overflow-auto">
-                                    {/* Sección: Identificación */}
-                                    <div className="mb-4">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <div
-                                                style={{
-                                                    width: "4px",
-                                                    height: "16px",
-                                                    backgroundColor:
-                                                        colors.accent,
-                                                    borderRadius: "0",
-                                                    marginRight: "10px",
-                                                }}
-                                            ></div>
-                                            <p
-                                                className="text-uppercase fw-bold mb-0"
-                                                style={{
-                                                    fontSize: "0.7rem",
-                                                    color: colors.primary,
-                                                    letterSpacing: "1px",
-                                                }}
-                                            >
-                                                Información General
-                                            </p>
-                                        </div>
-                                        <div
-                                            className="p-3 rounded-0 mb-3"
-                                            style={{
-                                                backgroundColor: "#ffffff",
-                                                border: `1px solid ${colors.border}`,
-                                            }}
-                                        >
-                                            <div className="mb-3">
-                                                <FloatingLabel
-                                                    controlId="nit"
-                                                    label="NIT Emisor"
-                                                >
-                                                    <Form.Control
-                                                        type="text"
-                                                        placeholder="NIT"
-                                                        className="high-contrast-input"
-                                                        {...register("nit", {
-                                                            required: true,
-                                                        })}
-                                                        isInvalid={!!errors.nit}
-                                                    />
-                                                </FloatingLabel>
-                                            </div>
-                                            <div>
-                                                <FloatingLabel
-                                                    controlId="serie"
-                                                    label="Serie / Número de Orden"
-                                                >
-                                                    <Form.Control
-                                                        type="text"
-                                                        placeholder="Serie"
-                                                        className="high-contrast-input"
-                                                        {...register("serie", {
-                                                            required: true,
-                                                        })}
-                                                        isInvalid={
-                                                            !!errors.serie
-                                                        }
-                                                    />
-                                                </FloatingLabel>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Sección: Carga de Archivos */}
-                                    <div className="mb-4">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <div
-                                                style={{
-                                                    width: "4px",
-                                                    height: "16px",
-                                                    backgroundColor:
-                                                        colors.accent,
-                                                    borderRadius: "0",
-                                                    marginRight: "10px",
-                                                }}
-                                            ></div>
-                                            <p
-                                                className="text-uppercase fw-bold mb-0"
-                                                style={{
-                                                    fontSize: "0.7rem",
-                                                    color: colors.primary,
-                                                    letterSpacing: "1px",
-                                                }}
-                                            >
-                                                Documentación Adjunta
-                                            </p>
-                                        </div>
-                                        <div
-                                            className="p-3 rounded-0"
-                                            style={{
-                                                backgroundColor: "#ffffff",
-                                                border: `1px solid ${colors.border}`,
-                                            }}
-                                        >
-                                            <div className="mb-3">
-                                                <label className="form-label small fw-bold text-secondary mb-1">
-                                                    Archivo PDF Oficial
-                                                </label>
-                                                <Form.Control
-                                                    type="file"
-                                                    accept=".pdf"
-                                                    {...register("pdf", {
-                                                        required: true,
-                                                        onChange: handlePdfChange
-                                                    })}
-                                                    isInvalid={!!errors.pdf}
-                                                    className="bg-white"
-                                                    style={{
-                                                        fontSize: "0.9rem",
-                                                    }}
-                                                />
-                                                {selectedPdf && (
-                                                    <div className="mt-1 small text-success">
-                                                        ✓ {selectedPdf.name}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="mb-0">
-                                                <label className="form-label small fw-bold text-secondary mb-1">
-                                                    Archivo XML (Estructura)
-                                                </label>
-                                                <Form.Control
-                                                    type="file"
-                                                    accept=".xml"
-                                                    {...register("xml", {
-                                                        required: true,
-                                                        onChange: handleXmlChange
-                                                    })}
-                                                    isInvalid={!!errors.xml}
-                                                    className="bg-white"
-                                                    style={{
-                                                        fontSize: "0.9rem",
-                                                    }}
-                                                />
-                                                {selectedXml && (
-                                                    <div className="mt-1 small text-success">
-                                                        ✓ {selectedXml.name}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <hr
-                                        className="my-4"
+                        {/* XML Preview */}
+                        <div className="mvf-preview-card">
+                            <div className="mvf-preview-header">
+                                <span className="mvf-preview-header-icon xml">
+                                    <i className="bi bi-code-slash"></i>
+                                </span>
+                                <span className="mvf-preview-label">
+                                    Estructura XML
+                                </span>
+                                {selectedXml && (
+                                    <span
                                         style={{
-                                            opacity: 0.1,
-                                            borderTop: `1px solid ${colors.primary}`,
-                                        }}
-                                    />
-
-                                    <button
-                                        type="submit"
-                                        className="btn w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center transform-active"
-                                        disabled={isLoading}
-                                        style={{
-                                            backgroundColor: colors.primary,
-                                            color: "white",
-                                            border: "none",
-                                            borderRadius: "0",
-                                            transition: "all 0.2s ease",
+                                            marginLeft: "auto",
+                                            fontSize: "0.7rem",
+                                            color: "#34d399",
+                                            fontWeight: 600,
                                         }}
                                     >
-                                        {isLoading ? (
-                                            <>
-                                                <span className="spinner-border spinner-border-sm me-2" />
-                                                Procesando Información...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="bi bi-shield-check me-2"></i>
-                                                Validar y Enviar Factura
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
+                                        ✓ {selectedXml.name}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="mvf-preview-body">
+                                {xmlContent ? (
+                                    <pre>{xmlContent}</pre>
+                                ) : (
+                                    <div className="mvf-empty-state">
+                                        <span className="mvf-empty-icon xml">
+                                            <i className="bi bi-code-square"></i>
+                                        </span>
+                                        <p className="mvf-empty-text">
+                                            Sube un archivo XML para ver su
+                                            estructura de datos aquí
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
-                </Form>
+
+                    {/* Right — Form */}
+                    <div className="mvf-form-col">
+                        <form
+                            className="mvf-form-card"
+                            onSubmit={handleSubmit(onSubmit)}
+                            noValidate
+                        >
+                            <div className="mvf-form-header">
+                                <p className="mvf-form-header-title">
+                                    <i
+                                        className="bi bi-pencil-square"
+                                        style={{ color: "#10b981" }}
+                                    ></i>
+                                    Formulario de Registro
+                                </p>
+                                <p className="mvf-form-header-sub">
+                                    Complete los campos y adjunte los documentos
+                                </p>
+                            </div>
+
+                            <div className="mvf-form-body">
+                                {/* Section: Identificación */}
+                                <p className="mvf-section-label">
+                                    Identificación
+                                </p>
+
+                                <div className="mvf-group">
+                                    <label className="mvf-label" htmlFor="nit">
+                                        NIT Emisor{" "}
+                                        <span className="req">*</span>
+                                    </label>
+                                    <input
+                                        id="nit"
+                                        className={`mvf-input${errors.nit ? " err" : ""}`}
+                                        type="text"
+                                        placeholder="Ej: 1234567-8"
+                                        {...register("nit", { required: true })}
+                                    />
+                                    {errors.nit && (
+                                        <p className="mvf-err-msg">
+                                            El NIT es requerido
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div
+                                    className="mvf-group"
+                                    style={{ marginBottom: "1.4rem" }}
+                                >
+                                    <label
+                                        className="mvf-label"
+                                        htmlFor="serie"
+                                    >
+                                        Serie / Número de Orden{" "}
+                                        <span className="req">*</span>
+                                    </label>
+                                    <input
+                                        id="serie"
+                                        className={`mvf-input${errors.serie ? " err" : ""}`}
+                                        type="text"
+                                        placeholder="Ej: A-001"
+                                        {...register("serie", {
+                                            required: true,
+                                        })}
+                                    />
+                                    {errors.serie && (
+                                        <p className="mvf-err-msg">
+                                            La serie es requerida
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Section: Documentación */}
+                                <p className="mvf-section-label">
+                                    Documentación
+                                </p>
+
+                                {/* PDF Upload */}
+                                <div className="mvf-group">
+                                    <label className="mvf-label">
+                                        Archivo PDF Oficial{" "}
+                                        <span className="req">*</span>
+                                    </label>
+                                    <div className="mvf-file-wrapper">
+                                        <label className="mvf-file-custom">
+                                            <input
+                                                type="file"
+                                                accept=".pdf"
+                                                {...register("pdf", {
+                                                    required: true,
+                                                    onChange: handlePdfChange,
+                                                })}
+                                            />
+                                            <span className="mvf-file-icon pdf">
+                                                <i className="bi bi-file-earmark-pdf-fill"></i>
+                                            </span>
+                                            <div className="mvf-file-text">
+                                                {selectedPdf ? (
+                                                    <p className="chosen">
+                                                        {selectedPdf.name}
+                                                    </p>
+                                                ) : (
+                                                    <>
+                                                        <p className="main">
+                                                            Seleccionar PDF
+                                                        </p>
+                                                        <p className="sub">
+                                                            Haz clic para cargar
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </label>
+                                    </div>
+                                    {errors.pdf && (
+                                        <p className="mvf-err-msg">
+                                            El PDF es requerido
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* XML Upload */}
+                                <div
+                                    className="mvf-group"
+                                    style={{ marginBottom: "1.4rem" }}
+                                >
+                                    <label className="mvf-label">
+                                        Archivo XML{" "}
+                                        <span className="req">*</span>
+                                    </label>
+                                    <div className="mvf-file-wrapper">
+                                        <label className="mvf-file-custom">
+                                            <input
+                                                type="file"
+                                                accept=".xml"
+                                                {...register("xml", {
+                                                    required: true,
+                                                    onChange: handleXmlChange,
+                                                })}
+                                            />
+                                            <span className="mvf-file-icon xml">
+                                                <i className="bi bi-code-slash"></i>
+                                            </span>
+                                            <div className="mvf-file-text">
+                                                {selectedXml ? (
+                                                    <p className="chosen">
+                                                        {selectedXml.name}
+                                                    </p>
+                                                ) : (
+                                                    <>
+                                                        <p className="main">
+                                                            Seleccionar XML
+                                                        </p>
+                                                        <p className="sub">
+                                                            Haz clic para cargar
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </label>
+                                    </div>
+                                    {errors.xml && (
+                                        <p className="mvf-err-msg">
+                                            El XML es requerido
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="mvf-divider"></div>
+
+                                {/* Submit */}
+                                <button
+                                    type="submit"
+                                    className="mvf-btn"
+                                    disabled={isLoading}
+                                    id="submit-mundo-verde-form"
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <span className="mvf-spinner"></span>
+                                            Procesando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="bi bi-shield-check"></i>
+                                            Validar y Enviar Factura
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <RB_Toast
@@ -565,113 +980,7 @@ const FormPage = () => {
                 toastMessage={toastMessage}
                 position="middle-center"
             />
-
-            <style>{`
-                .card, .card-header, .card-footer, .form-control, .btn, .rounded, .rounded-1, .rounded-2, .rounded-3, .rounded-4, .rounded-5, .toast, .toast-header {
-                    border-radius: 0 !important;
-                }
-                .transform-active:active {
-                    transform: scale(0.98);
-                }
-                .x-small {
-                    font-size: 0.75rem;
-                }
-                input.high-contrast-input, 
-                .form-control.high-contrast-input {
-                    color: #000000 !important;
-                    background-color: #ffffff !important;
-                    background: #ffffff !important;
-                    border: 2px solid #94a3b8 !important;
-                    font-size: 1.15rem !important;
-                    font-weight: 700 !important;
-                    height: calc(3.5rem + 2px) !important;
-                    padding: 1.625rem 0.75rem 0.625rem 0.75rem !important;
-                }
-                .high-contrast-input:focus {
-                    border-color: #3b82f6 !important;
-                    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.2) !important;
-                    background-color: #ffffff !important;
-                    color: #000000 !important;
-                }
-                .form-floating > label {
-                    color: #475569 !important;
-                    font-weight: 500 !important;
-                    opacity: 0.8 !important;
-                }
-                .form-floating > .form-control:focus ~ label,
-                .form-floating > .form-control:not(:placeholder-shown) ~ label {
-                    color: #2563eb !important;
-                    font-weight: 700 !important;
-                    opacity: 1 !important;
-                    transform: scale(0.85) translateY(-0.75rem) translateX(0.15rem) !important;
-                }
-                .card {
-                    transition: transform 0.2s ease, box-shadow 0.2s ease;
-                }
-                .card:hover {
-                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-                }
-                
-                @media (min-width: 992px) {
-                    .main-wrapper {
-                        height: 100vh;
-                        overflow: hidden;
-                    }
-                    .main-container-dashboard {
-                        height: 100vh;
-                        display: flex;
-                        flex-direction: column;
-                    }
-                    .flex-fill-content {
-                        flex: 1;
-                        overflow: hidden;
-                        padding-bottom: 30px;
-                    }
-                    .h-100-lg {
-                        height: 100% !important;
-                        display: flex;
-                        flex-direction: column;
-                    }
-                    .preview-card-half {
-                        flex: 1;
-                        display: flex;
-                        flex-direction: column;
-                        min-height: 0;
-                    }
-                    /* Ocultamos scroll de la página pero permitimos interno */
-                    body {
-                        overflow: hidden;
-                    }
-                }
-
-                @media (max-width: 991px) {
-                    .responsive-preview-container {
-                        height: 350px;
-                    }
-                    .main-wrapper {
-                        overflow-y: auto;
-                    }
-                }
-                @media (max-width: 576px) {
-                    .responsive-preview-container {
-                        height: 300px;
-                    }
-                    .responsive-title {
-                        font-size: 1.5rem;
-                    }
-                    .container-fluid {
-                        padding-left: 1rem !important;
-                        padding-right: 1rem !important;
-                    }
-                }
-                @media (min-width: 1400px) {
-                   .container-fluid {
-                       padding-left: 6rem !important;
-                       padding-right: 6rem !important;
-                   }
-                }
-            `}</style>
-        </div>
+        </>
     );
 };
 

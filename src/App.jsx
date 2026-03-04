@@ -16,6 +16,7 @@ import { ApplicationsProvider } from "./config/ApplicationsProvider";
 import { FormProvider } from "./config/FormProvider.jsx";
 import Form from "./pages/Form.jsx";
 import Applications from "./pages/Applications.jsx";
+import SpectrumLeads from "./pages/SpectrumLeads.jsx";
 import Services from "./pages/Services.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -39,7 +40,12 @@ function App() {
 
 function AppContent() {
     const location = useLocation();
-    const hideLayoutRoutes = ["/outbound-call-form", "/form"];
+    const hideLayoutRoutes = [
+        "/outbound-call-form",
+        "/form",
+        "/applications",
+        "/spectrum-leads",
+    ];
     const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
@@ -71,6 +77,10 @@ function AppContent() {
                         <Route
                             path="/outbound-call-form"
                             element={<OutboundCallForm />}
+                        />
+                        <Route
+                            path="/spectrum-leads"
+                            element={<SpectrumLeads />}
                         />
                         <Route path="*" element={<Home />} />
                     </Routes>

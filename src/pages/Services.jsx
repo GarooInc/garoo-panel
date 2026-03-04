@@ -1,47 +1,105 @@
-
-import Card_RB from "../components/Card_RB";
-// import styles from "./home.module.css";
-
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Services.module.css";
 
 const Services = () => {
-
     const navigateTo = useNavigate();
 
     const services = [
-        { title: "RocknRolla Jobs", description: "Selección de talento calificado para tu empresa, adaptado a tus necesidades específicas." },
-        { title: "Mundo Verde Form", description: "Envío rápido y seguro de datos de facturas para procesamiento eficiente." },
-        { title: "Itzana Data Agent", description: "Agente inteligente para análisis y procesamiento automatizado de datos empresariales." },
-
-
-
-
+        {
+            title: "RocknRolla Aplicaciones",
+            description:
+                "Selección de talento calificado para tu empresa, adaptado a tus necesidades específicas.",
+            icon: "bi-person-vcard",
+            path: "/applications",
+            cardClass: styles.jobCard,
+            openInNewTab: true,
+        },
+        {
+            title: "Mundo Verde Form",
+            description:
+                "Envío rápido y seguro de datos de facturas para procesamiento eficiente.",
+            icon: "bi-receipt-cutoff",
+            path: "/form",
+            cardClass: styles.formCard,
+            openInNewTab: true,
+        },
+        {
+            title: "Formulario de Llamadas",
+            description:
+                "Gestiona y registra llamadas outbound de forma rápida y estructurada.",
+            icon: "bi-telephone-outbound",
+            path: "/outbound-call-form",
+            cardClass: styles.callCard,
+            openInNewTab: true,
+        },
+        {
+            title: "Spectrum Leads",
+            description:
+                "Dashboard de leads en tiempo real conectado al agente de Spectrum vía webhook.",
+            icon: "bi-graph-up-arrow",
+            path: "/spectrum-leads",
+            cardClass: styles.spectrumCard,
+            openInNewTab: true,
+        },
     ];
-
-    const handleButtonClick = (index) => {
-        // Handle button click logic here
-
-        if (index === 0) navigateTo('/applications');
-        if (index === 1) navigateTo('/form');
-        if (index === 2) navigateTo('/data-agent');
+    const handleButtonClick = (service) => {
+        if (service.openInNewTab) {
+            window.open(service.path, "_blank", "noopener,noreferrer");
+        } else {
+            navigateTo(service.path);
+        }
     };
 
-
     return (
-        <div className="d-flex flex-wrap gap-5">
-            {
-                services.map((service, index) => (
+        <div className={styles.servicesContainer}>
+            <div className={styles.header}>
+                <h1 className={styles.title}>Nuestros Servicios</h1>
+                <p className={styles.subtitle}>
+                    Soluciones tecnológicas diseñadas para impulsar el
+                    crecimiento, la eficiencia y la automatización en tu
+                    empresa.
+                </p>
+            </div>
 
-                    <Card_RB
+            <div className={styles.grid}>
+                {services.map((service, index) => (
+                    <div
                         key={index}
-                        title={service.title}
-                        text={service.description}
-                        buttonText="Entrar"
-                        onButtonClick={() => handleButtonClick(index)}
-                    />
+                        className={`${styles.card} ${service.cardClass}`}
+                        onClick={() => handleButtonClick(service)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                handleButtonClick(service);
+                            }
+                        }}
+                    >
+                        <div className={styles.iconContainer}>
+                            <i className={`bi ${service.icon}`}></i>
+                        </div>
 
-                ))
-            }
+                        <h3 className={styles.cardTitle}>{service.title}</h3>
+
+                        <p className={styles.cardDesc}>{service.description}</p>
+
+                        <button
+                            className={styles.enterBtn}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleButtonClick(service);
+                            }}
+                            aria-label={`Entrar a ${service.title}`}
+                        >
+                            Explorar servicio
+                            <i
+                                className={`bi bi-arrow-right ${styles.arrowIcon}`}
+                            ></i>
+                        </button>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
