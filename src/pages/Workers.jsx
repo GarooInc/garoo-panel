@@ -312,19 +312,19 @@ const Workers = () => {
 
     const filteredWorkers = Array.isArray(data)
         ? data.filter((worker) => {
-              if (!searchTerm) return true;
-              const searchLower = searchTerm.toLowerCase();
-              return (
-                  worker.nombre_completo?.toLowerCase().includes(searchLower) ||
-                  worker.puesto_solicitud
-                      ?.toLowerCase()
-                      .includes(searchLower) ||
-                  worker.nacionalidad?.toLowerCase().includes(searchLower) ||
-                  worker.disponibilidad_laboral
-                      ?.toLowerCase()
-                      .includes(searchLower)
-              );
-          })
+            if (!searchTerm) return true;
+            const searchLower = searchTerm.toLowerCase();
+            return (
+                worker.nombre_completo?.toLowerCase().includes(searchLower) ||
+                worker.puesto_solicitud
+                    ?.toLowerCase()
+                    .includes(searchLower) ||
+                worker.nacionalidad?.toLowerCase().includes(searchLower) ||
+                worker.disponibilidad_laboral
+                    ?.toLowerCase()
+                    .includes(searchLower)
+            );
+        })
         : [];
 
     return (
@@ -332,7 +332,7 @@ const Workers = () => {
             <Card>
                 <Card.Body className="">
                     <Card.Title className="mb-5 d-flex justify-content-between mx-1">
-                        <span className="fs-1 fw-bold">Reclutamiento</span>
+                        <span className="fs-1 fw-bold">Gestión de Talento</span>
                         <Image
                             src={garooLogo}
                             roundedCircle
@@ -440,7 +440,7 @@ const Workers = () => {
 
                                         <tbody>
                                             {filteredWorkers.length === 0 &&
-                                            !loading ? (
+                                                !loading ? (
                                                 <tr>
                                                     <td
                                                         colSpan="7"
