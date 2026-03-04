@@ -11,26 +11,24 @@ export const useFormData = () => {
     return context;
 };
 
-
 export const FormProvider = ({ children }) => {
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-
-
     const sendData = async (form_data) => {
-
         setLoading(true);
         setError(null);
 
         try {
             // Para FormData con archivos, no establecer Content-Type manualmente
             // El navegador lo configurará automáticamente con el boundary correcto
-            const response = await fetch('https://n8n.srv853599.hstgr.cloud/webhook/8481ab6d-c964-41f6-86a4-17f7e0f84788', {
-                method: 'POST',
-                body: form_data // Enviar FormData directamente, sin JSON.stringify
-            });
+            const response = await fetch(
+                "https://n8n.srv853599.hstgr.cloud/webhook/8481ab6d-c964-41f6-86a4-17f7e0f84788",
+                {
+                    method: "POST",
+                    body: form_data, // Enviar FormData directamente, sin JSON.stringify
+                },
+            );
 
             if (!response.ok) {
                 // Intentar obtener más detalles del error
@@ -40,9 +38,7 @@ export const FormProvider = ({ children }) => {
                     if (errorText) {
                         errorMessage += ` - ${errorText}`;
                     }
-                }
-                // eslint-disable-next-line no-unused-vars
-                catch (e) {
+                } catch {
                     // Si no se puede leer el texto del error, usar el mensaje básico
                 }
                 throw new Error(errorMessage);
@@ -52,24 +48,20 @@ export const FormProvider = ({ children }) => {
             try {
                 const result = await response.json();
                 return result;
-            } catch (jsonError) {
+            } catch {
                 // Si no es JSON válido, intentar leer como texto
                 const textResult = await response.text();
-                return { message: textResult || 'Operación completada exitosamente' };
+                return {
+                    message: textResult || "Operación completada exitosamente",
+                };
             }
-
-
-        }
-        catch (err) {
+        } catch (err) {
             setError(err.message);
             throw err;
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
     };
-
-
 
     return (
         <FormContext.Provider
@@ -78,7 +70,7 @@ export const FormProvider = ({ children }) => {
                 error,
                 setLoading,
                 setError,
-                sendData
+                sendData,
             }}
         >
             {children}

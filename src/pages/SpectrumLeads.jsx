@@ -1,910 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
+import LeadModal from "../components/LeadModal";
+import { Avatar } from "../components/LeadModalComponents";
+import { getEmotionStyle, getChannelInfo } from "../utils/leadHelpers";
+import { formatFullDate } from "../utils/dateHelpers";
 import garooLogo from "../assets/img/garoo-logo.png";
 
 const WEBHOOK_URL = "/spectrum-proxy/webhook/leads";
-
-const EMOTION_COLORS = {
-    POSITIVO: {
-        bg: "rgba(16,185,129,.15)",
-        border: "rgba(16,185,129,.3)",
-        text: "#34d399",
-    },
-    NEGATIVO: {
-        bg: "rgba(239,68,68,.12)",
-        border: "rgba(239,68,68,.3)",
-        text: "#f87171",
-    },
-    NEUTRO: {
-        bg: "rgba(148,163,184,.1)",
-        border: "rgba(148,163,184,.25)",
-        text: "#94a3b8",
-    },
-    URGENTE: {
-        bg: "rgba(245,158,11,.12)",
-        border: "rgba(245,158,11,.3)",
-        text: "#fbbf24",
-    },
-};
-
-const CHANNEL_ICONS = {
-    WhatsApp: { icon: "bi-whatsapp", color: "#25d366" },
-    Telegram: { icon: "bi-telegram", color: "#2aabee" },
-    Email: { icon: "bi-envelope", color: "#a78bfa" },
-    Web: { icon: "bi-globe", color: "#60a5fa" },
-};
-
-function getEmotionStyle(e) {
-    return EMOTION_COLORS[e?.toUpperCase()] || EMOTION_COLORS.NEUTRO;
-}
-
-function getChannelInfo(ch) {
-    return CHANNEL_ICONS[ch] || { icon: "bi-chat-dots", color: "#a78bfa" };
-}
-
-function formatDate(iso) {
-    if (!iso) return "—";
-    try {
-        return new Intl.DateTimeFormat("es-GT", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-        }).format(new Date(iso));
-    } catch {
-        return iso;
-    }
-}
-
-function Avatar({ name, size = 36 }) {
-    const letter = name ? name.trim()[0].toUpperCase() : "?";
-    return (
-        <div
-            style={{
-                width: size,
-                height: size,
-                borderRadius: "50%",
-                flexShrink: 0,
-                background:
-                    "linear-gradient(135deg,rgba(139,92,246,.3),rgba(167,139,250,.2))",
-                border: `${size * 0.04}px solid rgba(139,92,246,.35)`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: `${size * 0.4}px`,
-                fontWeight: 700,
-                color: "#c4b5fd",
-            }}
-        >
-            {letter}
-        </div>
-    );
-}
-
-/* ─────────────────────────────────────────────────
-   Modal helper components (module-level, not inside render)
-───────────────────────────────────────────────── */
-function ModalSection({ label, children }) {
-    return (
-        <div style={{ marginBottom: "1.75rem" }}>
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.75rem",
-                    marginBottom: "0.8rem",
-                }}
-            >
-                <p
-                    style={{
-                        margin: 0,
-                        fontSize: ".68rem",
-                        fontWeight: 800,
-                        textTransform: "uppercase",
-                        letterSpacing: ".1em",
-                        color: "#64748b",
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    {label}
-                </p>
-                <div
-                    style={{
-                        flex: 1,
-                        height: "1px",
-                        background: "rgba(255,255,255,0.05)",
-                    }}
-                />
-            </div>
-            {children}
-        </div>
-    );
-}
-
-function ModalField({ icon, label, value, color }) {
-    return (
-        <div
-            style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: ".6rem",
-                marginBottom: ".5rem",
-            }}
-        >
-            <i
-                className={`bi ${icon}`}
-                style={{
-                    color: color || "#8b5cf6",
-                    fontSize: ".85rem",
-                    marginTop: "2px",
-                    flexShrink: 0,
-                    width: "14px",
-                }}
-            />
-            <div style={{ minWidth: 0 }}>
-                <span
-                    style={{
-                        fontSize: ".65rem",
-                        color: "#475569",
-                        display: "block",
-                    }}
-                >
-                    {label}
-                </span>
-                <span
-                    style={{
-                        fontSize: ".84rem",
-                        color: "#e2e8f0",
-                        fontWeight: 500,
-                        wordBreak: "break-word",
-                    }}
-                >
-                    {value || "—"}
-                </span>
-            </div>
-        </div>
-    );
-}
-
-function ModalChip({ label, value, icon, color, bg, border }) {
-    return (
-        <div
-            style={{
-                background: bg || "rgba(255,255,255,.04)",
-                border: `1px solid ${border || "rgba(255,255,255,.08)"}`,
-                borderRadius: "10px",
-                padding: ".65rem .8rem",
-            }}
-        >
-            <p
-                style={{
-                    margin: "0 0 3px",
-                    fontSize: ".58rem",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: ".06em",
-                    color: "#475569",
-                }}
-            >
-                {label}
-            </p>
-            <p
-                style={{
-                    margin: 0,
-                    fontWeight: 700,
-                    color: color || "#e2e8f0",
-                    fontSize: ".82rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: ".3rem",
-                }}
-            >
-                {icon && (
-                    <i
-                        className={`bi ${icon}`}
-                        style={{ fontSize: ".75rem" }}
-                    />
-                )}
-                {value}
-            </p>
-        </div>
-    );
-}
-
-function ChatBubble({ type, content }) {
-    const isAi = type === "ai";
-
-    let text = content;
-    if (isAi) {
-        try {
-            const parsed = JSON.parse(content);
-            text = parsed.response || content;
-        } catch {
-            text = content;
-        }
-    }
-
-    return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: isAi ? "flex-start" : "flex-end",
-                marginBottom: "0.75rem",
-                width: "100%",
-            }}
-        >
-            <div
-                style={{
-                    maxWidth: "85%",
-                    padding: "0.75rem 1rem",
-                    borderRadius: isAi
-                        ? "16px 16px 16px 4px"
-                        : "16px 16px 4px 16px",
-                    background: isAi
-                        ? "rgba(139,92,246,0.12)"
-                        : "rgba(30,41,59,0.7)",
-                    border: isAi
-                        ? "1px solid rgba(139,92,246,0.2)"
-                        : "1px solid rgba(255,255,255,0.08)",
-                    color: isAi ? "#c4b5fd" : "#f1f5f9",
-                    fontSize: "0.86rem",
-                    lineHeight: 1.5,
-                }}
-            >
-                {isAi && (
-                    <div
-                        style={{
-                            fontSize: "0.6rem",
-                            fontWeight: 800,
-                            textTransform: "uppercase",
-                            color: "#8b5cf6",
-                            marginBottom: "0.25rem",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.25rem",
-                        }}
-                    >
-                        <i className="bi bi-robot" /> AGENTE SOFÍA
-                    </div>
-                )}
-                {!isAi && (
-                    <div
-                        style={{
-                            fontSize: "0.6rem",
-                            fontWeight: 800,
-                            textTransform: "uppercase",
-                            color: "#94a3b8",
-                            marginBottom: "0.25rem",
-                            textAlign: "right",
-                        }}
-                    >
-                        LEAD
-                    </div>
-                )}
-                <div style={{ whiteSpace: "pre-wrap" }}>{text}</div>
-            </div>
-        </div>
-    );
-}
-
-function ChatHistory({ chatData }) {
-    if (!chatData) return null;
-
-    const part1 = chatData.chat?.["1ra_parte"] || [];
-    const part2 = chatData.chat?.["2da_parte"] || [];
-    const allMessages = [...part1, ...part2];
-
-    if (allMessages.length === 0)
-        return (
-            <div
-                style={{
-                    padding: "2.5rem",
-                    textAlign: "center",
-                    color: "#475569",
-                    fontSize: "0.9rem",
-                    background: "rgba(0,0,0,0.1)",
-                    borderRadius: "16px",
-                    border: "1px dashed rgba(255,255,255,0.05)",
-                }}
-            >
-                <i
-                    className="bi bi-chat-dots"
-                    style={{
-                        fontSize: "1.5rem",
-                        display: "block",
-                        marginBottom: "0.5rem",
-                        opacity: 0.3,
-                    }}
-                />
-                No se encontraron mensajes en el historial.
-            </div>
-        );
-
-    return (
-        <ModalSection label="Diálogo Completo">
-            <div
-                className="sl-custom-scroll"
-                style={{
-                    background: "rgba(0,0,0,0.15)",
-                    borderRadius: "20px",
-                    padding: "1.5rem",
-                    border: "1px solid rgba(255,255,255,0.03)",
-                    maxHeight: "500px",
-                    overflowY: "auto",
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-            >
-                {part1.length > 0 && (
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1rem",
-                            margin: "0.5rem 0 1.5rem",
-                        }}
-                    >
-                        <div
-                            style={{
-                                flex: 1,
-                                height: "1px",
-                                background:
-                                    "linear-gradient(to right, transparent, rgba(139,92,246,0.1))",
-                            }}
-                        />
-                        <span
-                            style={{
-                                fontSize: "0.55rem",
-                                fontWeight: 800,
-                                color: "#475569",
-                                letterSpacing: "0.15em",
-                            }}
-                        >
-                            INICIO DE SESIÓN
-                        </span>
-                        <div
-                            style={{
-                                flex: 1,
-                                height: "1px",
-                                background:
-                                    "linear-gradient(to left, transparent, rgba(139,92,246,0.1))",
-                            }}
-                        />
-                    </div>
-                )}
-                {part1.map((msg, idx) => (
-                    <ChatBubble
-                        key={`p1-${idx}`}
-                        type={msg.type}
-                        content={msg.data?.content}
-                    />
-                ))}
-
-                {part2.length > 0 && (
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1rem",
-                            margin: "2rem 0 1.5rem",
-                        }}
-                    >
-                        <div
-                            style={{
-                                flex: 1,
-                                height: "1px",
-                                background:
-                                    "linear-gradient(to right, transparent, rgba(52,211,153,0.1))",
-                            }}
-                        />
-                        <span
-                            style={{
-                                fontSize: "0.55rem",
-                                fontWeight: 800,
-                                color: "#475569",
-                                letterSpacing: "0.15em",
-                            }}
-                        >
-                            CONTINUACIÓN
-                        </span>
-                        <div
-                            style={{
-                                flex: 1,
-                                height: "1px",
-                                background:
-                                    "linear-gradient(to left, transparent, rgba(52,211,153,0.1))",
-                            }}
-                        />
-                    </div>
-                )}
-                {part2.map((msg, idx) => (
-                    <ChatBubble
-                        key={`p2-${idx}`}
-                        type={msg.type}
-                        content={msg.data?.content}
-                    />
-                ))}
-            </div>
-        </ModalSection>
-    );
-}
-
-/* ─────────────────────────────────────────────────
-   Lead Modal (centered)
-───────────────────────────────────────────────── */
-function LeadModal({ lead, onClose }) {
-    const [isCalling, setIsCalling] = useState(false);
-    const [actionResult, setActionResult] = useState(null);
-
-    const handleAction = async () => {
-        if (!lead?.user_id && !lead?.id) return;
-        setIsCalling(true);
-        setActionResult(null);
-        try {
-            const response = await fetch(
-                "https://agentsprod.redtec.ai/webhook/lead-chat",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ user_id: lead.user_id || lead.id }),
-                },
-            );
-            const data = await response.json();
-            setActionResult(data);
-        } catch (err) {
-            console.error("Error fetching chat:", err);
-            setActionResult({ error: err.message });
-        } finally {
-            setIsCalling(false);
-        }
-    };
-
-    useEffect(() => {
-        if (lead) handleAction();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [lead?.id, lead?.user_id]);
-
-    if (!lead) return null;
-    const em = getEmotionStyle(lead.emocion_detectada);
-    const ch = getChannelInfo(lead.input_channel);
-    const name = lead.name || lead.whatsapp_name || "Sin nombre";
-
-    // Close on Escape
-    const handleKey = (evt) => {
-        if (evt.key === "Escape") onClose();
-    };
-    const ref = (el) => {
-        if (el) el.focus();
-    };
-
-    return (
-        <div
-            tabIndex={-1}
-            ref={ref}
-            onKeyDown={handleKey}
-            style={{
-                position: "fixed",
-                inset: 0,
-                zIndex: 9999,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "1rem",
-                outline: "none",
-            }}
-        >
-            {/* Backdrop */}
-            <div
-                onClick={onClose}
-                style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "rgba(0,0,0,.65)",
-                    backdropFilter: "blur(6px)",
-                }}
-            />
-
-            {/* Modal box */}
-            <div
-                style={{
-                    position: "relative",
-                    zIndex: 1,
-                    width: "min(1250px, 97vw)",
-                    maxHeight: "92vh",
-                    background:
-                        "linear-gradient(160deg,#0d1628 0%,#080f1e 100%)",
-                    border: "1px solid rgba(139,92,246,.2)",
-                    borderRadius: "24px",
-                    boxShadow:
-                        "0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(139,92,246,.08)",
-                    display: "flex",
-                    flexDirection: "column",
-                    overflow: "hidden",
-                }}
-            >
-                {/* ── Header ── */}
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1.25rem",
-                        padding: "1.5rem 1.75rem",
-                        borderBottom: "1px solid rgba(255,255,255,.05)",
-                        background: "rgba(139,92,246,.04)",
-                        flexShrink: 0,
-                    }}
-                >
-                    <Avatar name={name} size={46} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                        <h2
-                            style={{
-                                margin: 0,
-                                fontSize: "1.35rem",
-                                fontWeight: 900,
-                                color: "#f8fafc",
-                                letterSpacing: "-.03em",
-                            }}
-                        >
-                            {name}
-                        </h2>
-                    </div>
-                    {/* Reserva badge */}
-                    <span
-                        style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: ".35rem",
-                            padding: "4px 12px",
-                            borderRadius: "100px",
-                            fontSize: ".7rem",
-                            fontWeight: 700,
-                            background: lead.has_reservation
-                                ? "rgba(16,185,129,.12)"
-                                : "rgba(100,116,139,.1)",
-                            border: `1px solid ${lead.has_reservation ? "rgba(16,185,129,.3)" : "rgba(100,116,139,.2)"}`,
-                            color: lead.has_reservation ? "#34d399" : "#64748b",
-                        }}
-                    >
-                        <i
-                            className={`bi ${lead.has_reservation ? "bi-calendar-check" : "bi-calendar-x"}`}
-                        />
-                        {lead.has_reservation ? "Con reserva" : "Sin reserva"}
-                    </span>
-                    <div style={{ marginLeft: "auto" }} />
-                    <button
-                        onClick={onClose}
-                        style={{
-                            background: "rgba(255,255,255,.06)",
-                            border: "1px solid rgba(255,255,255,.1)",
-                            borderRadius: "8px",
-                            color: "#94a3b8",
-                            cursor: "pointer",
-                            width: 34,
-                            height: 34,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: ".9rem",
-                            flexShrink: 0,
-                            marginLeft: ".5rem",
-                        }}
-                    >
-                        <i className="bi bi-x-lg" />
-                    </button>
-                </div>
-
-                {/* ── Body (scrollable) ── */}
-                <div
-                    className="sl-custom-scroll"
-                    style={{ flex: 1, overflowY: "auto", padding: "1.75rem" }}
-                >
-                    {/* Action Result Info */}
-                    {actionResult && actionResult.error && (
-                        <div
-                            style={{
-                                marginBottom: "1.5rem",
-                                padding: "1rem 1.25rem",
-                                borderRadius: "14px",
-                                background: "rgba(239,68,68,.08)",
-                                border: "1px solid rgba(239,68,68,.15)",
-                                color: "#fca5a5",
-                                fontSize: ".82rem",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: ".75rem",
-                                animation: "sl-fade-in .3s ease-out",
-                            }}
-                        >
-                            <i className="bi bi-exclamation-triangle-fill" />
-                            <span style={{ fontWeight: 500 }}>
-                                Error al sincronizar: {actionResult.error}
-                            </span>
-                            <button
-                                onClick={() => setActionResult(null)}
-                                style={{
-                                    marginLeft: "auto",
-                                    background: "rgba(255,255,255,0.05)",
-                                    border: "none",
-                                    color: "inherit",
-                                    borderRadius: "4px",
-                                    padding: "2px 6px",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                <i
-                                    className="bi bi-x-lg"
-                                    style={{ fontSize: "0.7rem" }}
-                                />
-                            </button>
-                        </div>
-                    )}
-
-                    <div
-                        className="sl-modal-grid"
-                        style={{
-                            display: "grid",
-                            gridTemplateColumns: "350px 1fr",
-                            gap: "0",
-                            alignItems: "stretch",
-                            height: "100%",
-                            minHeight: 0,
-                        }}
-                    >
-                        {/* LEFT column: All Data & Summaries */}
-                        <div
-                            className="sl-custom-scroll"
-                            style={{
-                                padding: "1.75rem",
-                                borderRight: "1px solid rgba(255,255,255,0.05)",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "0.5rem",
-                                overflowY: "auto",
-                            }}
-                        >
-                            <ModalSection label="Clasificación">
-                                <div
-                                    style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "1fr 1fr",
-                                        gap: ".5rem",
-                                        marginBottom: ".5rem",
-                                    }}
-                                >
-                                    <ModalChip
-                                        label="Canal"
-                                        value={lead.input_channel || "—"}
-                                        icon={ch.icon}
-                                        color={ch.color}
-                                    />
-                                    <ModalChip
-                                        label="Emoción"
-                                        value={lead.emocion_detectada || "—"}
-                                        icon="bi-emoji-smile"
-                                        color={em.text}
-                                        bg={em.bg}
-                                        border={em.border}
-                                    />
-                                    <ModalChip
-                                        label="Palabra clave"
-                                        value={lead.palabra_clave || "—"}
-                                        icon="bi-key"
-                                        color="#c4b5fd"
-                                        bg="rgba(139,92,246,.08)"
-                                        border="rgba(139,92,246,.2)"
-                                    />
-                                    <ModalChip
-                                        label="WhatsApp"
-                                        value={lead.whatsapp_name || "—"}
-                                        icon="bi-whatsapp"
-                                        color="#25d366"
-                                    />
-                                </div>
-                            </ModalSection>
-
-                            <ModalSection label="Contacto">
-                                <ModalField
-                                    icon="bi-person"
-                                    label="Nombre"
-                                    value={lead.name}
-                                />
-                                <ModalField
-                                    icon="bi-phone"
-                                    label="Teléfono"
-                                    value={lead.phone}
-                                />
-                                <ModalField
-                                    icon="bi-envelope"
-                                    label="Email"
-                                    value={lead.email}
-                                />
-                            </ModalSection>
-
-                            <ModalSection label="Interacciones">
-                                <ModalField
-                                    icon="bi-clock-history"
-                                    label="Primera"
-                                    value={formatDate(lead.first_interaction)}
-                                />
-                                <ModalField
-                                    icon="bi-clock"
-                                    label="Última"
-                                    value={formatDate(lead.last_interaction)}
-                                />
-                            </ModalSection>
-
-                            {(lead.last_message ||
-                                lead.last_agent_message ||
-                                lead.resumen_breve) && (
-                                <ModalSection label="Resúmenes Rápidos">
-                                    {lead.last_message && (
-                                        <div style={{ marginBottom: "1rem" }}>
-                                            <p
-                                                style={{
-                                                    margin: "0 0 4px",
-                                                    fontSize: "0.55rem",
-                                                    fontWeight: 800,
-                                                    color: "#475569",
-                                                    textTransform: "uppercase",
-                                                }}
-                                            >
-                                                Último Lead
-                                            </p>
-                                            <div
-                                                style={{
-                                                    background:
-                                                        "rgba(255,255,255,.03)",
-                                                    border: "1px solid rgba(255,255,255,.07)",
-                                                    borderRadius: "10px",
-                                                    padding: "0.75rem",
-                                                    color: "#cbd5e1",
-                                                    fontSize: "0.78rem",
-                                                }}
-                                            >
-                                                {lead.last_message}
-                                            </div>
-                                        </div>
-                                    )}
-                                    {lead.last_agent_message && (
-                                        <div style={{ marginBottom: "1rem" }}>
-                                            <p
-                                                style={{
-                                                    margin: "0 0 4px",
-                                                    fontSize: "0.55rem",
-                                                    fontWeight: 800,
-                                                    color: "#8b5cf6",
-                                                    textTransform: "uppercase",
-                                                }}
-                                            >
-                                                Última IA
-                                            </p>
-                                            <div
-                                                style={{
-                                                    background:
-                                                        "rgba(139,92,246,.07)",
-                                                    border: "1px solid rgba(139,92,246,.2)",
-                                                    borderRadius: "10px",
-                                                    padding: "0.75rem",
-                                                    color: "#c4b5fd",
-                                                    fontSize: "0.78rem",
-                                                }}
-                                            >
-                                                {lead.last_agent_message}
-                                            </div>
-                                        </div>
-                                    )}
-                                    {lead.resumen_breve && (
-                                        <div>
-                                            <p
-                                                style={{
-                                                    margin: "0 0 4px",
-                                                    fontSize: "0.55rem",
-                                                    fontWeight: 800,
-                                                    color: "#64748b",
-                                                    textTransform: "uppercase",
-                                                }}
-                                            >
-                                                Contexto IA
-                                            </p>
-                                            <div
-                                                style={{
-                                                    background:
-                                                        "rgba(255,255,255,.03)",
-                                                    border: "1px solid rgba(255,255,255,.07)",
-                                                    borderRadius: "10px",
-                                                    padding: "0.75rem",
-                                                    color: "#94a3b8",
-                                                    fontSize: "0.78rem",
-                                                }}
-                                            >
-                                                {lead.resumen_breve}
-                                            </div>
-                                        </div>
-                                    )}
-                                </ModalSection>
-                            )}
-                        </div>
-
-                        {/* RIGHT column: Extended Chat History */}
-                        <div
-                            className="sl-custom-scroll"
-                            style={{
-                                padding: "1.75rem",
-                                overflowY: "auto",
-                                background: "rgba(0,0,0,0.08)",
-                            }}
-                        >
-                            {isCalling && (
-                                <div
-                                    style={{
-                                        textAlign: "center",
-                                        padding: "4rem 2rem",
-                                    }}
-                                >
-                                    <div
-                                        className="sl-spinner"
-                                        style={{
-                                            margin: "0 auto 1.25rem",
-                                            width: "28px",
-                                            height: "28px",
-                                            borderWidth: "2px",
-                                        }}
-                                    />
-                                    <p
-                                        style={{
-                                            margin: 0,
-                                            fontSize: ".85rem",
-                                            color: "#475569",
-                                        }}
-                                    >
-                                        Sincronizando conversación...
-                                    </p>
-                                </div>
-                            )}
-                            {!isCalling &&
-                                actionResult &&
-                                actionResult.chat && (
-                                    <ChatHistory chatData={actionResult} />
-                                )}
-                            {!isCalling &&
-                                (!actionResult || !actionResult.chat) && (
-                                    <div
-                                        style={{
-                                            textAlign: "center",
-                                            padding: "6rem 2rem",
-                                            color: "#475569",
-                                        }}
-                                    >
-                                        <i
-                                            className="bi bi-chat-left-dots"
-                                            style={{
-                                                fontSize: "2.5rem",
-                                                opacity: 0.15,
-                                                display: "block",
-                                                marginBottom: "1rem",
-                                            }}
-                                        />
-                                        <p
-                                            style={{
-                                                margin: 0,
-                                                fontSize: "0.9rem",
-                                                fontStyle: "italic",
-                                                opacity: 0.5,
-                                            }}
-                                        >
-                                            No hay historial extendido
-                                            disponible.
-                                        </p>
-                                    </div>
-                                )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 /* ─────────────────────────────────────────────────
    Main Page
@@ -1109,6 +210,10 @@ export default function SpectrumLeads() {
                     gap: 1rem;
                 }
 
+                @media (max-width: 768px) {
+                    .sl-body { padding: 1rem; }
+                }
+
                 /* Filter bar */
                 .sl-filterbar {
                     display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
@@ -1159,6 +264,12 @@ export default function SpectrumLeads() {
                     white-space: nowrap;
                 }
                 .sl-count span { color: #a78bfa; font-weight: 700; }
+
+                @media (max-width: 992px) {
+                    .sl-filterbar { flex-wrap: wrap; gap: 0.75rem; }
+                    .sl-count { margin-left: 0; order: -1; width: 100%; text-align: right; }
+                    .sl-search-wrap { max-width: 100%; order: 1; width: 100%; }
+                }
 
                 /* Table shell */
                 .sl-shell {
@@ -1228,29 +339,70 @@ export default function SpectrumLeads() {
                     background: rgba(255, 255, 255, 0.2);
                 }
 
-                @media (max-width: 992px) {
+                /* Responsive Table */
+                @media (max-width: 768px) {
+                    .sl-table thead { display: none; }
+                    .sl-table tbody tr {
+                        display: block;
+                        padding: 1.25rem;
+                        margin-bottom: 0.75rem;
+                        background: rgba(255,255,255,.01) !important;
+                        border: 1px solid rgba(255,255,255,.05);
+                        border-radius: 12px;
+                    }
+                    .sl-table td {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 0.4rem 0 !important;
+                        border: none;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                    }
+                    .sl-table td::before {
+                        content: attr(data-label);
+                        font-weight: 700;
+                        color: #475569;
+                        font-size: .65rem;
+                        text-transform: uppercase;
+                        letter-spacing: .05em;
+                        margin-right: 1rem;
+                    }
+                    .sl-table td:first-child {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 0.25rem;
+                        margin-bottom: 0.75rem;
+                        padding-bottom: 0.75rem !important;
+                        border-bottom: 1px solid rgba(255,255,255,.05);
+                    }
+                    .sl-table td:first-child::before { display: none; }
+                }
+
+                @media (max-width: 1024px) {
                     .sl-modal-grid {
                         grid-template-columns: 1fr !important;
                     }
+                    .sl-modal-grid > div:first-child {
+                        max-height: 400px;
+                        border-right: none !important;
+                        border-bottom: 1px solid rgba(255,255,255,0.05);
+                    }
                     .sl-modal-grid > div:last-child {
-                        border-left: none !important;
                         padding-left: 0 !important;
-                        padding-top: 2rem;
-                        border-top: 1px solid rgba(255,255,255,0.05);
                     }
                 }
 
-                /* Responsive */
                 @media (max-width: 768px) {
                     .sl-topbar { padding: 0 1rem; }
-                    .sl-body   { padding: 1rem; }
                     .sl-stats  { display: none; }
                     .sl-divider { display: none; }
                     .sl-title { font-size: 1.05rem; }
-                }
-                @media (max-width: 576px) {
-                    .sl-filterbar { gap: .5rem; }
                     .sl-badge { display: none; }
+                }
+
+                @media (max-width: 480px) {
+                    .sl-search-wrap { min-width: 100%; }
+                    .sl-select { flex: 1; font-size: 0.75rem; padding: 0.4rem 0.6rem; }
                 }
             `}</style>
 
@@ -1474,7 +626,7 @@ export default function SpectrumLeads() {
                                             );
                                             return (
                                                 <tr
-                                                    key={lead._id}
+                                                    key={lead._id || lead.id}
                                                     onClick={() =>
                                                         setSelected(lead)
                                                     }
@@ -1494,6 +646,7 @@ export default function SpectrumLeads() {
                                                                     lead.name ||
                                                                     lead.whatsapp_name
                                                                 }
+                                                                size={36}
                                                             />
                                                             <div>
                                                                 <p
@@ -1527,6 +680,7 @@ export default function SpectrumLeads() {
 
                                                     {/* Teléfono */}
                                                     <td
+                                                        data-label="Teléfono"
                                                         style={{
                                                             color: "#94a3b8",
                                                             fontFamily:
@@ -1538,7 +692,7 @@ export default function SpectrumLeads() {
                                                     </td>
 
                                                     {/* Canal */}
-                                                    <td>
+                                                    <td data-label="Canal">
                                                         <span
                                                             style={{
                                                                 display:
@@ -1562,6 +716,7 @@ export default function SpectrumLeads() {
 
                                                     {/* Último mensaje */}
                                                     <td
+                                                        data-label="Mensaje"
                                                         style={{
                                                             maxWidth: "220px",
                                                         }}
@@ -1586,7 +741,7 @@ export default function SpectrumLeads() {
                                                     </td>
 
                                                     {/* Emoción */}
-                                                    <td>
+                                                    <td data-label="Emoción">
                                                         {lead.emocion_detectada ? (
                                                             <span
                                                                 style={{
@@ -1621,7 +776,7 @@ export default function SpectrumLeads() {
                                                     </td>
 
                                                     {/* Palabra clave */}
-                                                    <td>
+                                                    <td data-label="Keyword">
                                                         {lead.palabra_clave ? (
                                                             <span
                                                                 style={{
@@ -1656,7 +811,7 @@ export default function SpectrumLeads() {
                                                     </td>
 
                                                     {/* Reserva */}
-                                                    <td>
+                                                    <td data-label="Reserva">
                                                         <span
                                                             style={{
                                                                 display:
@@ -1683,6 +838,7 @@ export default function SpectrumLeads() {
 
                                                     {/* Última interacción */}
                                                     <td
+                                                        data-label="Última"
                                                         style={{
                                                             color: "#64748b",
                                                             fontSize: ".75rem",
@@ -1690,7 +846,7 @@ export default function SpectrumLeads() {
                                                                 "nowrap",
                                                         }}
                                                     >
-                                                        {formatDate(
+                                                        {formatFullDate(
                                                             lead.last_interaction,
                                                         )}
                                                     </td>

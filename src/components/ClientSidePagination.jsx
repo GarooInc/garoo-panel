@@ -1,11 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import { useState, useMemo } from "react";
+import { Button } from "react-bootstrap";
 
-const ClientSidePagination = ({
-    data,
-    itemsPerPage = 10,
-    renderItems
-}) => {
+const ClientSidePagination = ({ data, itemsPerPage = 10, renderItems }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     // Calcular información de paginación
@@ -26,14 +22,16 @@ const ClientSidePagination = ({
             hasNext: currentPage < totalPages,
             hasPrev: currentPage > 1,
             startRecord: startIndex + 1,
-            endRecord: endIndex
+            endRecord: endIndex,
         };
     }, [data, currentPage, itemsPerPage]);
 
-    // Resetear a página 1 cuando cambien los datos
-    useEffect(() => {
+    const [prevData, setPrevData] = useState(data);
+
+    if (data !== prevData) {
+        setPrevData(data);
         setCurrentPage(1);
-    }, [data]);
+    }
 
     const goToPrevious = () => {
         if (paginationInfo.hasPrev) {
@@ -56,7 +54,18 @@ const ClientSidePagination = ({
             {paginationInfo.totalItems > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
                     <div className="text-secondary small fw-medium">
-                        Mostrando <span className="text-dark">{paginationInfo.startRecord}</span> - <span className="text-dark">{paginationInfo.endRecord}</span> de <span className="text-dark">{paginationInfo.totalItems}</span>
+                        Mostrando{" "}
+                        <span className="text-dark">
+                            {paginationInfo.startRecord}
+                        </span>{" "}
+                        -{" "}
+                        <span className="text-dark">
+                            {paginationInfo.endRecord}
+                        </span>{" "}
+                        de{" "}
+                        <span className="text-dark">
+                            {paginationInfo.totalItems}
+                        </span>
                     </div>
 
                     <div className="d-flex align-items-center gap-2">
@@ -64,20 +73,34 @@ const ClientSidePagination = ({
                             disabled={!paginationInfo.hasPrev}
                             onClick={goToPrevious}
                             className="btn btn-light border-0 py-2 px-3 rounded-3 small text-secondary"
-                            style={{ backgroundColor: paginationInfo.hasPrev ? '#ffffff' : 'transparent', opacity: paginationInfo.hasPrev ? 1 : 0.5 }}
+                            style={{
+                                backgroundColor: paginationInfo.hasPrev
+                                    ? "#ffffff"
+                                    : "transparent",
+                                opacity: paginationInfo.hasPrev ? 1 : 0.5,
+                            }}
                         >
                             <i className="bi bi-chevron-left"></i>
                         </button>
 
                         <div className="px-3 py-2 bg-white border rounded-3 small fw-bold text-dark shadow-sm">
-                            {paginationInfo.currentPage} <span className="text-secondary fw-normal mx-1">/</span> {paginationInfo.totalPages}
+                            {paginationInfo.currentPage}{" "}
+                            <span className="text-secondary fw-normal mx-1">
+                                /
+                            </span>{" "}
+                            {paginationInfo.totalPages}
                         </div>
 
                         <button
                             disabled={!paginationInfo.hasNext}
                             onClick={goToNext}
                             className="btn btn-light border-0 py-2 px-3 rounded-3 small text-secondary"
-                            style={{ backgroundColor: paginationInfo.hasNext ? '#ffffff' : 'transparent', opacity: paginationInfo.hasNext ? 1 : 0.5 }}
+                            style={{
+                                backgroundColor: paginationInfo.hasNext
+                                    ? "#ffffff"
+                                    : "transparent",
+                                opacity: paginationInfo.hasNext ? 1 : 0.5,
+                            }}
                         >
                             <i className="bi bi-chevron-right"></i>
                         </button>

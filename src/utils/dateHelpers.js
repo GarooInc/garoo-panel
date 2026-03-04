@@ -1,5 +1,3 @@
-// Date formatting utilities
-
 /**
  * Format date from various formats to localized string
  * @param {*} date - Date in various formats (Excel number, Date object, string)
@@ -8,12 +6,12 @@
  */
 export const formatDate = (date, options = {}) => {
     try {
-        if (!date) return 'N/A';
+        if (!date) return "—";
 
         let dateObj;
 
         // If already a string, try to parse
-        if (typeof date === 'string') {
+        if (typeof date === "string") {
             dateObj = new Date(date);
             if (isNaN(dateObj.getTime())) {
                 // If it's already formatted, return as is
@@ -21,30 +19,46 @@ export const formatDate = (date, options = {}) => {
             }
         }
         // If it's a number (Excel date)
-        else if (typeof date === 'number') {
+        else if (typeof date === "number") {
             dateObj = new Date((date - 25569) * 86400 * 1000);
         }
         // If it's a Date object
         else if (date instanceof Date) {
             dateObj = date;
-        }
-        else {
-            return 'N/A';
+        } else {
+            return "—";
         }
 
         // Check if date is valid
         if (isNaN(dateObj.getTime())) {
-            return 'N/A';
+            return "—";
         }
 
         // Use provided options or default locale
-        const defaultOptions = Object.keys(options).length > 0 ? options : undefined;
-        return dateObj.toLocaleDateString('es-GT', defaultOptions);
-
+        const defaultOptions =
+            Object.keys(options).length > 0
+                ? options
+                : { day: "2-digit", month: "2-digit", year: "numeric" };
+        return dateObj.toLocaleDateString("es-ES", defaultOptions);
     } catch (error) {
-        console.error('Error formatting date:', date, error);
-        return 'N/A';
+        console.error("Error formatting date:", date, error);
+        return "—";
     }
+};
+
+/**
+ * Format date and time to localized string
+ * @param {*} date - Date to format
+ * @returns {string} Formatted date and time string
+ */
+export const formatFullDate = (date) => {
+    return formatDate(date, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
 };
 
 /**
@@ -54,10 +68,10 @@ export const formatDate = (date, options = {}) => {
  */
 export const formatPeriod = (period) => {
     try {
-        if (!period) return 'N/A';
+        if (!period) return "—";
 
         // If already in correct format
-        if (typeof period === 'string' && period.match(/\d{1,2}\/\d{4}/)) {
+        if (typeof period === "string" && period.match(/\d{1,2}\/\d{4}/)) {
             return period;
         }
 
@@ -67,15 +81,17 @@ export const formatPeriod = (period) => {
         }
 
         // If it's a number (Excel date)
-        if (typeof period === 'number') {
+        if (typeof period === "number") {
             const date = new Date((period - 25569) * 86400 * 1000);
-            return isNaN(date.getTime()) ? 'N/A' : `${date.getMonth() + 1}/${date.getFullYear()}`;
+            return isNaN(date.getTime())
+                ? "—"
+                : `${date.getMonth() + 1}/${date.getFullYear()}`;
         }
 
         return String(period);
     } catch (error) {
-        console.error('Error formatting period:', period, error);
-        return 'N/A';
+        console.error("Error formatting period:", period, error);
+        return "—";
     }
 };
 
@@ -87,11 +103,15 @@ export const formatPeriod = (period) => {
  */
 export const formatExperienceDate = (month, year) => {
     try {
-        if (!month || !year) return 'N/A';
+        if (!month || !year) return "—";
         return `${month}/${year}`;
     } catch (error) {
-        console.error('Error formatting experience date:', { month, year }, error);
-        return 'N/A';
+        console.error(
+            "Error formatting experience date:",
+            { month, year },
+            error,
+        );
+        return "—";
     }
 };
 
@@ -101,12 +121,12 @@ export const formatExperienceDate = (month, year) => {
  * @param {string} currency - Currency symbol (default: 'Q')
  * @returns {string} Formatted salary string
  */
-export const formatSalary = (salary, currency = 'Q') => {
+export const formatSalary = (salary, currency = "Q") => {
     try {
-        if (!salary || isNaN(salary)) return `${currency}N/A`;
+        if (!salary || isNaN(salary)) return `${currency} —`;
         return `${currency}${Number(salary).toLocaleString()}`;
     } catch (error) {
-        console.error('Error formatting salary:', salary, error);
-        return `${currency}N/A`;
+        console.error("Error formatting salary:", salary, error);
+        return `${currency} —`;
     }
 };
