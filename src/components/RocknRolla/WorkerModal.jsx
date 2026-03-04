@@ -6,7 +6,7 @@ import {
     formatPeriod,
     formatExperienceDate,
     formatSalary,
-} from "../utils/dateHelpers";
+} from "../../utils/dateHelpers";
 import {
     getFullName,
     getPosition,
@@ -23,7 +23,7 @@ import {
     getEducations,
     getExperiences,
     getAllReferences,
-} from "../utils/workerDataHelpers";
+} from "../../utils/workerDataHelpers";
 
 const WorkerModal = ({ show, handleClose, workerData }) => {
     if (!workerData) return null;
@@ -55,8 +55,8 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                         <div className="p-4 p-xl-5 text-center sticky-top">
                             <div className="position-relative d-inline-block mb-4">
                                 {workerData.Fotografia ||
-                                workerData.fotografia ||
-                                workerData.foto ? (
+                                    workerData.fotografia ||
+                                    workerData.foto ? (
                                     <Image
                                         src={
                                             workerData.Fotografia ||
@@ -289,9 +289,9 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                                         {exp.isCurrent
                                                             ? "Actualidad"
                                                             : formatExperienceDate(
-                                                                  exp.endMonth,
-                                                                  exp.endYear,
-                                                              )}
+                                                                exp.endMonth,
+                                                                exp.endYear,
+                                                            )}
                                                     </span>
                                                 </div>
                                                 <p className="text-primary fw-medium small mb-2">
@@ -417,7 +417,7 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                             Laborales
                                         </h6>
                                         {allReferences.work &&
-                                        allReferences.work.length > 0 ? (
+                                            allReferences.work.length > 0 ? (
                                             <div className="d-flex flex-column gap-3">
                                                 {allReferences.work.map(
                                                     (ref, idx) => (
@@ -456,7 +456,7 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                                             Personales
                                         </h6>
                                         {allReferences.personal &&
-                                        allReferences.personal.length > 0 ? (
+                                            allReferences.personal.length > 0 ? (
                                             <div className="d-flex flex-column gap-3">
                                                 {allReferences.personal.map(
                                                     (ref, idx) => (

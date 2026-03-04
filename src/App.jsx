@@ -14,17 +14,16 @@ import {
 
 import { ApplicationsProvider } from "./config/ApplicationsProvider";
 import { FormProvider } from "./config/FormProvider.jsx";
-import Form from "./pages/Form.jsx";
-import Applications from "./pages/Applications.jsx";
-import SpectrumLeads from "./pages/SpectrumLeads.jsx";
+import RocknRollaApplications from "./pages/RocknRolla/ApplicationsPage.jsx";
+import MundoVerdeInvoices from "./pages/MundoVerde/InvoicesPage.jsx";
+import FicohsaCalls from "./pages/Ficohsa/CallsPage.jsx";
+import SpectrumLeads from "./pages/Spectrum/LeadsPage.jsx";
 import Services from "./pages/Services.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 
 import Sidebar from "./components/Layout/Sidebar.jsx";
 import Header from "./components/Layout/Header.jsx";
-
-import OutboundCallForm from "./pages/OutboundCallForm.jsx";
 
 function App() {
     return (
@@ -71,12 +70,12 @@ function AppContent() {
                         <Route path="/services" element={<Services />} />
                         <Route
                             path="/applications"
-                            element={<Applications />}
+                            element={<RocknRollaApplications />}
                         />
-                        <Route path="/form" element={<Form />} />
+                        <Route path="/form" element={<MundoVerdeInvoices />} />
                         <Route
                             path="/outbound-call-form"
-                            element={<OutboundCallForm />}
+                            element={<FicohsaCalls />}
                         />
                         <Route
                             path="/spectrum-leads"

@@ -16,7 +16,7 @@ const Services = () => {
             openInNewTab: true,
         },
         {
-            title: "Mundo Verde Form",
+            title: "Formulario Mundo Verde",
             description:
                 "Envío rápido y seguro de datos de facturas para procesamiento eficiente.",
             icon: "bi-receipt-cutoff",
@@ -36,7 +36,7 @@ const Services = () => {
         {
             title: "Spectrum Leads",
             description:
-                "Dashboard de leads en tiempo real conectado al agente de Spectrum vía webhook.",
+                "Panel de leads en tiempo real conectado al agente de Spectrum vía webhook.",
             icon: "bi-graph-up-arrow",
             path: "/spectrum-leads",
             cardClass: styles.spectrumCard,

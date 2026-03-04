@@ -1,18 +1,18 @@
-import styles from "./applications.module.css";
+import styles from "./ApplicationsPage.module.css";
 import { useState, useCallback } from "react";
 import { Spinner } from "react-bootstrap";
-import garooLogo from "../assets/img/garoo-logo.png";
+import garooLogo from "../../assets/img/garoo-logo.png";
 
-import { useApplications } from "../config/ApplicationsProvider";
-import { useSimpleFilters } from "../hooks/useSimpleFilters";
-import { generateWorkerPDF } from "../utils/pdfGenerator";
+import { useApplications } from "../../config/ApplicationsProvider";
+import { useSimpleFilters } from "../../hooks/useSimpleFilters";
+import { generateWorkerPDF } from "../../utils/pdfGenerator";
 
-import WorkerModal from "../components/WorkerModal";
-import ApplicationsFilters from "../components/ApplicationsFilters";
-import ApplicationsTable from "../components/ApplicationsTable";
-import ClientSidePagination from "../components/ClientSidePagination";
+import WorkerModal from "../../components/RocknRolla/WorkerModal";
+import ApplicationsFilters from "../../components/RocknRolla/ApplicationsFilters";
+import ApplicationsTable from "../../components/RocknRolla/ApplicationsTable";
+import ClientSidePagination from "../../components/ClientSidePagination";
 
-const Applications = () => {
+const RocknRollaApplications = () => {
     const { error, loading, data, nationalities, positions } =
         useApplications();
     const {
@@ -206,7 +206,6 @@ const Applications = () => {
                     border-radius: 10px;
                     padding: 3px;
                     width: fit-content;
-                    margin-bottom: 1.25rem;
                     flex-shrink: 0;
                 }
 
@@ -430,7 +429,7 @@ const Applications = () => {
                     border-radius: 9px !important;
                     font-size: .83rem !important;
                     height: 36px !important;
-                    padding: 0 .75rem !important;
+                    padding: 0 .75rem;
                 }
 
                 .ap-filters-strip .form-control::placeholder { color: #334155 !important; }
@@ -520,14 +519,19 @@ const Applications = () => {
                    RESPONSIVE
                 ══════════════════════════════ */
                 @media (max-width: 768px) {
-                    .ap-topbar { padding: 0 1rem; }
+                    .ap-topbar { padding: 0 .75rem; height: auto; min-height: 60px; flex-wrap: wrap; justify-content: center; gap: .5rem; py: .5rem; }
                     .ap-body   { padding: 1rem; }
                     .ap-stat-group { display: none; }
                     .ap-topbar-divider { display: none; }
+                    .ap-logo-ring { display: none; }
+                    .ap-topbar-title-wrapper { text-align: center; }
+                    .ap-modulo-label { display: none; }
+                    .ap-tabs-group { order: 3; width: 100%; margin: .25rem 0; justify-content: center; }
+                    .ap-spacer { display: none; }
                 }
 
                 @media (max-width: 576px) {
-                    .ap-topbar-title { font-size: .88rem; }
+                    .ap-topbar-title { font-size: .95rem; }
                     .ap-pill { display: none; }
                 }
             `}</style>
@@ -539,27 +543,75 @@ const Applications = () => {
             <div className="ap-root">
                 {/* ── Topbar ── */}
                 <header className="ap-topbar">
-                    <div className="ap-logo-ring">
-                        <img src={garooLogo} alt="Garoo" />
+                    <div className="d-flex align-items-center gap-3">
+                        <div className="ap-logo-ring">
+                            <img src={garooLogo} alt="Garoo" />
+                        </div>
+                        <div className="d-flex flex-column">
+                            <h1 className="ap-topbar-title" style={{ fontSize: '1.1rem', marginBottom: '2px' }}>Garoo Portal</h1>
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="ap-modulo-label" style={{ fontSize: '.6rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '.05em' }}>Módulo:</span>
+                                <span style={{ fontSize: '.65rem', fontWeight: 800, color: '#f1f5f9' }}>Gestor de Aplicaciones</span>
+                            </div>
+                        </div>
                     </div>
-                    <h1 className="ap-topbar-title">Gestor de Aplicaciones</h1>
-                    <div className="ap-topbar-divider" />
+
+                    <div className="ap-topbar-divider ms-2 me-2" />
+
                     <span className="ap-pill ap-pill-blue">RocknRolla</span>
+
                     <div className="ap-spacer" />
+
+                    {/* Center Navigation Switcher */}
+                    <div className="ap-tabs-group" style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: '12px', padding: '3px', display: 'flex', gap: '2px' }}>
+                        <button
+                            className={`ap-tab ${activeTab === "candidates" ? "on" : ""}`}
+                            onClick={() => setActiveTab("candidates")}
+                            style={{
+                                padding: '.4rem 1.2rem',
+                                fontSize: '.75rem',
+                                border: 'none',
+                                borderRadius: '9px',
+                                transition: 'all .25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                background: activeTab === "candidates" ? 'rgba(59,130,246,.15)' : 'transparent',
+                                color: activeTab === "candidates" ? '#93c5fd' : '#64748b'
+                            }}
+                        >
+                            <i className="bi bi-people-fill me-2" />
+                            Candidatos
+                        </button>
+                        <button
+                            className={`ap-tab ${activeTab === "api" ? "on" : ""}`}
+                            onClick={() => setActiveTab("api")}
+                            style={{
+                                padding: '.4rem 1.2rem',
+                                fontSize: '.75rem',
+                                border: 'none',
+                                borderRadius: '9px',
+                                transition: 'all .25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                background: activeTab === "api" ? 'rgba(59,130,246,.15)' : 'transparent',
+                                color: activeTab === "api" ? '#93c5fd' : '#64748b'
+                            }}
+                        >
+                            <i className="bi bi-code-slash me-2" />
+                            Datos de la API
+                        </button>
+                    </div>
+
+                    <div className="ap-spacer" />
+
                     {!loading && (
-                        <div className="ap-stat-group">
-                            <div className="ap-stat">
-                                <span className="ap-stat-n">
-                                    {data?.length ?? 0}
-                                </span>
-                                <span className="ap-stat-l">Total</span>
+                        <div className="ap-stat-group" style={{ height: '40px', padding: '0 1rem' }}>
+                            <div className="ap-stat" style={{ padding: '0 .5rem' }}>
+                                <span className="ap-stat-n" style={{ fontSize: '.95rem' }}>{data?.length ?? 0}</span>
+                                <span className="ap-stat-l" style={{ fontSize: '.55rem' }}>REGISTROS</span>
                             </div>
                             <div className="ap-stat-sep" />
-                            <div className="ap-stat">
-                                <span className="ap-stat-n">
+                            <div className="ap-stat" style={{ padding: '0 .5rem', minWidth: '70px' }}>
+                                <span className="ap-stat-n" style={{ fontSize: '.95rem', color: filteredWorkers?.length < data?.length ? '#60a5fa' : '#f1f5f9' }}>
                                     {filteredWorkers?.length ?? 0}
                                 </span>
-                                <span className="ap-stat-l">Filtrados</span>
+                                <span className="ap-stat-l" style={{ fontSize: '.55rem' }}>FILTRADOS</span>
                             </div>
                         </div>
                     )}
@@ -575,23 +627,7 @@ const Applications = () => {
                         </div>
                     )}
 
-                    {/* Tabs */}
-                    <div className="ap-tabs">
-                        <button
-                            className={`ap-tab ${activeTab === "candidates" ? "on" : ""}`}
-                            onClick={() => setActiveTab("candidates")}
-                        >
-                            <i className="bi bi-person-lines-fill" />
-                            Candidatos
-                        </button>
-                        <button
-                            className={`ap-tab ${activeTab === "api" ? "on" : ""}`}
-                            onClick={() => setActiveTab("api")}
-                        >
-                            <i className="bi bi-code-square" />
-                            API Data
-                        </button>
-                    </div>
+
 
                     {/* Shell */}
                     <div className="ap-shell">
@@ -698,4 +734,4 @@ const Applications = () => {
     );
 };
 
-export default Applications;
+export default RocknRollaApplications;

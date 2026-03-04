@@ -6,8 +6,8 @@ import {
     ModalField,
     ChatHistory,
 } from "./LeadModalComponents";
-import { getEmotionStyle, getChannelInfo } from "../utils/leadHelpers";
-import { formatFullDate } from "../utils/dateHelpers";
+import { getEmotionStyle, getChannelInfo } from "../../utils/leadHelpers";
+import { formatFullDate } from "../../utils/dateHelpers";
 
 /**
  * Lead Modal (centered)
@@ -325,93 +325,93 @@ const LeadModal = ({ lead, onClose }) => {
                             {(lead.last_message ||
                                 lead.last_agent_message ||
                                 lead.resumen_breve) && (
-                                <ModalSection label="Resúmenes Rápidos">
-                                    {lead.last_message && (
-                                        <div style={{ marginBottom: "1rem" }}>
-                                            <p
-                                                style={{
-                                                    margin: "0 0 4px",
-                                                    fontSize: "0.55rem",
-                                                    fontWeight: 800,
-                                                    color: "#475569",
-                                                    textTransform: "uppercase",
-                                                }}
-                                            >
-                                                Último Lead
-                                            </p>
-                                            <div
-                                                style={{
-                                                    background:
-                                                        "rgba(255,255,255,.03)",
-                                                    border: "1px solid rgba(255,255,255,.07)",
-                                                    borderRadius: "10px",
-                                                    padding: "0.75rem",
-                                                    color: "#cbd5e1",
-                                                    fontSize: "0.78rem",
-                                                }}
-                                            >
-                                                {lead.last_message}
+                                    <ModalSection label="Resúmenes Rápidos">
+                                        {lead.last_message && (
+                                            <div style={{ marginBottom: "1rem" }}>
+                                                <p
+                                                    style={{
+                                                        margin: "0 0 4px",
+                                                        fontSize: "0.55rem",
+                                                        fontWeight: 800,
+                                                        color: "#475569",
+                                                        textTransform: "uppercase",
+                                                    }}
+                                                >
+                                                    Último Lead
+                                                </p>
+                                                <div
+                                                    style={{
+                                                        background:
+                                                            "rgba(255,255,255,.03)",
+                                                        border: "1px solid rgba(255,255,255,.07)",
+                                                        borderRadius: "10px",
+                                                        padding: "0.75rem",
+                                                        color: "#cbd5e1",
+                                                        fontSize: "0.78rem",
+                                                    }}
+                                                >
+                                                    {lead.last_message}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                    {lead.last_agent_message && (
-                                        <div style={{ marginBottom: "1rem" }}>
-                                            <p
-                                                style={{
-                                                    margin: "0 0 4px",
-                                                    fontSize: "0.55rem",
-                                                    fontWeight: 800,
-                                                    color: "#8b5cf6",
-                                                    textTransform: "uppercase",
-                                                }}
-                                            >
-                                                Última IA
-                                            </p>
-                                            <div
-                                                style={{
-                                                    background:
-                                                        "rgba(139,92,246,.07)",
-                                                    border: "1px solid rgba(139,92,246,.2)",
-                                                    borderRadius: "10px",
-                                                    padding: "0.75rem",
-                                                    color: "#c4b5fd",
-                                                    fontSize: "0.78rem",
-                                                }}
-                                            >
-                                                {lead.last_agent_message}
+                                        )}
+                                        {lead.last_agent_message && (
+                                            <div style={{ marginBottom: "1rem" }}>
+                                                <p
+                                                    style={{
+                                                        margin: "0 0 4px",
+                                                        fontSize: "0.55rem",
+                                                        fontWeight: 800,
+                                                        color: "#8b5cf6",
+                                                        textTransform: "uppercase",
+                                                    }}
+                                                >
+                                                    Última IA
+                                                </p>
+                                                <div
+                                                    style={{
+                                                        background:
+                                                            "rgba(139,92,246,.07)",
+                                                        border: "1px solid rgba(139,92,246,.2)",
+                                                        borderRadius: "10px",
+                                                        padding: "0.75rem",
+                                                        color: "#c4b5fd",
+                                                        fontSize: "0.78rem",
+                                                    }}
+                                                >
+                                                    {lead.last_agent_message}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                    {lead.resumen_breve && (
-                                        <div>
-                                            <p
-                                                style={{
-                                                    margin: "0 0 4px",
-                                                    fontSize: "0.55rem",
-                                                    fontWeight: 800,
-                                                    color: "#64748b",
-                                                    textTransform: "uppercase",
-                                                }}
-                                            >
-                                                Contexto IA
-                                            </p>
-                                            <div
-                                                style={{
-                                                    background:
-                                                        "rgba(255,255,255,.03)",
-                                                    border: "1px solid rgba(255,255,255,.07)",
-                                                    borderRadius: "10px",
-                                                    padding: "0.75rem",
-                                                    color: "#94a3b8",
-                                                    fontSize: "0.78rem",
-                                                }}
-                                            >
-                                                {lead.resumen_breve}
+                                        )}
+                                        {lead.resumen_breve && (
+                                            <div>
+                                                <p
+                                                    style={{
+                                                        margin: "0 0 4px",
+                                                        fontSize: "0.55rem",
+                                                        fontWeight: 800,
+                                                        color: "#64748b",
+                                                        textTransform: "uppercase",
+                                                    }}
+                                                >
+                                                    Contexto IA
+                                                </p>
+                                                <div
+                                                    style={{
+                                                        background:
+                                                            "rgba(255,255,255,.03)",
+                                                        border: "1px solid rgba(255,255,255,.07)",
+                                                        borderRadius: "10px",
+                                                        padding: "0.75rem",
+                                                        color: "#94a3b8",
+                                                        fontSize: "0.78rem",
+                                                    }}
+                                                >
+                                                    {lead.resumen_breve}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </ModalSection>
-                            )}
+                                        )}
+                                    </ModalSection>
+                                )}
                         </div>
 
                         {/* RIGHT column: Extended Chat History */}

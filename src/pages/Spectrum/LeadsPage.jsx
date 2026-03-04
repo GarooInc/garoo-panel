@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import LeadModal from "../components/LeadModal";
-import { Avatar } from "../components/LeadModalComponents";
-import { getEmotionStyle, getChannelInfo } from "../utils/leadHelpers";
-import { formatFullDate } from "../utils/dateHelpers";
-import garooLogo from "../assets/img/garoo-logo.png";
+import LeadModal from "../../components/Spectrum/LeadModal";
+import { Avatar } from "../../components/Spectrum/LeadModalComponents";
+import { getEmotionStyle, getChannelInfo } from "../../utils/leadHelpers";
+import { formatFullDate } from "../../utils/dateHelpers";
+import garooLogo from "../../assets/img/garoo-logo.png";
 
 const WEBHOOK_URL = "/spectrum-proxy/webhook/leads";
 
@@ -401,11 +401,13 @@ export default function SpectrumLeads() {
                 }
 
                 @media (max-width: 768px) {
-                    .sl-topbar { padding: 0 1rem; }
+                    .sl-topbar { padding: .5rem 1rem; height: auto; flex-direction: column; gap: .5rem; align-items: center; text-align: center; }
                     .sl-stats  { display: none; }
                     .sl-divider { display: none; }
                     .sl-title { font-size: 1.05rem; }
                     .sl-badge { display: none; }
+                    .sl-logo-ring { display: none; }
+                    .sl-modulo-label { display: none; }
                 }
 
                 @media (max-width: 480px) {
@@ -420,34 +422,42 @@ export default function SpectrumLeads() {
             <div className="sl-root">
                 {/* ── Topbar ── */}
                 <header className="sl-topbar">
-                    <div className="sl-logo-ring">
-                        <img src={garooLogo} alt="Garoo" />
+                    <div className="d-flex align-items-center gap-3">
+                        <div className="sl-logo-ring">
+                            <img src={garooLogo} alt="Garoo" />
+                        </div>
+                        <div className="d-flex flex-column">
+                            <h1 className="sl-title" style={{ fontSize: '1.1rem', marginBottom: '2px' }}>Garoo Portal</h1>
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="sl-modulo-label" style={{ fontSize: '.6rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '.05em' }}>Módulo:</span>
+                                <span style={{ fontSize: '.65rem', fontWeight: 800, color: '#f1f5f9' }}>Panel de Leads</span>
+                            </div>
+                        </div>
                     </div>
-                    <h1 className="sl-title">Leads Dashboard</h1>
-                    <div className="sl-divider" />
+
+                    <div className="sl-divider ms-2 me-2" />
+
                     <span className="sl-badge">Spectrum</span>
+
                     <div className="sl-spacer" />
+
                     {!loading && (
-                        <div className="sl-stats">
-                            <div className="sl-stat">
-                                <span className="sl-stat-n">
-                                    {leads.length}
-                                </span>
-                                <span className="sl-stat-l">Total</span>
+                        <div className="sl-stats" style={{ height: '40px', padding: '0 1rem' }}>
+                            <div className="sl-stat" style={{ padding: '0 .5rem' }}>
+                                <span className="sl-stat-n" style={{ fontSize: '.95rem' }}>{leads.length}</span>
+                                <span className="sl-stat-l" style={{ fontSize: '.55rem' }}>TOTAL</span>
                             </div>
                             <div className="sl-stat-sep" />
-                            <div className="sl-stat">
-                                <span className="sl-stat-n">
-                                    {withReservation}
-                                </span>
-                                <span className="sl-stat-l">Reservas</span>
+                            <div className="sl-stat" style={{ padding: '0 .5rem' }}>
+                                <span className="sl-stat-n" style={{ fontSize: '.95rem', color: '#8b5cf6' }}>{withReservation}</span>
+                                <span className="sl-stat-l" style={{ fontSize: '.55rem' }}>RESERVAS</span>
                             </div>
                             <div className="sl-stat-sep" />
-                            <div className="sl-stat">
-                                <span className="sl-stat-n">
+                            <div className="sl-stat" style={{ padding: '0 .5rem', minWidth: '70px' }}>
+                                <span className="sl-stat-n" style={{ fontSize: '.95rem', color: filtered.length < leads.length ? '#a78bfa' : '#f1f5f9' }}>
                                     {filtered.length}
                                 </span>
-                                <span className="sl-stat-l">Filtrados</span>
+                                <span className="sl-stat-l" style={{ fontSize: '.55rem' }}>FILTRADOS</span>
                             </div>
                         </div>
                     )}
@@ -575,7 +585,7 @@ export default function SpectrumLeads() {
 
                             <div className="sl-count">
                                 <span>{filtered.length}</span> / {leads.length}{" "}
-                                leads
+                                contactos
                             </div>
                         </div>
                     )}

@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import RB_Toast from "../components/RB_Toast";
+import RB_Toast from "../../components/RB_Toast";
 import { useState } from "react";
-import garooLogo from "../assets/img/garoo-logo.png";
+import garooLogo from "../../assets/img/garoo-logo.png";
 
-const FormPage = () => {
+const MundoVerdeInvoices = () => {
     const {
         register,
         handleSubmit,
@@ -675,8 +675,11 @@ const FormPage = () => {
                         min-height: unset;
                     }
                     .mvf-preview-card { min-height: 220px; }
-                    .mvf-topbar { padding: 0.9rem 1rem; }
+                    .mvf-topbar { padding: 0.9rem 1rem; height: auto; flex-direction: column; gap: .5rem; align-items: center; text-align: center; }
                     .mvf-badge { display: none; }
+                    .mvf-logo-ring { display: none; }
+                    .mvf-modulo-label { display: none; }
+                    .mvf-divider { display: none; }
                 }
 
                 @media (max-width: 480px) {
@@ -691,18 +694,28 @@ const FormPage = () => {
 
             <div className="mvf-page">
                 {/* ── Top bar ── */}
-                <div className="mvf-topbar">
-                    <div className="mvf-logo-ring">
-                        <img src={garooLogo} alt="Garoo" />
+                <header className="mvf-topbar">
+                    <div className="d-flex align-items-center gap-3">
+                        <div className="mvf-logo-ring">
+                            <img src={garooLogo} alt="Garoo" />
+                        </div>
+                        <div className="d-flex flex-column">
+                            <h1 className="mvf-topbar-title" style={{ fontSize: '1.1rem', marginBottom: '2px' }}>Garoo Portal</h1>
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="mvf-modulo-label" style={{ fontSize: '.6rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '.05em' }}>Módulo:</span>
+                                <span style={{ fontSize: '.65rem', fontWeight: 800, color: '#f1f5f9' }}>Gestor de Facturas</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="mvf-topbar-info">
-                        <p className="mvf-topbar-title">
-                            Gestión Documental de Facturas
-                        </p>
-                    </div>
-                    <span className="mvf-badge">Portal Activo</span>
-                </div>
 
+                    <div className="mvf-divider ms-2 me-2" style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,.1)', margin: 0 }} />
+
+                    <span className="mvf-badge">
+                        Mundo Verde
+                    </span>
+
+                    <div style={{ flex: 1 }} />
+                </header>
                 {/* ── Main layout ── */}
                 <div className="mvf-body">
                     {/* Left — Previews */}
@@ -993,4 +1006,4 @@ const FormPage = () => {
     );
 };
 
-export default FormPage;
+export default MundoVerdeInvoices;

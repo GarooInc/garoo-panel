@@ -5,7 +5,7 @@ import {
     getNationality,
     getSalaryExpectation,
     getApplicationDate
-} from '../utils/workerDataHelpers';
+} from "../../utils/workerDataHelpers";
 
 const ApplicationsTable = ({
     filteredWorkers,

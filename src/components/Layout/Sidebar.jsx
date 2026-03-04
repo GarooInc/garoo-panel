@@ -19,13 +19,13 @@ const Sidebar = ({ isOpen, onClose }) => {
             id: "dashboard",
             path: "/dashboard",
             icon: "bi bi-speedometer2",
-            label: "Dashboard",
+            label: "Panel Principal",
         },
         {
             id: "services",
             path: "/services",
             icon: "bi bi-grid-3x3-gap",
-            label: "Todos los Servicios",
+            label: "Servicios",
         },
     ];
 
@@ -64,7 +64,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             id: "spectrum-leads",
             path: "/spectrum-leads",
             icon: "bi bi-graph-up-arrow",
-            label: "Leads Dashboard",
+            label: "Panel de Leads",
             sublabel: "Spectrum",
             color: "#8b5cf6",
             bgColor: "rgba(139,92,246,0.08)",
@@ -83,21 +83,15 @@ const Sidebar = ({ isOpen, onClose }) => {
             </>
         );
         const commonProps = {
-            className: `nav-link d-flex align-items-center gap-3 px-3 py-2 sidebar-link`,
+            className: `nav-link d-flex align-items-center gap-3 px-3 py-2 sidebar-link ${isActive ? 'active-general' : ''}`,
             style: {
                 fontSize: "0.92rem",
                 transition: "all 0.2s ease",
-                backgroundColor: isActive
-                    ? "var(--primary-light)"
-                    : "transparent",
                 color: isActive
                     ? "var(--primary-color)"
                     : "var(--text-secondary)",
                 borderRadius: "10px",
-                fontWeight: isActive ? "600" : "400",
-                border: isActive
-                    ? "1px solid rgba(37,99,235,0.18)"
-                    : "1px solid transparent",
+                fontWeight: isActive ? "700" : "500",
             },
         };
         return (
@@ -119,13 +113,13 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className={`sidebar ${isOpen ? "show" : ""}`}>
                 {/* Brand */}
                 <div className="sidebar-brand">
-                    <img
-                        src={garooLogo}
-                        alt="Logo de Garoo Servicios"
-                        className="sidebar-logo-img"
-                        width="38"
-                        height="38"
-                    />
+                    <div className="sidebar-logo-ring">
+                        <img
+                            src={garooLogo}
+                            alt="Garoo"
+                            className="sidebar-logo-img"
+                        />
+                    </div>
                     <span className="sidebar-brand-name">Garoo</span>
                 </div>
 
@@ -168,8 +162,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                                                 className="sidebar-service-name"
                                                 style={{
                                                     fontWeight: isActive
-                                                        ? "600"
-                                                        : "500",
+                                                        ? "700"
+                                                        : "600",
                                                 }}
                                             >
                                                 {item.label}
@@ -178,6 +172,18 @@ const Sidebar = ({ isOpen, onClose }) => {
                                                 {item.sublabel}
                                             </span>
                                         </span>
+                                        {isActive && (
+                                            <span
+                                                className="ms-auto"
+                                                style={{
+                                                    width: '4px',
+                                                    height: '16px',
+                                                    background: item.color,
+                                                    borderRadius: '4px',
+                                                    boxShadow: `0 0 8px ${item.color}60`
+                                                }}
+                                            />
+                                        )}
                                     </>
                                 );
 
@@ -227,7 +233,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 {/* Footer */}
                 <div className="sidebar-footer">
                     <span className="sidebar-footer-text">
-                        Garoo Services v2.0
+                        Servicios Garoo v2.0
                     </span>
                 </div>
             </div>

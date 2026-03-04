@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import garooLogo from "../assets/img/garoo-logo.png";
+import garooLogo from "../../assets/img/garoo-logo.png";
 
-const OutboundCallForm = () => {
+const FicohsaCalls = () => {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -16,11 +16,11 @@ const OutboundCallForm = () => {
     const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
 
     const products = [
-        "Savings Account",
-        "Credit Card",
-        "Loan",
-        "Insurance",
-        "Other",
+        "Cuenta de Ahorros",
+        "Tarjeta de Crédito",
+        "Préstamo",
+        "Seguro",
+        "Otro",
     ];
 
     const handleChange = (e) => {
@@ -430,7 +430,7 @@ const OutboundCallForm = () => {
                                     name="firstName"
                                     value={formData.firstName}
                                     onChange={handleChange}
-                                    placeholder="John"
+                                    placeholder="Juan"
                                     required
                                 />
                             </div>
@@ -445,7 +445,7 @@ const OutboundCallForm = () => {
                                     name="lastName"
                                     value={formData.lastName}
                                     onChange={handleChange}
-                                    placeholder="Doe"
+                                    placeholder="Pérez"
                                     required
                                 />
                             </div>
@@ -569,4 +569,4 @@ const OutboundCallForm = () => {
     );
 };
 
-export default OutboundCallForm;
+export default FicohsaCalls;

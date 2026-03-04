@@ -16,7 +16,7 @@ const Home = () => {
                 </p>
                 <div className="d-flex gap-3 justify-content-center">
                     <Link to="/dashboard" className="btn btn-primary px-4 py-2 fs-6 rounded-3 shadow-sm">
-                        Ir al Dashboard
+                        Ir al Panel
                     </Link>
                     <Link to="/services" className="btn btn-outline-secondary px-4 py-2 fs-6 rounded-3">
                         Ver Servicios
