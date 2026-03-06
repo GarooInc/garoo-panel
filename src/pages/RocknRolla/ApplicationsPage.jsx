@@ -519,7 +519,7 @@ const RocknRollaApplications = () => {
                    RESPONSIVE
                 ══════════════════════════════ */
                 @media (max-width: 768px) {
-                    .ap-topbar { padding: 0 .75rem; height: auto; min-height: 60px; flex-wrap: wrap; justify-content: center; gap: .5rem; py: .5rem; }
+                    .ap-topbar { padding: 0 .75rem; height: auto; min-height: 60px; flex-wrap: wrap; justify-content: center; gap: .5rem; padding-top: .5rem; padding-bottom: .5rem; }
                     .ap-body   { padding: 1rem; }
                     .ap-stat-group { display: none; }
                     .ap-topbar-divider { display: none; }

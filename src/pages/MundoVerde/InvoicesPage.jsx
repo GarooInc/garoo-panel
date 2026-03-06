@@ -23,9 +23,11 @@ const MundoVerdeInvoices = () => {
     const [toastTitle, setToastTitle] = useState("");
     const [toastMessage, setToastMessage] = useState("");
     const [toastVariant, setToastVariant] = useState("");
+    const [isPersistentToast, setIsPersistentToast] = useState(false);
 
     const onSubmit = async (data) => {
         setIsLoading(true);
+        setIsPersistentToast(false);
 
         try {
             const pdfFile = data.pdf?.[0] || selectedPdf;
@@ -37,6 +39,7 @@ const MundoVerdeInvoices = () => {
                     "Por favor, complete todos los campos requeridos (NIT, Serie, PDF y XML)",
                 );
                 setToastVariant("warning");
+                setIsPersistentToast(false);
                 setShowToast(true);
                 setIsLoading(false);
                 return;
@@ -72,6 +75,7 @@ const MundoVerdeInvoices = () => {
                     "No se pudo conectar con el servidor. Verifique su conexión e intente nuevamente.",
                 );
                 setToastVariant("danger");
+                setIsPersistentToast(false);
                 setShowToast(true);
                 setIsLoading(false);
                 return;
@@ -104,6 +108,7 @@ const MundoVerdeInvoices = () => {
                     responseData.message || "Datos enviados correctamente",
                 );
                 setToastVariant("success");
+                setIsPersistentToast(true);
             } else if (responseData.status === "error") {
                 setToastTitle(responseData.title || "Error");
                 setToastMessage(
@@ -111,6 +116,7 @@ const MundoVerdeInvoices = () => {
                     "Ha ocurrido un error al procesar la factura",
                 );
                 setToastVariant("danger");
+                setIsPersistentToast(false);
             } else if (!response.ok) {
                 setToastTitle("Error del Servidor");
                 setToastMessage(
@@ -118,6 +124,7 @@ const MundoVerdeInvoices = () => {
                     `Error ${response.status}: ${response.statusText}`,
                 );
                 setToastVariant("danger");
+                setIsPersistentToast(false);
             } else {
                 setToastTitle("Enviado");
                 setToastMessage(
@@ -125,6 +132,7 @@ const MundoVerdeInvoices = () => {
                     "La solicitud se procesó correctamente",
                 );
                 setToastVariant("success");
+                setIsPersistentToast(true);
             }
             setShowToast(true);
         } catch (error) {
@@ -134,6 +142,7 @@ const MundoVerdeInvoices = () => {
                 "Ocurrió un error inesperado al enviar los datos",
             );
             setToastVariant("danger");
+            setIsPersistentToast(false);
             setShowToast(true);
         } finally {
             setIsLoading(false);
@@ -1001,6 +1010,8 @@ const MundoVerdeInvoices = () => {
                 toastTitle={toastTitle}
                 toastMessage={toastMessage}
                 position="middle-center"
+                custom_autohide={!isPersistentToast}
+                showOkButton={isPersistentToast}
             />
         </>
     );

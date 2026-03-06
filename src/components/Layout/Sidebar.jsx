@@ -70,6 +70,16 @@ const Sidebar = ({ isOpen, onClose }) => {
             bgColor: "rgba(139,92,246,0.08)",
             openInNewTab: true,
         },
+        {
+            id: "pepsi-video-analysis",
+            path: "/video-analysis",
+            icon: "bi bi-play-circle",
+            label: "Análisis de Video",
+            sublabel: "Pepsi",
+            color: "#005cb4",
+            bgColor: "rgba(0,92,180,0.08)",
+            openInNewTab: true,
+        },
     ];
 
     const renderGeneralItem = (item) => {

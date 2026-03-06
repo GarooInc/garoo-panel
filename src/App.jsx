@@ -18,6 +18,7 @@ import RocknRollaApplications from "./pages/RocknRolla/ApplicationsPage.jsx";
 import MundoVerdeInvoices from "./pages/MundoVerde/InvoicesPage.jsx";
 import FicohsaCalls from "./pages/Ficohsa/CallsPage.jsx";
 import SpectrumLeads from "./pages/Spectrum/LeadsPage.jsx";
+import PepsiVideoAnalysis from "./pages/Pepsi/VideoAnalysisPage.jsx";
 import Services from "./pages/Services.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -44,6 +45,7 @@ function AppContent() {
         "/form",
         "/applications",
         "/spectrum-leads",
+        "/video-analysis",
     ];
     const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
@@ -80,6 +82,10 @@ function AppContent() {
                         <Route
                             path="/spectrum-leads"
                             element={<SpectrumLeads />}
+                        />
+                        <Route
+                            path="/video-analysis"
+                            element={<PepsiVideoAnalysis />}
                         />
                         <Route path="*" element={<Home />} />
                     </Routes>

@@ -42,6 +42,15 @@ const Services = () => {
             cardClass: styles.spectrumCard,
             openInNewTab: true,
         },
+        {
+            title: "Pepsi Video Analysis",
+            description:
+                "Visualización de métricas, engagement y análisis de sentimiento para contenido en video.",
+            icon: "bi-play-circle",
+            path: "/video-analysis",
+            cardClass: styles.pepsiCard,
+            openInNewTab: true,
+        },
     ];
     const handleButtonClick = (service) => {
         if (service.openInNewTab) {

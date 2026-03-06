@@ -10,6 +10,7 @@ const RB_Toast = ({
     position = "top-center",
     custom_autohide,
     delay,
+    showOkButton = false,
 }) => {
     const themes = {
         success: {
@@ -85,15 +86,33 @@ const RB_Toast = ({
                         aria-label="Close"
                     ></button>
                 </div>
-                <div
-                    className="toast-progress-bar"
-                    style={{
-                        height: "3px",
-                        width: "100%",
-                        backgroundColor: theme.color,
-                        opacity: 0.3
-                    }}
-                ></div>
+                {showOkButton && (
+                    <div className="px-3 pb-3 d-flex justify-content-end">
+                        <button
+                            className="btn btn-sm px-4 fw-bold"
+                            style={{
+                                backgroundColor: theme.color,
+                                color: '#fff',
+                                borderRadius: '8px',
+                                fontSize: '0.8rem'
+                            }}
+                            onClick={onClose}
+                        >
+                            OK
+                        </button>
+                    </div>
+                )}
+                {(custom_autohide ?? true) && (
+                    <div
+                        className="toast-progress-bar"
+                        style={{
+                            height: "3px",
+                            width: "100%",
+                            backgroundColor: theme.color,
+                            opacity: 0.3
+                        }}
+                    ></div>
+                )}
             </Toast>
         </ToastContainer>
     );

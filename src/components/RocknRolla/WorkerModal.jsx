@@ -47,7 +47,7 @@ const WorkerModal = ({ show, handleClose, workerData }) => {
                 <div className="row g-0 h-100">
                     {/* Left Sidebar - Profile Summary */}
                     <div
-                        className="col-lg-4 border-end bg-light d-none d-lg-block"
+                        className="col-lg-4 border-end bg-light"
                         style={{
                             backgroundColor: "var(--bg-light) !important",
                         }}
