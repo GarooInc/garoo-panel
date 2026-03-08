@@ -14,11 +14,14 @@ import {
 
 import { ApplicationsProvider } from "./config/ApplicationsProvider";
 import { FormProvider } from "./config/FormProvider.jsx";
-import RocknRollaApplications from "./pages/RocknRolla/ApplicationsPage.jsx";
-import MundoVerdeInvoices from "./pages/MundoVerde/InvoicesPage.jsx";
-import FicohsaCalls from "./pages/Ficohsa/CallsPage.jsx";
-import SpectrumLeads from "./pages/Spectrum/LeadsPage.jsx";
-import PepsiVideoAnalysis from "./pages/Pepsi/VideoAnalysisPage.jsx";
+// ── Client pages ──────────────────────────────────────────────────────────────
+import RocknRollaApplications from "./pages/clients/RocknRolla/ApplicationsPage.jsx";
+import MundoVerdeInvoices from "./pages/clients/MundoVerde/InvoicesPage.jsx";
+import FicohsaCalls from "./pages/clients/Ficohsa/CallsPage.jsx";
+import SpectrumLeads from "./pages/clients/Spectrum/LeadsPage.jsx";
+import PepsiVideoAnalysis from "./pages/clients/Pepsi/VideoAnalysisPage.jsx";
+// ── Garoo services ─────────────────────────────────────────────────────────────
+import AgentOnboarding from "./pages/services/GarooAgent/AgentOnboardingPage.jsx";
 import Services from "./pages/Services.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -46,6 +49,7 @@ function AppContent() {
         "/applications",
         "/spectrum-leads",
         "/video-analysis",
+        "/agent-onboarding",
     ];
     const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
@@ -86,6 +90,10 @@ function AppContent() {
                         <Route
                             path="/video-analysis"
                             element={<PepsiVideoAnalysis />}
+                        />
+                        <Route
+                            path="/agent-onboarding"
+                            element={<AgentOnboarding />}
                         />
                         <Route path="*" element={<Home />} />
                     </Routes>

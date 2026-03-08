@@ -51,6 +51,15 @@ const Services = () => {
             cardClass: styles.pepsiCard,
             openInNewTab: true,
         },
+        {
+            title: "Garoo Agent",
+            description:
+                "Configura y personaliza tu agente conversacional con conocimiento, comportamiento e integraciones para tu negocio.",
+            icon: "bi-robot",
+            path: "/agent-onboarding",
+            cardClass: styles.agentCard,
+            openInNewTab: true,
+        },
     ];
     const handleButtonClick = (service) => {
         if (service.openInNewTab) {

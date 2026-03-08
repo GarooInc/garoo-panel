@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+.wrapper {
+    min-height: 100vh;
+    background: #1E1F2E;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #D4D4CC;
+    isolation: isolate;
+    scrollbar-color: #3A3A52 #1E1F2E;
+    scrollbar-width: thin;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: #1E1F2E;
+    scrollbar-color: #3A3A52 #1E1F2E;
+    scrollbar-width: thin;
+}
+
+.contentInner {
+    flex: 1;
+    padding: 52px 64px 64px;
+    max-width: 820px;
+}
+
+/* ─── PHASE HEADER ───────────────────────────────────────────────────────────── */
+.phaseHeader {
+    margin-bottom: 36px;
+}
+
+.phaseMeta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.phaseBadge {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.savedTag {
+    font-size: 11px;
+    color: #4ADE80;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.phaseTitle {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin: 0 0 10px;
+    line-height: 1.05;
+    color: #EEEEE8;
+}
+
+.phaseDesc {
+    font-size: 14px;
+    color: #6A6A80;
+    line-height: 1.7;
+    max-width: 560px;
+}
+
+/* ─── FORM CARD ──────────────────────────────────────────────────────────────── */
+.formCard {
+    background: #252638;
+    border: 1px solid #33344A;
+    border-radius: 16px;
+    padding: 40px;
+    animation: gaoSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── ACTIONS ────────────────────────────────────────────────────────────────── */
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #2A2B3E;
+}
+
+.btnPrev {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: transparent;
+    border: 1px solid #33344A;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #6A6A80;
+}
+
+.btnPrev:disabled {
+    color: #2E2E42;
+    border-color: #252538;
+    cursor: default;
+}
+
+.btnPrev:not(:disabled):hover {
+    border-color: #4A4A65;
+    color: #9A9AB0;
+    background: #22233A;
+}
+
+.btnSave {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+    color: #111100;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.btnSave:not(:disabled):hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+}
+
+.btnSave:disabled {
+    opacity: 0.35;
+    cursor: default;
+    transform: none;
+}
+
+/* ─── FINAL SUBMIT ───────────────────────────────────────────────────────────── */
+.finalSubmit {
+    margin-top: 36px;
+    padding: 36px;
+    background: #1A2E1A;
+    border: 1px solid #234A23;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.finalTitle {
+    font-size: 11px;
+    color: #4ADE80;
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.finalDesc {
+    font-size: 14px;
+    color: #5A7A5A;
+    margin-bottom: 28px;
+    line-height: 1.7;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btnFinal {
+    padding: 14px 52px;
+    background: #F0D800;
+    border: none;
+    border-radius: 10px;
+    color: #111100;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 800;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(200, 180, 0, 0.25);
+    letter-spacing: 0.01em;
+}
+
+.btnFinal:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(200, 180, 0, 0.35);
+}
+
+.btnFinal:disabled {
+    background: #2A2A3A;
+    color: #555;
+    cursor: default;
+    box-shadow: none;
+}
+
+/* ─── TOAST ─────────────────────────────────────────────────────────────────── */
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1000;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    animation: gaoFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toastOk {
+    background: #1A3020;
+    border: 1px solid #2A5030;
+    color: #4ADE80;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.toastWarn {
+    background: #2A2010;
+    border: 1px solid #4A3A10;
+    color: #FCD34D;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes gaoFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gaoSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

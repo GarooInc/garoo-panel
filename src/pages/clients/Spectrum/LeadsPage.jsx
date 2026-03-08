@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import LeadModal from "../../components/Spectrum/LeadModal";
-import { Avatar } from "../../components/Spectrum/LeadModalComponents";
-import { getEmotionStyle, getChannelInfo } from "../../utils/leadHelpers";
-import { formatFullDate } from "../../utils/dateHelpers";
-import garooLogo from "../../assets/img/garoo-logo.png";
+import LeadModal from "../../../components/Spectrum/LeadModal";
+import { Avatar } from "../../../components/Spectrum/LeadModalComponents";
+import { getEmotionStyle, getChannelInfo } from "../../../utils/leadHelpers";
+import { formatFullDate } from "../../../utils/dateHelpers";
+import garooLogo from "../../../assets/img/garoo-logo.png";
 
 const WEBHOOK_URL = "/spectrum-proxy/webhook/leads";
 

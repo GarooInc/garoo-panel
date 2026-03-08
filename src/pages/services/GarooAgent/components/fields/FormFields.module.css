@@ -1,0 +1,226 @@
+.field {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: #7A7A92;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.input,
+.textarea,
+.select {
+    width: 100%;
+    background: #1C1D2E;
+    border: 1px solid #30314A;
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: #D4D4CC;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+    color: #44455A;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+    border-color: #5A5A80;
+    background: #20213A;
+    box-shadow: 0 0 0 3px rgba(120, 120, 180, 0.1);
+}
+
+.textarea {
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236666AA' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
+
+.hint {
+    font-size: 11px;
+    color: #55556E;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.sectionTitle {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #60607A;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2A2B42;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sectionTitle::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.sectionTitleTop {
+    margin-top: 32px;
+}
+
+.addButton {
+    width: 100%;
+    padding: 11px;
+    background: transparent;
+    border: 1px dashed #32334A;
+    border-radius: 8px;
+    color: #55556E;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: all 0.15s;
+    margin-bottom: 20px;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+.addButton:hover {
+    border-color: #5A5A80;
+    color: #8888A8;
+    background: #20213A;
+}
+
+.toggle {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #1C1D2E;
+    border: 1px solid #30314A;
+    border-radius: 8px;
+    transition: border-color 0.15s;
+}
+
+.toggle:has(.toggleBtn:hover) {
+    border-color: #5A5A80;
+}
+
+.toggleInfo {
+    flex: 1;
+}
+
+.toggleLabel {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #8A8AA2;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.toggleHint {
+    font-size: 11px;
+    color: #55556E;
+    margin-top: 3px;
+}
+
+.toggleBtn {
+    width: 44px;
+    height: 24px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.toggleKnob {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    transition: left 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+}
+
+.card {
+    background: #1C1D30;
+    border: 1px solid #2E2F48;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+}
+
+.card:hover {
+    border-color: #3E3F5A;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.cardIndex {
+    font-size: 10px;
+    color: #44455E;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.cardRemove {
+    background: none;
+    border: none;
+    color: #40405A;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    font-family: inherit;
+    transition: color 0.15s;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.cardRemove:hover {
+    color: #E05050;
+    background: rgba(220, 50, 50, 0.08);
+}
+
+.twoCol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}

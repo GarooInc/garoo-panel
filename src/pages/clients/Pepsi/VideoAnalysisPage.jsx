@@ -7,7 +7,7 @@ import {
     Modal,
 } from "react-bootstrap";
 import axios from "axios";
-import garooLogo from "../../assets/img/garoo-logo.png";
+import garooLogo from "../../../assets/img/garoo-logo.png";
 import "./VideoAnalysis.css";
 
 const VideoAnalysisPage = () => {

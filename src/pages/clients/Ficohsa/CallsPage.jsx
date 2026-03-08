@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import garooLogo from "../../assets/img/garoo-logo.png";
+import garooLogo from "../../../assets/img/garoo-logo.png";
 
 const FicohsaCalls = () => {
     const [formData, setFormData] = useState({

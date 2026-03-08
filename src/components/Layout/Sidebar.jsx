@@ -80,6 +80,16 @@ const Sidebar = ({ isOpen, onClose }) => {
             bgColor: "rgba(0,92,180,0.08)",
             openInNewTab: true,
         },
+        {
+            id: "agent-onboarding",
+            path: "/agent-onboarding",
+            icon: "bi bi-robot",
+            label: "Configuración de Agente",
+            sublabel: "Garoo Agent",
+            color: "#e0c800",
+            bgColor: "rgba(224,200,0,0.08)",
+            openInNewTab: true,
+        },
     ];
 
     const renderGeneralItem = (item) => {

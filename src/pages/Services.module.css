@@ -163,6 +163,11 @@
     --bg-light: #eff6ff;
 }
 
+.agentCard {
+    --color1: #e0c800;
+    --bg-light: #fefce8;
+}
+
 @media (max-width: 640px) {
     .servicesContainer {
         padding: 1.5rem;

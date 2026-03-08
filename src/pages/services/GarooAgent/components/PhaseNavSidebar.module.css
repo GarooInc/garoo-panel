@@ -1,0 +1,179 @@
+.sidebar {
+    width: 288px;
+    flex-shrink: 0;
+    background: #181927;
+    border-right: 1px solid #272840;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-color: #3A3A52 #181927;
+    scrollbar-width: thin;
+}
+
+.brand {
+    padding: 28px 24px 22px;
+    border-bottom: 1px solid #232438;
+}
+
+.brandRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.brandLogo {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #F0D800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(200, 180, 0, 0.3);
+}
+
+.brandLogoInner {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: #111100;
+}
+
+.brandName {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #EEEEE8;
+}
+
+.brandSub {
+    font-size: 11px;
+    color: #4A4A62;
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+.clientId {
+    font-size: 10px;
+    color: #44445A;
+    letter-spacing: 0.04em;
+    padding: 7px 11px;
+    background: #1C1D2E;
+    border-radius: 6px;
+    border: 1px solid #272840;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.nav {
+    padding: 20px 16px;
+    flex: 1;
+}
+
+.navTitle {
+    font-size: 10px;
+    color: #363650;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-left: 8px;
+    font-weight: 700;
+}
+
+.navList {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    width: 100%;
+    border: 1px solid transparent;
+    font-family: inherit;
+    background: transparent;
+}
+
+.navItem:hover {
+    background: #20213A !important;
+}
+
+.navIcon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    transition: all 0.2s;
+}
+
+.navLabel {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    transition: color 0.15s;
+}
+
+.navSublabel {
+    font-size: 10px;
+    color: #3E3E58;
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+.progress {
+    padding: 16px 24px 24px;
+    border-top: 1px solid #232438;
+}
+
+.progressRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.progressLabel {
+    font-size: 11px;
+    color: #3E3E58;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.progressCount {
+    font-size: 11px;
+    color: #5A5A78;
+    font-weight: 700;
+}
+
+.progressTrack {
+    height: 4px;
+    background: #252640;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #F0D800 0%, #00D080 100%);
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}

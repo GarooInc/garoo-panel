@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import RB_Toast from "../../components/RB_Toast";
+import RB_Toast from "../../../components/RB_Toast";
 import { useState } from "react";
-import garooLogo from "../../assets/img/garoo-logo.png";
+import garooLogo from "../../../assets/img/garoo-logo.png";
 
 const MundoVerdeInvoices = () => {
     const {
