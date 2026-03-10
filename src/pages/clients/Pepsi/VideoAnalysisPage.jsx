@@ -100,7 +100,7 @@ const VideoAnalysisPage = () => {
 
         const totalViews = videoData.reduce((acc, curr) => acc + (curr.video_data.play_count || 0), 0);
         const avgEng = videoData.reduce((acc, curr) => acc + (curr.video_data.engagement_rate || 0), 0) / videoData.length;
-        const viral = videoData.filter(v => (v.video_data.viral_tier === 'mega_viral' || v.video_analysis.urgency_score >= 8)).length;
+        const viral = videoData.filter(v => (v.video_data.viral_tier === 'mega_viral' || (v.video_analysis?.estrategia_pepsi_gt?.urgencia_score || v.video_analysis?.urgency_score) >= 8)).length;
 
         const formatViews = (n) => {
             if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
@@ -123,7 +123,7 @@ const VideoAnalysisPage = () => {
             const matchesTier = tierFilter === "all" || item.video_data.viral_tier === tierFilter;
 
             let matchesScore = true;
-            const score = item.video_analysis?.urgency_score || 0;
+            const score = item.video_analysis?.estrategia_pepsi_gt?.urgencia_score || item.video_analysis?.urgency_score || 0;
             if (scoreFilter === "high") matchesScore = score >= 8;
             else if (scoreFilter === "medium") matchesScore = score >= 5 && score < 8;
             else if (scoreFilter === "low") matchesScore = score < 5;
@@ -376,92 +376,145 @@ const VideoAnalysisPage = () => {
                             )}
                         </div>
                         <div className="pepsi-scroll-area analysis-stage">
-                            {selectedVideo ? (
-                                <div className="analysis-layout-grid">
-                                    {/* Scan Line Effect Overlay */}
-                                    <div className="ai-scan-line"></div>
+                            {selectedVideo ? (() => {
+                                // Priority calculation for UI states
+                                const score = selectedVideo.video_analysis?.estrategia_pepsi_gt?.urgencia_score || selectedVideo.video_analysis?.urgencia_score || 0;
+                                let priorityClass = "low";
+                                let priorityLabel = "Prioridad Baja";
+                                let priorityIcon = "bi bi-check-circle-fill";
 
-                                    {/* Top Row: Hook & Viral Factors */}
-                                    <div className="analysis-section-main">
-                                        <div className="analysis-glass-card hook-card">
-                                            <div className="d-flex align-items-center gap-2 mb-3">
-                                                <div className="insight-icon purple">
-                                                    <i className="bi bi-magnet-fill"></i>
+                                if (score >= 9) {
+                                    priorityClass = "critical";
+                                    priorityLabel = "PRIORIDAD CRÍTICA / INMEDIATA";
+                                    priorityIcon = "bi bi-exclamation-octagon-fill";
+                                } else if (score >= 7) {
+                                    priorityClass = "high";
+                                    priorityLabel = "PRIORIDAD ALTA";
+                                    priorityIcon = "bi bi-lightning-fill";
+                                } else if (score >= 5) {
+                                    priorityClass = "medium";
+                                    priorityLabel = "PRIORIDAD MEDIA";
+                                    priorityIcon = "bi bi-info-circle-fill";
+                                }
+
+                                return (
+                                    <div className="analysis-layout-v3">
+                                        {/* Priority Banner */}
+                                        <div className={`priority-banner ${priorityClass}`}>
+                                            <div className="d-flex align-items-center gap-4">
+                                                <div className="priority-score-circle" style={{ color: 'inherit' }}>
+                                                    <span className="score-num">{score}</span>
+                                                    <span className="score-label">SCORE</span>
                                                 </div>
                                                 <div>
-                                                    <span className="insight-label">Gancho Viral (Hook)</span>
-                                                    <h5 className="mb-0 fw-bold text-white">{selectedVideo.video_analysis.hook_type}</h5>
+                                                    <span className="priority-badge-large">{priorityLabel}</span>
+                                                    <h3 className="priority-title">
+                                                        {selectedVideo.video_analysis?.estrategia_pepsi_gt?.urgencia_reason || selectedVideo.video_analysis?.urgencia_reason}
+                                                    </h3>
                                                 </div>
                                             </div>
-                                            <p className="insight-text">
-                                                {selectedVideo.video_analysis.hook_explanation}
-                                            </p>
+                                            <i className={`${priorityIcon} fs-1 opacity-25`}></i>
                                         </div>
 
-                                        <div className="analysis-glass-card factors-card">
-                                            <div className="d-flex align-items-center gap-2 mb-3">
-                                                <div className="insight-icon yellow">
-                                                    <i className="bi bi-lightning-charge-fill"></i>
-                                                </div>
-                                                <span className="insight-label">Drivers de Viralidad</span>
-                                            </div>
-                                            <div className="d-flex flex-wrap gap-2">
-                                                {selectedVideo.video_analysis.virality_factors.map((f, i) => (
-                                                    <div key={i} className="virality-pill">
-                                                        {f}
+                                        {/* Core Insights Grid */}
+                                        <div className="insight-grid-v3">
+                                            {/* Hook Card */}
+                                            <div className="insight-card-v3">
+                                                <div className="card-header-v3">
+                                                    <div className="icon-box-v3 purple"><i className="bi bi-magnet-fill"></i></div>
+                                                    <div>
+                                                        <span className="card-label-v3">Gancho Viral (Hook)</span>
+                                                        <div className="d-flex align-items-center gap-2">
+                                                            <span className="card-title-v3">{selectedVideo.video_analysis.hook_type}</span>
+                                                            {selectedVideo.video_analysis.content_category && (
+                                                                <span className="category-badge-v2">{selectedVideo.video_analysis.content_category}</span>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                ))}
+                                                </div>
+                                                <p className="insight-text m-0">{selectedVideo.video_analysis.hook_explanation}</p>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    {/* Score Meter & Urgency */}
-                                    <div className="analysis-section-side">
-                                        <div className="urgency-score-block">
-                                            <div className="score-meter">
-                                                <svg viewBox="0 0 36 36" className="circular-chart">
-                                                    <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                                    <path className={`circle ${selectedVideo.video_analysis.urgency_score > 7 ? 'danger' : 'warning'}`}
-                                                        strokeDasharray={`${selectedVideo.video_analysis.urgency_score * 10}, 100`}
-                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                                    <text x="18" y="20.35" className="percentage">{selectedVideo.video_analysis.urgency_score}</text>
-                                                    <text x="18" y="26" className="unit">SCORE</text>
-                                                </svg>
-                                            </div>
-                                            <div className="urgency-details">
-                                                <h6 className="urgency-title">Prioridad de Respuesta</h6>
-                                                <p className="urgency-reason">
-                                                    {selectedVideo.video_analysis.urgency_reason}
-                                                </p>
+                                            {/* Viral Factors Card */}
+                                            <div className="insight-card-v3">
+                                                <div className="card-header-v3">
+                                                    <div className="icon-box-v3 orange"><i className="bi bi-lightning-charge-fill"></i></div>
+                                                    <div>
+                                                        <span className="card-label-v3">Factores Biométricos / Virales</span>
+                                                        <span className="card-title-v3">Drivers de Atención</span>
+                                                    </div>
+                                                </div>
+                                                <div className="d-flex flex-wrap gap-2 mt-2">
+                                                    {selectedVideo.video_analysis.virality_factors.map((f, i) => (
+                                                        <div key={i} className="virality-pill">{f}</div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    {/* Bottom: Replication Strategies */}
-                                    <div className="analysis-section-full">
-                                        <div className="section-divider">
-                                            <span>ESTRATEGIAS COMPETITIVAS</span>
+                                        {/* Pepsi strategy Section */}
+                                        {selectedVideo.video_analysis?.estrategia_pepsi_gt && (
+                                            <div className="strategy-block-v3">
+                                                <div className="card-label-v3 mb-4 text-info">Análisis Estratégico Local</div>
+                                                <div className="row g-4">
+                                                    <div className="col-md-6 border-end border-white-5 opacity-75">
+                                                        <span className="insight-label text-white-50">Interés de Marca</span>
+                                                        <p className="insight-text mt-2 mb-0" style={{ color: '#f1f5f9' }}>
+                                                            {selectedVideo.video_analysis.estrategia_pepsi_gt.interes_marca}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <span className="insight-label text-white-50">Idea de Activación Pepsi</span>
+                                                        <p className="insight-text mt-2 mb-0" style={{ color: '#f1f5f9' }}>
+                                                            {selectedVideo.video_analysis.estrategia_pepsi_gt.idea_activacion}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Influencer Profile Card */}
+                                        {selectedVideo.video_analysis?.influencer_data && (
+                                            <div className="influencer-card-v3">
+                                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                                    <div className="d-flex align-items-center gap-3">
+                                                        <div className="icon-box-v3 green"><i className="bi bi-person-check-fill"></i></div>
+                                                        <span className="card-title-v3">Perfil de Influenciador</span>
+                                                    </div>
+                                                    <span className="influencer-badge-v3">POTENCIAL: {selectedVideo.video_analysis.influencer_data.potencial_puntuacion}/10</span>
+                                                </div>
+                                                <div className="row g-4">
+                                                    <div className="col-md-5">
+                                                        <span className="influencer-detail-label">Sugerencia de Casting</span>
+                                                        <div className="influencer-detail-value">{selectedVideo.video_analysis.influencer_data.perfil_sugerido}</div>
+                                                    </div>
+                                                    <div className="col-md-7 border-start border-white-5">
+                                                        <span className="influencer-detail-label">Estrategia de Colaboración</span>
+                                                        <div className="influencer-detail-value">{selectedVideo.video_analysis.influencer_data.estrategia_colaboracion}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Replication Ideas Section */}
+                                        <div className="section-divider mt-2">
+                                            <span>IDEAS DE REPLICACIÓN</span>
                                         </div>
-                                        <div className="row g-3">
+                                        <div className="replication-grid-v3">
                                             {selectedVideo.video_analysis.replication_ideas.map((idea, i) => (
-                                                <div key={i} className="col-md-6">
-                                                    <div className="strategy-card">
-                                                        <div className="d-flex justify-content-between mb-2">
-                                                            <span className="strategy-tag">IDEA #{i + 1}</span>
-                                                            <span className="duration-tag">{idea.duration_seconds}s</span>
-                                                        </div>
-                                                        <h6 className="strategy-title">{idea.title}</h6>
-                                                        <p className="strategy-desc">"{idea.approach}"</p>
-                                                        <div className="strategy-footer">
-                                                            <i className="bi bi-info-circle me-1"></i> Recomendado para {selectedVideo.video_data.region}
-                                                        </div>
+                                                <div key={i} className="replication-item-v3">
+                                                    <div className="item-meta-v3">
+                                                        <span>CONCEPTO #{i + 1}</span>
+                                                        <span><i className="bi bi-clock"></i> {idea.duration_seconds}s</span>
                                                     </div>
+                                                    <h6 className="fw-bold text-white mb-2">{idea.title}</h6>
+                                                    <p className="small text-white-50 m-0">"{idea.approach}"</p>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
-                                </div>
-                            ) : (
+                                );
+                            })() : (
                                 <div className="h-100 d-flex flex-column align-items-center justify-content-center py-5">
                                     <div className="ai-empty-state">
                                         <i className="bi bi-cpu fs-1 mb-4"></i>

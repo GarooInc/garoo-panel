@@ -159,7 +159,10 @@ const ApplicationsTable = ({
                     width: 100%;
                 }
                 .custom-table thead th {
-                    background-color: transparent;
+                    position: sticky;
+                    top: 0;
+                    background-color: #ffffff;
+                    z-index: 10;
                     border-bottom: 1px solid var(--border-color);
                     color: var(--text-secondary);
                     font-weight: 500;

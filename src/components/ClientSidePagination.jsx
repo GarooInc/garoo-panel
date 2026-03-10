@@ -46,69 +46,78 @@ const ClientSidePagination = ({ data, itemsPerPage = 10, renderItems }) => {
     };
 
     return (
-        <div>
-            {/* Renderizar los items actuales */}
-            {renderItems(paginationInfo.currentItems)}
+        <div className="d-flex flex-column h-100 overflow-hidden">
+            {/* El contenedor de items crece para ocupar el espacio y tiene scroll propio */}
+            <div className="flex-grow-1 overflow-auto">
+                {renderItems(paginationInfo.currentItems)}
+            </div>
 
-            {/* Controles de paginación */}
+            {/* Los controles de paginación se quedan fijos abajo */}
             {paginationInfo.totalItems > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
-                    <div className="text-secondary small fw-medium">
-                        Mostrando{" "}
-                        <span className="text-dark">
-                            {paginationInfo.startRecord}
-                        </span>{" "}
-                        -{" "}
-                        <span className="text-dark">
-                            {paginationInfo.endRecord}
-                        </span>{" "}
-                        de{" "}
-                        <span className="text-dark">
-                            {paginationInfo.totalItems}
-                        </span>
-                    </div>
-
-                    <div className="d-flex align-items-center gap-2">
-                        <button
-                            disabled={!paginationInfo.hasPrev}
-                            onClick={goToPrevious}
-                            className="btn btn-light border-0 py-2 px-3 rounded-3 small text-secondary"
-                            style={{
-                                backgroundColor: paginationInfo.hasPrev
-                                    ? "#ffffff"
-                                    : "transparent",
-                                opacity: paginationInfo.hasPrev ? 1 : 0.5,
-                            }}
-                        >
-                            <i className="bi bi-chevron-left"></i>
-                        </button>
-
-                        <div className="px-3 py-2 bg-white border rounded-3 small fw-bold text-dark shadow-sm">
-                            {paginationInfo.currentPage}{" "}
-                            <span className="text-secondary fw-normal mx-1">
-                                /
+                <div className="flex-shrink-0 bg-white border-top py-3 px-4 shadow-sm">
+                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div className="text-secondary small fw-medium">
+                            Mostrando{" "}
+                            <span className="text-dark">
+                                {paginationInfo.startRecord}
                             </span>{" "}
-                            {paginationInfo.totalPages}
+                            -{" "}
+                            <span className="text-dark">
+                                {paginationInfo.endRecord}
+                            </span>{" "}
+                            de{" "}
+                            <span className="text-dark">
+                                {paginationInfo.totalItems}
+                            </span>
                         </div>
 
-                        <button
-                            disabled={!paginationInfo.hasNext}
-                            onClick={goToNext}
-                            className="btn btn-light border-0 py-2 px-3 rounded-3 small text-secondary"
-                            style={{
-                                backgroundColor: paginationInfo.hasNext
-                                    ? "#ffffff"
-                                    : "transparent",
-                                opacity: paginationInfo.hasNext ? 1 : 0.5,
-                            }}
-                        >
-                            <i className="bi bi-chevron-right"></i>
-                        </button>
+                        <div className="d-flex align-items-center gap-2">
+                            <button
+                                disabled={!paginationInfo.hasPrev}
+                                onClick={goToPrevious}
+                                className="btn btn-light border py-2 px-3 rounded-pill small transition-all"
+                                style={{
+                                    backgroundColor: paginationInfo.hasPrev
+                                        ? "#ffffff"
+                                        : "transparent",
+                                    opacity: paginationInfo.hasPrev ? 1 : 0.5,
+                                    fontSize: '0.75rem',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                <i className="bi bi-chevron-left me-1"></i>
+                                Anterior
+                            </button>
+
+                            <div className="px-3 py-2 bg-light border rounded-pill small fw-bold text-dark d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
+                                <span>{paginationInfo.currentPage}</span>
+                                <span className="text-secondary fw-normal">/</span>
+                                <span>{paginationInfo.totalPages}</span>
+                            </div>
+
+                            <button
+                                disabled={!paginationInfo.hasNext}
+                                onClick={goToNext}
+                                className="btn btn-light border py-2 px-3 rounded-pill small transition-all"
+                                style={{
+                                    backgroundColor: paginationInfo.hasNext
+                                        ? "#ffffff"
+                                        : "transparent",
+                                    opacity: paginationInfo.hasNext ? 1 : 0.5,
+                                    fontSize: '0.75rem',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                Siguiente
+                                <i className="bi bi-chevron-right ms-1"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
         </div>
     );
 };
+
 
 export default ClientSidePagination;

@@ -34,7 +34,8 @@ const RocknRollaApplications = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [selectedWorker, setSelectedWorker] = useState(null);
-    const [activeTab, setActiveTab] = useState("candidates");
+    const [activeTab, setActiveTab] = useState("candidates"); // "candidates" | "api"
+    const [copyStatus, setCopyStatus] = useState("Copy All");
 
     const handleViewDetails = useCallback((worker) => {
         setSelectedWorker(worker);
@@ -54,6 +55,19 @@ const RocknRollaApplications = () => {
             alert(err.message || "Error al generar el PDF.");
         }
     }, []);
+
+    const handleCopyJSON = async () => {
+        try {
+            const jsonStr = JSON.stringify(data, null, 2);
+            await navigator.clipboard.writeText(jsonStr);
+            setCopyStatus("¡Copiado!");
+            setTimeout(() => setCopyStatus("Copy All"), 2000);
+        } catch (err) {
+            console.error("Error al copiar:", err);
+            setCopyStatus("Error");
+            setTimeout(() => setCopyStatus("Copy All"), 2000);
+        }
+    };
 
     return (
         <>
@@ -248,7 +262,8 @@ const RocknRollaApplications = () => {
 
                 /* Scrollable table area */
                 .ap-table-area {
-                    flex: 1; overflow-y: auto; overflow-x: auto;
+                    flex: 1; 
+                    overflow-x: auto;
                     background: rgba(255,255,255,1);
                 }
 
@@ -503,6 +518,38 @@ const RocknRollaApplications = () => {
                     padding: 3px 10px; border-radius: 100px;
                 }
 
+                .ap-json-copy-btn {
+                    background: #ffffff;
+                    border: 1px solid rgba(0,0,0,.1);
+                    color: #475569;
+                    font-size: .7rem;
+                    font-weight: 600;
+                    padding: .4rem .8rem;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    gap: .4rem;
+                    cursor: pointer;
+                    transition: all .2s;
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                }
+
+                .ap-json-copy-btn:hover {
+                    background: #f8fafc;
+                    border-color: rgba(59,130,246,.3);
+                    color: #2563eb;
+                }
+
+                .ap-json-copy-btn:active {
+                    transform: scale(.96);
+                }
+
+                .ap-json-copy-btn.copied {
+                    background: #f0fdf4;
+                    border-color: #bbf7d0;
+                    color: #166534;
+                }
+
                 .ap-json-pre {
                     background: #f1f5f9;
                     border: 1px solid rgba(0,0,0,.06);
@@ -681,15 +728,15 @@ const RocknRollaApplications = () => {
                                         />
                                     </div>
 
-                                    {/* Scrollable table */}
-                                    <div
-                                        className="ap-table-area"
-                                        style={{ padding: "0 .5rem .5rem" }}
-                                    >
-                                        <ClientSidePagination
-                                            data={filteredWorkers}
-                                            itemsPerPage={10}
-                                            renderItems={(currentItems) => (
+                                    {/* Main Content Area with Fixed Pagination Footer */}
+                                    <ClientSidePagination
+                                        data={filteredWorkers}
+                                        itemsPerPage={10}
+                                        renderItems={(currentItems) => (
+                                            <div
+                                                className="ap-table-area"
+                                                style={{ padding: "0 .5rem" }}
+                                            >
                                                 <ApplicationsTable
                                                     filteredWorkers={
                                                         currentItems
@@ -703,21 +750,30 @@ const RocknRollaApplications = () => {
                                                     styles={styles}
                                                     searchTerm={searchTerm}
                                                 />
-                                            )}
-                                        />
-                                    </div>
+                                            </div>
+                                        )}
+                                    />
                                 </>
                             ))}
 
                         {activeTab === "api" && (
                             <div className="ap-json-wrap">
                                 <div className="ap-json-header">
-                                    <span className="ap-json-title">
-                                        Raw Server JSON
-                                    </span>
-                                    <span className="ap-json-count">
-                                        {data?.length ?? 0} registros
-                                    </span>
+                                    <div className="d-flex align-items-center gap-2">
+                                        <span className="ap-json-title">
+                                            Raw Server JSON
+                                        </span>
+                                        <span className="ap-json-count">
+                                            {data?.length ?? 0} registros
+                                        </span>
+                                    </div>
+                                    <button
+                                        className={`ap-json-copy-btn ${copyStatus === '¡Copiado!' ? 'copied' : ''}`}
+                                        onClick={handleCopyJSON}
+                                    >
+                                        <i className={`bi bi-${copyStatus === '¡Copiado!' ? 'check-lg' : 'clipboard-plus'}`} />
+                                        {copyStatus}
+                                    </button>
                                 </div>
                                 <pre className="ap-json-pre">
                                     {JSON.stringify(data, null, 2)}
