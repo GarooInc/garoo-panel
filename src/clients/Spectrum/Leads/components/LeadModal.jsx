@@ -6,8 +6,8 @@ import {
     ModalField,
     ChatHistory,
 } from "./LeadModalComponents";
-import { getEmotionStyle, getChannelInfo } from "../../utils/leadHelpers";
-import { formatFullDate } from "../../utils/dateHelpers";
+import { getEmotionStyle, getChannelInfo } from "../utils/leadHelpers";
+import { formatFullDate } from "../../../../utils/dateHelpers";
 
 /**
  * Lead Modal (centered)

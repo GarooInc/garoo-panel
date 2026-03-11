@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import LeadModal from "../../../components/Spectrum/LeadModal";
-import { Avatar } from "../../../components/Spectrum/LeadModalComponents";
-import { getEmotionStyle, getChannelInfo } from "../../../utils/leadHelpers";
+import LeadModal from "./components/LeadModal";
+import { Avatar } from "./components/LeadModalComponents";
+import { getEmotionStyle, getChannelInfo } from "./utils/leadHelpers";
 import { formatFullDate } from "../../../utils/dateHelpers";
 import garooLogo from "../../../assets/img/garoo-logo.png";
 

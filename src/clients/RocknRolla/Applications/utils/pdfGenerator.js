@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { formatDate, formatPeriod, formatExperienceDate, formatSalary } from './dateHelpers';
+import { formatDate, formatPeriod, formatExperienceDate, formatSalary } from '../../../../utils/dateHelpers';
 import {
     getFullName,
     getPosition,

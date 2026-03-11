@@ -3,13 +3,13 @@ import { useState, useCallback } from "react";
 import { Spinner } from "react-bootstrap";
 import garooLogo from "../../../assets/img/garoo-logo.png";
 
-import { useApplications } from "../../../config/ApplicationsProvider";
-import { useSimpleFilters } from "../../../hooks/useSimpleFilters";
-import { generateWorkerPDF } from "../../../utils/pdfGenerator";
+import { useApplications } from "./context/ApplicationsProvider";
+import { useSimpleFilters } from "./hooks/useSimpleFilters";
+import { generateWorkerPDF } from "./utils/pdfGenerator";
 
-import WorkerModal from "../../../components/RocknRolla/WorkerModal";
-import ApplicationsFilters from "../../../components/RocknRolla/ApplicationsFilters";
-import ApplicationsTable from "../../../components/RocknRolla/ApplicationsTable";
+import WorkerModal from "./components/WorkerModal";
+import ApplicationsFilters from "./components/ApplicationsFilters";
+import ApplicationsTable from "./components/ApplicationsTable";
 import ClientSidePagination from "../../../components/ClientSidePagination";
 
 const RocknRollaApplications = () => {

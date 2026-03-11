@@ -1,4 +1,4 @@
-import { applicationsInstance } from "./axios.js";
+import { applicationsInstance } from "../../../../api/axios.js";
 
 export const get_applications = (page = 1, limit = 10, filters = {}) => {
     const params = new URLSearchParams({

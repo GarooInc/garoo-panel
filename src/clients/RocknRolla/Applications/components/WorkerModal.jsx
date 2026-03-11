@@ -6,7 +6,7 @@ import {
     formatPeriod,
     formatExperienceDate,
     formatSalary,
-} from "../../utils/dateHelpers";
+} from "../../../../utils/dateHelpers";
 import {
     getFullName,
     getPosition,
@@ -23,7 +23,7 @@ import {
     getEducations,
     getExperiences,
     getAllReferences,
-} from "../../utils/workerDataHelpers";
+} from "../utils/workerDataHelpers";
 
 const WorkerModal = ({ show, handleClose, workerData }) => {
     if (!workerData) return null;

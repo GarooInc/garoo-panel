@@ -12,16 +12,16 @@ import {
     useLocation,
 } from "react-router-dom";
 
-import { ApplicationsProvider } from "./config/ApplicationsProvider";
-import { FormProvider } from "./config/FormProvider.jsx";
+import { ApplicationsProvider } from "./clients/RocknRolla/Applications/context/ApplicationsProvider";
+import { FormProvider } from "./context/FormProvider.jsx";
 // ── Client pages ──────────────────────────────────────────────────────────────
-import RocknRollaApplications from "./pages/clients/RocknRolla/ApplicationsPage.jsx";
-import MundoVerdeInvoices from "./pages/clients/MundoVerde/InvoicesPage.jsx";
-import FicohsaCalls from "./pages/clients/Ficohsa/CallsPage.jsx";
-import SpectrumLeads from "./pages/clients/Spectrum/LeadsPage.jsx";
-import PepsiVideoAnalysis from "./pages/clients/Pepsi/VideoAnalysisPage.jsx";
+import RocknRollaApplications from "./clients/RocknRolla/Applications/ApplicationsPage.jsx";
+import MundoVerdeInvoices from "./clients/MundoVerde/Invoices/InvoicesPage.jsx";
+import FicohsaCalls from "./clients/Ficohsa/Calls/CallsPage.jsx";
+import SpectrumLeads from "./clients/Spectrum/Leads/LeadsPage.jsx";
+import PepsiVideoAnalysis from "./clients/Pepsi/VideoAnalysis/VideoAnalysisPage.jsx";
 // ── Garoo services ─────────────────────────────────────────────────────────────
-import AgentOnboarding from "./pages/services/GarooAgent/AgentOnboardingPage.jsx";
+import AgentOnboarding from "./internal/GarooAgent/AgentOnboarding/AgentOnboardingPage.jsx";
 import Services from "./pages/Services.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
