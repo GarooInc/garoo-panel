@@ -21,7 +21,7 @@ import FicohsaCalls from "./clients/Ficohsa/Calls/CallsPage.jsx";
 import SpectrumLeads from "./clients/Spectrum/Leads/LeadsPage.jsx";
 import PepsiVideoAnalysis from "./clients/Pepsi/VideoAnalysis/VideoAnalysisPage.jsx";
 // ── Garoo services ─────────────────────────────────────────────────────────────
-import AgentOnboarding from "./internal/GarooAgent/AgentOnboarding/AgentOnboardingPage.jsx";
+import AgentOnboarding from "./Garoo/AgentOnboarding/AgentOnboardingPage.jsx";
 import Services from "./pages/Services.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
