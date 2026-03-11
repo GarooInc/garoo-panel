@@ -1,5 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
 :root {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family:
+        "Plus Jakarta Sans",
+        "Inter",
+        system-ui,
+        -apple-system,
+        sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
@@ -21,7 +28,8 @@
     --text-secondary: #64748b;
     --border-color: #e2e8f0;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+    --shadow-md:
+        0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
 }
 
 .bg-light {
