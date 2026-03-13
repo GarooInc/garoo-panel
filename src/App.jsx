@@ -10,6 +10,7 @@ import {
     BrowserRouter as Router,
     Routes,
     useLocation,
+    Navigate,
 } from "react-router-dom";
 
 import { ApplicationsProvider } from "./clients/RocknRolla/Applications/context/ApplicationsProvider";
@@ -29,14 +30,20 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Sidebar from "./components/Layout/Sidebar.jsx";
 import Header from "./components/Layout/Header.jsx";
 
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
+
 function App() {
     return (
         <Router>
-            <ApplicationsProvider>
-                <FormProvider>
-                    <AppContent />
-                </FormProvider>
-            </ApplicationsProvider>
+            <AuthProvider>
+                <ApplicationsProvider>
+                    <FormProvider>
+                        <AppContent />
+                    </FormProvider>
+                </ApplicationsProvider>
+            </AuthProvider>
         </Router>
     );
 }
@@ -44,6 +51,7 @@ function App() {
 function AppContent() {
     const location = useLocation();
     const hideLayoutRoutes = [
+        "/login",
         "/outbound-call-form",
         "/form",
         "/applications",
@@ -71,31 +79,80 @@ function AppContent() {
                 )}
                 <main className={shouldHideLayout ? "" : "content"}>
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/services" element={<Services />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route
+                            path="/"
+                            element={
+                                <ProtectedRoute>
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute serviceId="dashboard">
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/services"
+                            element={
+                                <ProtectedRoute serviceId="services">
+                                    <Services />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route
                             path="/applications"
-                            element={<RocknRollaApplications />}
+                            element={
+                                <ProtectedRoute serviceId="applications">
+                                    <RocknRollaApplications />
+                                </ProtectedRoute>
+                            }
                         />
-                        <Route path="/form" element={<MundoVerdeInvoices />} />
+                        <Route
+                            path="/form"
+                            element={
+                                <ProtectedRoute serviceId="form">
+                                    <MundoVerdeInvoices />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route
                             path="/outbound-call-form"
-                            element={<FicohsaCalls />}
+                            element={
+                                <ProtectedRoute serviceId="outbound-call-form">
+                                    <FicohsaCalls />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route
                             path="/spectrum-leads"
-                            element={<SpectrumLeads />}
+                            element={
+                                <ProtectedRoute serviceId="spectrum-leads">
+                                    <SpectrumLeads />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route
                             path="/video-analysis"
-                            element={<PepsiVideoAnalysis />}
+                            element={
+                                <ProtectedRoute serviceId="video-analysis">
+                                    <PepsiVideoAnalysis />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route
                             path="/agent-onboarding"
-                            element={<AgentOnboarding />}
+                            element={
+                                <ProtectedRoute serviceId="agent-onboarding">
+                                    <AgentOnboarding />
+                                </ProtectedRoute>
+                            }
                         />
-                        <Route path="*" element={<Home />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </main>
             </div>

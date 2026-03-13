@@ -4,9 +4,11 @@ import garooLogo from "../../assets/img/garoo-logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import { useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
+    const { user, logout, hasPermission } = useAuth();
 
     useEffect(() => {
         if (window.innerWidth < 992) {
@@ -27,7 +29,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             icon: "bi bi-grid-3x3-gap",
             label: "Servicios",
         },
-    ];
+    ].filter(item => hasPermission(item.id));
 
     const serviceItems = [
         {
@@ -90,7 +92,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             bgColor: "rgba(224,200,0,0.08)",
             openInNewTab: true,
         },
-    ];
+    ].filter(item => hasPermission(item.id));
 
     const renderGeneralItem = (item) => {
         const isActive = location.pathname === item.path;
@@ -252,13 +254,76 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                 {/* Footer */}
                 <div className="sidebar-footer">
-                    <span className="sidebar-footer-text">
-                        Servicios Garoo v2.0
-                    </span>
+                    {user && (
+                        <div className="d-flex flex-column gap-2 w-100">
+                            <div className="d-flex align-items-center gap-2 px-1 mb-1">
+                                <div className="user-avatar">
+                                    {user.name.charAt(0)}
+                                </div>
+                                <div className="d-flex flex-column" style={{ minWidth: 0 }}>
+                                    <span className="user-name text-truncate">{user.name}</span>
+                                    <span className="user-client text-truncate">{user.client.toUpperCase()}</span>
+                                </div>
+                            </div>
+                            <button className="logout-btn" onClick={logout}>
+                                <i className="bi bi-box-arrow-left"></i> Cerrar Sesión
+                            </button>
+                        </div>
+                    )}
+                    {!user && (
+                        <span className="sidebar-footer-text">
+                            Servicios Garoo v2.0
+                        </span>
+                    )}
                 </div>
             </div>
 
             <style>{`
+                .user-avatar {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    background: rgba(16, 185, 129, 0.15);
+                    color: #10b981;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 0.9rem;
+                    border: 1px solid rgba(16, 185, 129, 0.2);
+                    flex-shrink: 0;
+                }
+                .user-name {
+                    font-size: 0.82rem;
+                    font-weight: 700;
+                    color: #0f172a; /* Changed from #f1f5f9 */
+                }
+                .user-client {
+                    font-size: 0.65rem;
+                    color: #475569; /* Changed from #64748b */
+                    font-weight: 600;
+                    letter-spacing: 0.05em;
+                }
+                .logout-btn {
+                    width: 100%;
+                    padding: 8px 12px;
+                    background: rgba(239, 68, 68, 0.05);
+                    border: 1px solid rgba(239, 68, 68, 0.1);
+                    border-radius: 8px;
+                    color: #f87171;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                }
+                .logout-btn:hover {
+                    background: rgba(239, 68, 68, 0.1);
+                    border-color: rgba(239, 68, 68, 0.2);
+                }
                 .hover-bg-light:hover {
                     background-color: #f1f5f9 !important;
                     color: var(--text-main) !important;

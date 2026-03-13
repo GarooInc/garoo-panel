@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import RB_Toast from "../../../components/RB_Toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import garooLogo from "../../../assets/img/garoo-logo.png";
 
 const MundoVerdeInvoices = () => {
@@ -8,6 +8,7 @@ const MundoVerdeInvoices = () => {
         register,
         handleSubmit,
         formState: { errors },
+        reset
     } = useForm({
         mode: "onChange",
         defaultValues: { nit: "", serie: "" },
@@ -18,12 +19,41 @@ const MundoVerdeInvoices = () => {
     const [xmlContent, setXmlContent] = useState(null);
     const [selectedXml, setSelectedXml] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    
+    // Dashboard States
+    const [activeTab, setActiveTab] = useState("form"); // 'form' or 'dashboard'
+    const [invoices, setInvoices] = useState([]);
+    const [isFetchingInvoices, setIsFetchingInvoices] = useState(false);
 
     const [showToast, setShowToast] = useState(false);
     const [toastTitle, setToastTitle] = useState("");
     const [toastMessage, setToastMessage] = useState("");
     const [toastVariant, setToastVariant] = useState("");
     const [isPersistentToast, setIsPersistentToast] = useState(false);
+
+    const fetchInvoices = async () => {
+        setIsFetchingInvoices(true);
+        try {
+            const response = await fetch("https://agentsprod.redtec.ai/webhook/facturas-sat");
+            if (!response.ok) throw new Error("Error al obtener facturas");
+            const data = await response.json();
+            setInvoices(Array.isArray(data) ? data : (data.data || []));
+        } catch (error) {
+            console.error("Error fetching invoices:", error);
+            setToastTitle("Error Historial");
+            setToastMessage("No se pudieron cargar las facturas del historial.");
+            setToastVariant("danger");
+            setShowToast(true);
+        } finally {
+            setIsFetchingInvoices(false);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === "dashboard") {
+            fetchInvoices();
+        }
+    }, [activeTab]);
 
     const onSubmit = async (data) => {
         setIsLoading(true);
@@ -109,6 +139,13 @@ const MundoVerdeInvoices = () => {
                 );
                 setToastVariant("success");
                 setIsPersistentToast(true);
+                
+                // Clear form and previews
+                reset();
+                setPdfUrl(null);
+                setSelectedPdf(null);
+                setXmlContent(null);
+                setSelectedXml(null);
             } else if (responseData.status === "error") {
                 setToastTitle(responseData.title || "Error");
                 setToastMessage(
@@ -663,6 +700,120 @@ const MundoVerdeInvoices = () => {
                     word-break: break-all;
                 }
 
+                .mvf-topbar-tabs {
+                    display: flex;
+                    gap: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    padding: 4px;
+                    border-radius: 12px;
+                    border: 1px solid rgba(255,255,255,0.08);
+                }
+
+                .mvf-tab-btn {
+                    padding: 6px 16px;
+                    border-radius: 8px;
+                    border: none;
+                    background: transparent;
+                    color: #94a3b8;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .mvf-tab-btn i { font-size: 0.9rem; }
+
+                .mvf-tab-btn:hover {
+                    color: #f1f5f9;
+                    background: rgba(255,255,255,0.05);
+                }
+
+                .mvf-tab-btn.active {
+                    background: #10b981;
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+                }
+
+                /* ── Dashboard Table ── */
+                .mvf-dashboard-container {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    background: rgba(255,255,255,0.02);
+                    border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: 20px;
+                    overflow: hidden;
+                    animation: fadeIn 0.3s ease;
+                }
+
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                .mvf-dashboard-header {
+                    padding: 1.25rem 1.5rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.07);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    background: rgba(0,0,0,0.1);
+                }
+
+                .mvf-table-wrapper {
+                    flex: 1;
+                    overflow: auto;
+                }
+
+                .mvf-table {
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    color: #cbd5e1;
+                    font-size: 0.85rem;
+                }
+
+                .mvf-table th {
+                    position: sticky;
+                    top: 0;
+                    background: #0f172a;
+                    padding: 1rem 1.25rem;
+                    text-align: left;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    font-size: 0.7rem;
+                    letter-spacing: 0.05em;
+                    color: #64748b;
+                    border-bottom: 2px solid rgba(255,255,255,0.05);
+                    z-index: 5;
+                }
+
+                .mvf-table td {
+                    padding: 1rem 1.25rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.04);
+                    vertical-align: middle;
+                }
+
+                .mvf-table tr:hover td {
+                    background: rgba(16,185,129,0.03);
+                }
+
+                .mvf-status-pill {
+                    padding: 4px 10px;
+                    border-radius: 100px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .mvf-status-pill.success { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+                .mvf-status-pill.pending { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+
                 /* ── Responsive ── */
                 @media (max-width: 1024px) {
                     .mvf-form-col { width: 300px; }
@@ -684,7 +835,7 @@ const MundoVerdeInvoices = () => {
                         min-height: unset;
                     }
                     .mvf-preview-card { min-height: 220px; }
-                    .mvf-topbar { padding: 0.9rem 1rem; height: auto; flex-direction: column; gap: .5rem; align-items: center; text-align: center; }
+                    .mvf-topbar { padding: 0.8rem 1rem; height: auto; flex-direction: column; gap: .8rem; align-items: stretch; text-align: center; }
                     .mvf-badge { display: none; }
                     .mvf-logo-ring { display: none; }
                     .mvf-modulo-label { display: none; }
@@ -693,6 +844,8 @@ const MundoVerdeInvoices = () => {
 
                 @media (max-width: 480px) {
                     .mvf-topbar-title { font-size: 0.88rem; }
+                    .mvf-topbar-tabs { width: 100%; }
+                    .mvf-tab-btn { flex: 1; justify-content: center; padding: 8px; font-size: 0.75rem; }
                 }
 
                 @media (min-width: 769px) {
@@ -717,289 +870,374 @@ const MundoVerdeInvoices = () => {
                         </div>
                     </div>
 
-                    <div className="mvf-divider ms-2 me-2" style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,.1)', margin: 0 }} />
+                    <div className="mvf-divider ms-4 me-4" style={{ width: '1px', height: '30px', background: 'rgba(255,255,255,.1)', margin: 0 }} />
+
+                    <div className="mvf-topbar-tabs">
+                        <button 
+                            className={`mvf-tab-btn ${activeTab === 'form' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('form')}
+                        >
+                            <i className="bi bi-file-earmark-plus"></i> Nuevo Registro
+                        </button>
+                        <button 
+                            className={`mvf-tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('dashboard')}
+                        >
+                            <i className="bi bi-grid-1x2"></i> Panel / Historial
+                        </button>
+                    </div>
+
+                    <div style={{ flex: 1 }} />
 
                     <span className="mvf-badge">
                         Mundo Verde
                     </span>
-
-                    <div style={{ flex: 1 }} />
                 </header>
                 {/* ── Main layout ── */}
                 <div className="mvf-body">
-                    {/* Left — Previews */}
-                    <div className="mvf-previews">
-                        {/* PDF Preview */}
-                        <div className="mvf-preview-card">
-                            <div className="mvf-preview-header">
-                                <span className="mvf-preview-header-icon pdf">
-                                    <i className="bi bi-file-earmark-pdf-fill"></i>
-                                </span>
-                                <span className="mvf-preview-label">
-                                    Visualización PDF
-                                </span>
-                                {selectedPdf && (
-                                    <span
-                                        style={{
-                                            marginLeft: "auto",
-                                            fontSize: "0.7rem",
-                                            color: "#34d399",
-                                            fontWeight: 600,
-                                        }}
-                                    >
-                                        ✓ {selectedPdf.name}
-                                    </span>
-                                )}
-                            </div>
-                            <div className="mvf-preview-body">
-                                {pdfUrl ? (
-                                    <iframe src={pdfUrl} title="PDF Preview" />
-                                ) : (
-                                    <div className="mvf-empty-state">
-                                        <span className="mvf-empty-icon pdf">
-                                            <i className="bi bi-file-earmark-pdf"></i>
+                    {activeTab === 'form' ? (
+                        <>
+                            {/* Left — Previews */}
+                            <div className="mvf-previews">
+                                {/* PDF Preview */}
+                                <div className="mvf-preview-card">
+                                    <div className="mvf-preview-header">
+                                        <span className="mvf-preview-header-icon pdf">
+                                            <i className="bi bi-file-earmark-pdf-fill"></i>
                                         </span>
-                                        <p className="mvf-empty-text">
-                                            Sube un archivo PDF para
-                                            previsualizar su contenido aquí
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* XML Preview */}
-                        <div className="mvf-preview-card">
-                            <div className="mvf-preview-header">
-                                <span className="mvf-preview-header-icon xml">
-                                    <i className="bi bi-code-slash"></i>
-                                </span>
-                                <span className="mvf-preview-label">
-                                    Estructura XML
-                                </span>
-                                {selectedXml && (
-                                    <span
-                                        style={{
-                                            marginLeft: "auto",
-                                            fontSize: "0.7rem",
-                                            color: "#34d399",
-                                            fontWeight: 600,
-                                        }}
-                                    >
-                                        ✓ {selectedXml.name}
-                                    </span>
-                                )}
-                            </div>
-                            <div className="mvf-preview-body">
-                                {xmlContent ? (
-                                    <pre>{xmlContent}</pre>
-                                ) : (
-                                    <div className="mvf-empty-state">
-                                        <span className="mvf-empty-icon xml">
-                                            <i className="bi bi-code-square"></i>
+                                        <span className="mvf-preview-label">
+                                            Visualización PDF
                                         </span>
-                                        <p className="mvf-empty-text">
-                                            Sube un archivo XML para ver su
-                                            estructura de datos aquí
-                                        </p>
+                                        {selectedPdf && (
+                                            <span
+                                                style={{
+                                                    marginLeft: "auto",
+                                                    fontSize: "0.7rem",
+                                                    color: "#34d399",
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                ✓ {selectedPdf.name}
+                                            </span>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right — Form */}
-                    <div className="mvf-form-col">
-                        <form
-                            className="mvf-form-card"
-                            onSubmit={handleSubmit(onSubmit)}
-                            noValidate
-                        >
-                            <div className="mvf-form-header">
-                                <p className="mvf-form-header-title">
-                                    <i
-                                        className="bi bi-pencil-square"
-                                        style={{ color: "#10b981" }}
-                                    ></i>
-                                    Formulario de Registro
-                                </p>
-                                <p className="mvf-form-header-sub">
-                                    Complete los campos y adjunte los documentos
-                                </p>
-                            </div>
-
-                            <div className="mvf-form-body">
-                                {/* Section: Identificación */}
-                                <p className="mvf-section-label">
-                                    Identificación
-                                </p>
-
-                                <div className="mvf-group">
-                                    <label className="mvf-label" htmlFor="nit">
-                                        NIT Emisor{" "}
-                                        <span className="req">*</span>
-                                    </label>
-                                    <input
-                                        id="nit"
-                                        className={`mvf-input${errors.nit ? " err" : ""}`}
-                                        type="text"
-                                        placeholder="Ej: 1234567-8"
-                                        {...register("nit", { required: true })}
-                                    />
-                                    {errors.nit && (
-                                        <p className="mvf-err-msg">
-                                            El NIT es requerido
-                                        </p>
-                                    )}
+                                    <div className="mvf-preview-body">
+                                        {pdfUrl ? (
+                                            <iframe src={pdfUrl} title="PDF Preview" />
+                                        ) : (
+                                            <div className="mvf-empty-state">
+                                                <span className="mvf-empty-icon pdf">
+                                                    <i className="bi bi-file-earmark-pdf"></i>
+                                                </span>
+                                                <p className="mvf-empty-text">
+                                                    Sube un archivo PDF para
+                                                    previsualizar su contenido aquí
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <div
-                                    className="mvf-group"
-                                    style={{ marginBottom: "1.4rem" }}
+                                {/* XML Preview */}
+                                <div className="mvf-preview-card">
+                                    <div className="mvf-preview-header">
+                                        <span className="mvf-preview-header-icon xml">
+                                            <i className="bi bi-code-slash"></i>
+                                        </span>
+                                        <span className="mvf-preview-label">
+                                            Estructura XML
+                                        </span>
+                                        {selectedXml && (
+                                            <span
+                                                style={{
+                                                    marginLeft: "auto",
+                                                    fontSize: "0.7rem",
+                                                    color: "#34d399",
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                ✓ {selectedXml.name}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="mvf-preview-body">
+                                        {xmlContent ? (
+                                            <pre>{xmlContent}</pre>
+                                        ) : (
+                                            <div className="mvf-empty-state">
+                                                <span className="mvf-empty-icon xml">
+                                                    <i className="bi bi-code-square"></i>
+                                                </span>
+                                                <p className="mvf-empty-text">
+                                                    Sube un archivo XML para ver su
+                                                    estructura de datos aquí
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right — Form */}
+                            <div className="mvf-form-col">
+                                <form
+                                    className="mvf-form-card"
+                                    onSubmit={handleSubmit(onSubmit)}
+                                    noValidate
                                 >
-                                    <label
-                                        className="mvf-label"
-                                        htmlFor="serie"
-                                    >
-                                        Serie / Número de Orden{" "}
-                                        <span className="req">*</span>
-                                    </label>
-                                    <input
-                                        id="serie"
-                                        className={`mvf-input${errors.serie ? " err" : ""}`}
-                                        type="text"
-                                        placeholder="Ej: A-001"
-                                        {...register("serie", {
-                                            required: true,
-                                        })}
-                                    />
-                                    {errors.serie && (
-                                        <p className="mvf-err-msg">
-                                            La serie es requerida
+                                    <div className="mvf-form-header">
+                                        <p className="mvf-form-header-title">
+                                            <i
+                                                className="bi bi-pencil-square"
+                                                style={{ color: "#10b981" }}
+                                            ></i>
+                                            Formulario de Registro
                                         </p>
-                                    )}
-                                </div>
+                                        <p className="mvf-form-header-sub">
+                                            Complete los campos y adjunte los documentos
+                                        </p>
+                                    </div>
 
-                                {/* Section: Documentación */}
-                                <p className="mvf-section-label">
-                                    Documentación
-                                </p>
+                                    <div className="mvf-form-body">
+                                        {/* Section: Identificación */}
+                                        <p className="mvf-section-label">
+                                            Identificación
+                                        </p>
 
-                                {/* PDF Upload */}
-                                <div className="mvf-group">
-                                    <label className="mvf-label">
-                                        Archivo PDF Oficial{" "}
-                                        <span className="req">*</span>
-                                    </label>
-                                    <div className="mvf-file-wrapper">
-                                        <label className="mvf-file-custom">
+                                        <div className="mvf-group">
+                                            <label className="mvf-label" htmlFor="nit">
+                                                NIT Emisor{" "}
+                                                <span className="req">*</span>
+                                            </label>
                                             <input
-                                                type="file"
-                                                accept=".pdf"
-                                                {...register("pdf", {
+                                                id="nit"
+                                                className={`mvf-input${errors.nit ? " err" : ""}`}
+                                                type="text"
+                                                placeholder="Ej: 1234567-8"
+                                                {...register("nit", { required: true })}
+                                            />
+                                            {errors.nit && (
+                                                <p className="mvf-err-msg">
+                                                    El NIT es requerido
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div
+                                            className="mvf-group"
+                                            style={{ marginBottom: "1.4rem" }}
+                                        >
+                                            <label
+                                                className="mvf-label"
+                                                htmlFor="serie"
+                                            >
+                                                Serie / Número de Orden{" "}
+                                                <span className="req">*</span>
+                                            </label>
+                                            <input
+                                                id="serie"
+                                                className={`mvf-input${errors.serie ? " err" : ""}`}
+                                                type="text"
+                                                placeholder="Ej: A-001"
+                                                {...register("serie", {
                                                     required: true,
-                                                    onChange: handlePdfChange,
                                                 })}
                                             />
-                                            <span className="mvf-file-icon pdf">
-                                                <i className="bi bi-file-earmark-pdf-fill"></i>
-                                            </span>
-                                            <div className="mvf-file-text">
-                                                {selectedPdf ? (
-                                                    <p className="chosen">
-                                                        {selectedPdf.name}
-                                                    </p>
-                                                ) : (
-                                                    <>
-                                                        <p className="main">
-                                                            Seleccionar PDF
-                                                        </p>
-                                                        <p className="sub">
-                                                            Haz clic para cargar
-                                                        </p>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </label>
-                                    </div>
-                                    {errors.pdf && (
-                                        <p className="mvf-err-msg">
-                                            El PDF es requerido
+                                            {errors.serie && (
+                                                <p className="mvf-err-msg">
+                                                    La serie es requerida
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Section: Documentación */}
+                                        <p className="mvf-section-label">
+                                            Documentación
                                         </p>
-                                    )}
-                                </div>
 
-                                {/* XML Upload */}
-                                <div
-                                    className="mvf-group"
-                                    style={{ marginBottom: "1.4rem" }}
-                                >
-                                    <label className="mvf-label">
-                                        Archivo XML{" "}
-                                        <span className="req">*</span>
-                                    </label>
-                                    <div className="mvf-file-wrapper">
-                                        <label className="mvf-file-custom">
-                                            <input
-                                                type="file"
-                                                accept=".xml"
-                                                {...register("xml", {
-                                                    required: true,
-                                                    onChange: handleXmlChange,
-                                                })}
-                                            />
-                                            <span className="mvf-file-icon xml">
-                                                <i className="bi bi-code-slash"></i>
-                                            </span>
-                                            <div className="mvf-file-text">
-                                                {selectedXml ? (
-                                                    <p className="chosen">
-                                                        {selectedXml.name}
-                                                    </p>
-                                                ) : (
-                                                    <>
-                                                        <p className="main">
-                                                            Seleccionar XML
-                                                        </p>
-                                                        <p className="sub">
-                                                            Haz clic para cargar
-                                                        </p>
-                                                    </>
-                                                )}
+                                        {/* PDF Upload */}
+                                        <div className="mvf-group">
+                                            <label className="mvf-label">
+                                                Archivo PDF Oficial{" "}
+                                                <span className="req">*</span>
+                                            </label>
+                                            <div className="mvf-file-wrapper">
+                                                <label className="mvf-file-custom">
+                                                    <input
+                                                        type="file"
+                                                        accept=".pdf"
+                                                        {...register("pdf", {
+                                                            required: true,
+                                                            onChange: handlePdfChange,
+                                                        })}
+                                                    />
+                                                    <span className="mvf-file-icon pdf">
+                                                        <i className="bi bi-file-earmark-pdf-fill"></i>
+                                                    </span>
+                                                    <div className="mvf-file-text">
+                                                        {selectedPdf ? (
+                                                            <p className="chosen">
+                                                                {selectedPdf.name}
+                                                            </p>
+                                                        ) : (
+                                                            <>
+                                                                <p className="main">
+                                                                    Seleccionar PDF
+                                                                </p>
+                                                                <p className="sub">
+                                                                    Haz clic para cargar
+                                                                </p>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </label>
                                             </div>
-                                        </label>
+                                            {errors.pdf && (
+                                                <p className="mvf-err-msg">
+                                                    El PDF es requerido
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* XML Upload */}
+                                        <div
+                                            className="mvf-group"
+                                            style={{ marginBottom: "1.4rem" }}
+                                        >
+                                            <label className="mvf-label">
+                                                Archivo XML{" "}
+                                                <span className="req">*</span>
+                                            </label>
+                                            <div className="mvf-file-wrapper">
+                                                <label className="mvf-file-custom">
+                                                    <input
+                                                        type="file"
+                                                        accept=".xml"
+                                                        {...register("xml", {
+                                                            required: true,
+                                                            onChange: handleXmlChange,
+                                                        })}
+                                                    />
+                                                    <span className="mvf-file-icon xml">
+                                                        <i className="bi bi-code-slash"></i>
+                                                    </span>
+                                                    <div className="mvf-file-text">
+                                                        {selectedXml ? (
+                                                            <p className="chosen">
+                                                                {selectedXml.name}
+                                                            </p>
+                                                        ) : (
+                                                            <>
+                                                                <p className="main">
+                                                                    Seleccionar XML
+                                                                </p>
+                                                                <p className="sub">
+                                                                    Haz clic para cargar
+                                                                </p>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            {errors.xml && (
+                                                <p className="mvf-err-msg">
+                                                    El XML es requerido
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div className="mvf-divider"></div>
+
+                                        {/* Submit */}
+                                        <button
+                                            type="submit"
+                                            className="mvf-btn"
+                                            disabled={isLoading}
+                                            id="submit-mundo-verde-form"
+                                        >
+                                            {isLoading ? (
+                                                <>
+                                                    <span className="mvf-spinner"></span>
+                                                    Procesando...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="bi bi-shield-check"></i>
+                                                    Validar y Enviar Factura
+                                                </>
+                                            )}
+                                        </button>
                                     </div>
-                                    {errors.xml && (
-                                        <p className="mvf-err-msg">
-                                            El XML es requerido
-                                        </p>
-                                    )}
+                                </form>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="mvf-dashboard-container">
+                            <div className="mvf-dashboard-header">
+                                <div>
+                                    <h3 className="mvf-topbar-title" style={{ fontSize: '1rem' }}>Historial de Facturas</h3>
+                                    <p className="mvf-topbar-sub" style={{ fontSize: '0.65rem' }}>Lista de documentos procesados recientemente</p>
                                 </div>
-
-                                <div className="mvf-divider"></div>
-
-                                {/* Submit */}
-                                <button
-                                    type="submit"
-                                    className="mvf-btn"
-                                    disabled={isLoading}
-                                    id="submit-mundo-verde-form"
+                                <button 
+                                    className="mvf-badge" 
+                                    style={{ background: 'rgba(59,130,246,0.12)', borderColor: 'rgba(59,130,246,0.25)', color: '#60a5fa', cursor: 'pointer' }}
+                                    onClick={fetchInvoices}
+                                    disabled={isFetchingInvoices}
                                 >
-                                    {isLoading ? (
-                                        <>
-                                            <span className="mvf-spinner"></span>
-                                            Procesando...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <i className="bi bi-shield-check"></i>
-                                            Validar y Enviar Factura
-                                        </>
-                                    )}
+                                    {isFetchingInvoices ? 'Actualizando...' : 'Actualizar Lista'}
                                 </button>
                             </div>
-                        </form>
-                    </div>
+
+                            <div className="mvf-table-wrapper">
+                                {isFetchingInvoices ? (
+                                    <div className="mvf-empty-state">
+                                        <span className="mvf-spinner" style={{ width: '30px', height: '30px', borderTopColor: '#10b981' }}></span>
+                                        <p className="mvf-empty-text">Cargando facturas...</p>
+                                    </div>
+                                ) : invoices.length > 0 ? (
+                                    <table className="mvf-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>NIT Emisor</th>
+                                                <th>Serie / Orden</th>
+                                                <th>Estado SAT</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {invoices.map((inv, idx) => (
+                                                <tr key={inv.id || idx}>
+                                                    <td>{inv.fecha || inv.date || '--/--/----'}</td>
+                                                    <td>
+                                                        <span style={{ fontWeight: 600, color: '#f1f5f9' }}>{inv.nit || 'N/A'}</span>
+                                                    </td>
+                                                    <td>{inv.serie || 'N/A'}</td>
+                                                    <td>
+                                                        <span className={`mvf-status-pill ${inv.status === 'ok' ? 'success' : 'pending'}`}>
+                                                            {inv.status === 'ok' ? 'Certificado' : 'Procesado'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button className="mvf-tab-btn" style={{ padding: '4px 10px', fontSize: '0.7rem' }}>
+                                                            <i className="bi bi-eye"></i> Ver
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="mvf-empty-state">
+                                        <span className="mvf-empty-icon" style={{ background: 'rgba(255,255,255,0.05)', color: '#475569' }}>
+                                            <i className="bi bi-inbox"></i>
+                                        </span>
+                                        <p className="mvf-empty-text">No se encontraron facturas registradas</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
