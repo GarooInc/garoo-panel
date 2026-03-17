@@ -17,6 +17,10 @@ const MyServices = () => {
         : userServices;
 
     const handleButtonClick = (service) => {
+        if (service.external) {
+            window.open(service.path, "_blank", "noopener,noreferrer");
+            return;
+        }
         navigateTo(service.path);
     };
 

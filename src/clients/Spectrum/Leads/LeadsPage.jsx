@@ -80,26 +80,25 @@ export default function SpectrumLeads() {
             <style>{`
                 .header-wrapper-premium { 
                     display: flex; justify-content: space-between; align-items: center; 
-                    margin-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem;
+                    margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.75rem;
                 }
                 
                 .filter-strip-premium { 
-                    background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
-                    border-radius: 24px; border: 1px solid rgba(226, 232, 240, 0.8); 
-                    padding: 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end;
-                    margin-bottom: 2rem; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.04);
+                    background: white; border-radius: 20px; border: 1px solid #f1f5f9; 
+                    padding: 0.5rem 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+                    margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
                 }
-                .f-group { display: flex; flex-direction: column; gap: 8px; }
-                .f-label { font-size: 0.7rem; font-weight: 850; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-left: 4px; }
+                .f-group { display: flex; flex-direction: column; gap: 2px; }
+                .f-label { font-size: 0.6rem; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-left: 2px; }
                 .f-input, .f-select { 
-                    background: #cbd5e1; border: 2px solid #94a3b8; border-radius: 12px; 
-                    padding: 10px 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-main); outline: none; transition: all 0.2s;
+                    background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; 
+                    padding: 6px 12px; font-size: 0.8rem; font-weight: 700; color: #1e293b; outline: none; transition: all 0.2s;
                 }
-                .f-input:focus, .f-select:focus { border-color: #8b5cf6; background: white; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+                .f-input:focus, .f-select:focus { border-color: #8b5cf6; background: white; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.05); }
 
                 .table-glass-container { 
-                    background: white; border-radius: 28px; border: 1px solid #f1f5f9; 
-                    overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+                    background: white; border-radius: 20px; border: 1px solid #f1f5f9; 
+                    overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
                 }
                 .table-leads-premium { width: 100%; border-collapse: separate; border-spacing: 0; }
                 .table-leads-premium th { 
@@ -173,13 +172,24 @@ export default function SpectrumLeads() {
                         <option>No</option>
                     </select>
                 </div>
-                <div className="d-flex gap-2">
-                    <button className="btn-premium btn-premium-primary" style={{ padding: '10px 24px' }} onClick={() => fetchLeads(1)}>
-                        <i className="bi bi-funnel"></i> Filtrar
-                    </button>
-                    <button className="btn-premium btn-premium-secondary" onClick={handleClearFilters}>
-                        <i className="bi bi-x-circle"></i>
-                    </button>
+                <div className="f-group">
+                    <label className="f-label" style={{ opacity: 0 }}>Acciones</label>
+                    <div className="d-flex gap-2">
+                        <button 
+                            className="btn-premium btn-premium-primary" 
+                            style={{ padding: '0 16px', fontSize: '0.72rem', height: '32px', borderRadius: '10px', margin: 0 }} 
+                            onClick={() => fetchLeads(1)}
+                        >
+                            <i className="bi bi-funnel"></i> Filtrar
+                        </button>
+                        <button 
+                            className="btn-premium btn-premium-secondary" 
+                            style={{ padding: '0', height: '32px', width: '32px', minWidth: '32px', borderRadius: '10px', justifyContent: 'center', margin: 0, border: '1.5px solid #e2e8f0' }} 
+                            onClick={handleClearFilters}
+                        >
+                            <i className="bi bi-x-circle"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="ms-auto d-flex align-items-center gap-4 pb-1">
@@ -249,7 +259,7 @@ export default function SpectrumLeads() {
                                             )}
                                         </td>
                                         <td>
-                                            <span className="text-muted small fw-600">{formatFullDate(l.updatedAt || l.created_at)}</span>
+                                            <span className="text-muted small fw-600">{formatFullDate(l.last_interaction || l.updatedAt || l.created_at)}</span>
                                         </td>
                                     </tr>
                                 );

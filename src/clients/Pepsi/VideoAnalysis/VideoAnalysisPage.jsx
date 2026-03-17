@@ -79,164 +79,222 @@ const VideoAnalysisPage = () => {
             <style>{`
                 :root {
                     --pep-blue: #005cb4;
-                    --pep-red: #ef4444;
                     --pep-dark: #001e38;
-                    --pep-gray: #f1f5f9;
+                    --pep-red: #ef4444;
+                    --pep-bg: #f3f7fa;
+                    --pep-white: #ffffff;
                     --pep-border: #e2e8f0;
-                    --ps-radius: 24px;
+                    --pep-muted: #64748b;
+                    --radius-lg: 20px;
+                    --radius-md: 12px;
+                    --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
+                    --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08);
                 }
 
                 .pepsi-intel-page {
-                    height: calc(100vh - 120px);
+                    height: calc(100vh - 80px); /* Adjust based on App shell header */
+                    max-height: calc(100vh - 80px);
                     display: flex;
                     flex-direction: column;
-                    padding: 0 1.5rem 1.5rem 1.5rem;
-                    color: var(--pep-dark);
-                    font-family: 'Inter', sans-serif;
+                    padding: 1rem 1.5rem 1.5rem 1.5rem;
+                    background: var(--pep-bg);
+                    font-family: 'Outfit', 'Inter', sans-serif;
+                    overflow: hidden;
+                    box-sizing: border-box;
                 }
 
-                /* HEADER SECTION */
-                .top-bar {
+                /* SIDEBAR FEED */
+                .sidebar-container {
+                    background: var(--pep-white);
+                    border-radius: var(--radius-lg);
+                    border: 1px solid var(--pep-border);
                     display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 1.5rem 0;
+                    flex-direction: column;
+                    box-shadow: var(--shadow-md);
+                    overflow: hidden;
+                    height: 100%;
                 }
-                .brand-meta h2 { font-weight: 900; letter-spacing: -0.05em; margin: 0; font-size: 1.8rem; line-height: 1; }
-                .brand-meta p { color: var(--pep-blue); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.15em; margin: 5px 0 0 0; }
+                .sidebar-filters {
+                    padding: 1rem;
+                    border-bottom: 1px solid var(--pep-border);
+                    background: #fbfcfe;
+                }
+                .feed-header { 
+                    padding: 1rem 1.5rem; 
+                    background: #fff; 
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+                .feed-header h5 { font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--pep-muted); margin: 0; }
+                
+                .video-scroller { flex: 1; overflow-y: auto; padding: 1rem; }
+                .video-card-mini {
+                    display: flex; gap: 0.75rem; padding: 0.65rem; border-radius: 12px;
+                    background: #fff; cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+                    margin-bottom: 0.5rem;
+                }
+                .video-card-mini:hover { background: #f8fafc; }
+                .video-card-mini.active { 
+                    background: #fff; 
+                    border-color: var(--pep-blue); 
+                    box-shadow: 0 4px 12px rgba(0,92,180,0.08);
+                }
+                .mini-thumb { width: 45px; height: 60px; border-radius: 8px; object-fit: cover; }
+                .mini-meta { flex: 1; min-width: 0; }
+                .mini-meta h6 { font-size: 0.8rem; font-weight: 800; margin: 0 0 2px 0; color: var(--pep-dark); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                .mini-meta p { font-size: 0.65rem; color: var(--pep-muted); margin: 0; font-weight: 600; }
 
-                /* MAIN LAYOUT */
-                .intel-layout {
+                /* LAYOUT ENGINE */
+                .main-grid {
                     flex: 1;
                     display: grid;
-                    grid-template-columns: 320px 1fr;
+                    grid-template-columns: 280px 1fr;
                     gap: 1.5rem;
                     overflow: hidden;
+                    min-height: 0; /* Critical for flex scroll */
                 }
 
-                /* SIDEBAR */
-                .intel-sidebar {
-                    background: white;
+                /* MAIN WORKSPACE */
+                .workspace-container {
+                    background: var(--pep-white);
+                    border-radius: var(--radius-lg);
                     border: 1px solid var(--pep-border);
-                    border-radius: var(--ps-radius);
+                    box-shadow: var(--shadow-md);
                     display: flex;
                     flex-direction: column;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-                    overflow: hidden;
-                }
-                .sidebar-head { padding: 1.5rem; border-bottom: 2px solid var(--pep-gray); background: #fafbfc; }
-                .video-feed { flex: 1; overflow-y: auto; padding: 1rem; }
-                
-                .feed-item {
-                    display: flex; gap: 12px; padding: 12px; border-radius: 20px;
-                    cursor: pointer; transition: all 0.2s; border: 2px solid transparent; margin-bottom: 8px;
-                }
-                .feed-item:hover { background: var(--pep-gray); }
-                .feed-item.active { background: #f0f7ff; border-color: var(--pep-blue); shadow: 0 10px 15px -3px rgba(0,92,180,0.1); }
-                .item-thumb { width: 55px; height: 75px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
-                .item-info { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-                .item-info h6 { font-size: 0.8rem; font-weight: 900; margin: 0; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-                .item-info span { font-size: 0.65rem; color: #64748b; font-weight: 700; margin-top: 4px; }
-
-                /* MAIN STAGE */
-                .intel-stage {
-                    background: white;
-                    border: 1px solid var(--pep-border);
-                    border-radius: var(--ps-radius);
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
                     overflow: hidden;
                 }
 
-                /* STAGE HEADER WITH TABS */
-                .stage-top {
-                    padding: 1.5rem 2rem;
-                    background: white;
+                .workspace-header { 
+                    padding: 0.75rem 1.5rem; 
+                    background: #fff; 
                     border-bottom: 1px solid var(--pep-border);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
+                    min-height: 64px;
                 }
 
-                .tab-switcher {
-                    display: flex;
-                    background: var(--pep-gray);
-                    padding: 5px;
-                    border-radius: 100px;
-                    gap: 5px;
+                .action-pills { 
+                    display: flex; background: #f1f5f9; padding: 4px; border-radius: 100px; gap: 2px;
+                    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
                 }
-                .tab-btn {
-                    border: none;
-                    background: transparent;
-                    padding: 10px 24px;
-                    border-radius: 100px;
+                .action-tab {
+                    padding: 6px 20px; border-radius: 100px; font-weight: 800; font-size: 0.65rem;
+                    border: none; background: transparent; color: var(--pep-muted); transition: 0.3s;
+                    text-transform: uppercase; letter-spacing: 0.05em;
+                }
+                .action-tab.active { 
+                    background: #fff; 
+                    color: var(--pep-blue); 
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                    font-weight: 950;
+                }
+
+                /* DASHBOARD CONTENT */
+                .dashboard-body { flex: 1; overflow-y: auto; padding: 2rem; }
+                .minimal-section-title {
                     font-size: 0.75rem;
                     font-weight: 950;
-                    color: #94a3b8;
-                    transition: all 0.3s;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
+                    letter-spacing: 0.15em;
+                    color: var(--pep-muted);
+                    margin-bottom: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
                 }
-                .tab-btn.active {
-                    background: white;
-                    color: var(--pep-blue);
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-                }
-
-                /* CONTENT AREA */
-                .stage-content {
+                .minimal-section-title::after {
+                    content: "";
                     flex: 1;
-                    overflow-y: auto;
-                    padding: 2.5rem;
+                    height: 1px;
+                    background: linear-gradient(90deg, var(--pep-border) 0%, transparent 100%);
                 }
 
-                .content-grid { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; }
-                .video-preview-v5 { 
-                    width: 100%; aspect-ratio: 9/16; border-radius: 24px; 
-                    overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
-                    border: 3px solid white; background: #000;
+                /* STRATEGIC CARDS */
+                .strat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+                
+                .strat-card {
+                    background: #fff; 
+                    border: 1px solid var(--pep-border); 
+                    border-radius: 20px; 
+                    padding: 2rem;
+                    position: relative;
+                    transition: 0.3s;
                 }
-                .video-preview-v5 img { width: 100%; height: 100%; object-fit: cover; }
-
-                .metric-row-v5 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-                .metric-box-v5 { background: var(--pep-gray); padding: 1.75rem; border-radius: 20px; border: 1px solid transparent; transition: all 0.2s; }
-                .metric-box-v5:hover { background: #fff; border-color: var(--pep-blue); transform: translateY(-5px); }
-                .metric-box-v5 label { display: block; font-size: 0.65rem; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
-                .metric-box-v5 strong { font-size: 1.8rem; font-weight: 950; color: var(--pep-dark); letter-spacing: -0.04em; }
-
-                /* IA CARDS */
-                .ia-cards-v5 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-                .ia-card-v5 { 
-                    background: white; border: 1.5px solid var(--pep-border); 
-                    border-radius: 24px; padding: 2rem; position: relative;
+                .strat-card:hover { border-color: var(--pep-blue); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); }
+                
+                .strat-card.hero { 
+                    background: linear-gradient(135deg, var(--pep-blue) 0%, #003a73 100%);
+                    color: #fff;
+                    border: none;
                 }
-                .ia-card-v5 h5 { font-weight: 950; font-size: 1rem; color: var(--pep-blue); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
-                .ia-card-v5 h5 i { width: 40px; height: 40px; background: rgba(0,92,180,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+                .strat-card.hero h4 { color: #fff; font-weight: 900; }
+                .strat-card.hero p { color: rgba(255,255,255,0.85); line-height: 1.7; }
+                .strat-card.hero .badge-local { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
 
-                .ia-detail-v5 { margin-bottom: 1.5rem; }
-                .ia-detail-v5 label { display: block; font-size: 0.65rem; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
-                .ia-detail-v5 p { font-size: 0.95rem; line-height: 1.6; margin: 0; }
-                .ia-detail-v5.featured-v5 { background: #f8fafc; padding: 1.25rem; border-radius: 16px; border-left: 5px solid var(--pep-blue); }
+                .card-label { 
+                    font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; 
+                    color: var(--pep-muted); margin-bottom: 1.25rem; display: block;
+                }
+                .strat-card.hero .card-label { color: rgba(255,255,255,0.6); }
 
-                /* ROADMAP STYLING */
-                .roadmap-v5 { margin-top: 2rem; }
-                .exec-bar-v5 { 
-                    background: #fff; border: 1px solid var(--pep-border); 
-                    padding: 1.5rem; border-radius: 20px; margin-bottom: 1rem;
-                    display: flex; align-items: center; gap: 1.5rem; transition: all 0.3s;
+                .badge-local { padding: 6px 14px; border-radius: 100px; font-weight: 950; font-size: 0.65rem; text-transform: uppercase; display: inline-block; }
+                .badge-local.gt { background: #eff6ff; color: var(--pep-blue); margin-top: 1rem; }
+
+                /* ROADMAP ITEMS */
+                .roadmap-section { margin-top: 2rem; }
+                .roadmap-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+                .roadmap-header h5 { font-weight: 950; color: var(--pep-dark); margin: 0; font-size: 1.1rem; }
+
+                .execution-item-v7 {
+                    display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center;
+                    padding: 1.5rem; background: #fff; border: 1px solid var(--pep-border); 
+                    border-radius: 18px; margin-bottom: 1.25rem; transition: 0.2s;
                 }
-                .exec-bar-v5:hover { transform: scale(1.01); border-color: var(--pep-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.04); }
-                .exec-score-v5 { 
-                    background: var(--pep-red); color: white; width: 60px; height: 60px; 
-                    border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-                    flex-shrink: 0; box-shadow: 0 6px 12px rgba(239, 68, 68, 0.2);
+                .execution-item-v7:hover { border-color: var(--pep-blue); transform: translateX(8px); }
+                
+                .urgency-v7 {
+                    width: 50px; height: 50px; border-radius: 14px; 
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    font-weight: 950; line-height: 1;
                 }
-                .exec-score-v5 span { font-size: 0.5rem; font-weight: 800; opacity: 0.8; }
-                .exec-score-v5 strong { font-size: 1.4rem; font-weight: 900; }
-                .exec-info-v5 { flex: 1; }
-                .exec-info-v5 h6 { font-weight: 950; font-size: 1.1rem; margin: 0 0 5px 0; }
-                .exec-info-v5 p { font-size: 0.8rem; color: #64748b; margin: 0; line-height: 1.5; }
+                .urgency-v7.high { background: #fff1f2; color: var(--pep-red); border: 1px solid #fecdd3; }
+                .urgency-v7.mid { background: #fffbeb; color: #d97706; border: 1px solid #fed7aa; }
+
+                /* VIDEO CONTENT VIEW */
+                .video-view-grid { display: grid; grid-template-columns: 240px 1fr; gap: 1.5rem; margin-bottom: 1rem; align-items: start; }
+                .video-frame { 
+                    border-radius: 12px; 
+                    overflow: hidden; 
+                    background: #000; 
+                    box-shadow: var(--shadow-sm);
+                    width: 100%;
+                }
+                .video-frame img { width: 100%; height: auto; display: block; }
+
+                .ai-vision-wide {
+                    background: #fffbeb; 
+                    border: 1px solid #fed7aa;
+                    border-radius: 16px;
+                    padding: 1rem 1.5rem;
+                    width: 100%;
+                }
+
+                .metric-pill {
+                    background: #f8fafc; border: 1px solid var(--pep-border); padding: 0.75rem 1rem; border-radius: 12px;
+                    display: flex; flex-direction: column; gap: 2px;
+                }
+                .metric-pill label { font-size: 0.55rem; font-weight: 900; color: var(--pep-muted); text-transform: uppercase; }
+                .metric-pill strong { font-size: 1.1rem; font-weight: 950; color: var(--pep-dark); letter-spacing: -0.02em; }
+
+                /* HELPERS */
+                .anim-fade { animation: fadeIn 0.4s ease-out; }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                .sl-custom-scroll::-webkit-scrollbar { width: 5px; }
+                .sl-custom-scroll::-webkit-scrollbar-track { background: transparent; }
+                .sl-custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
                 /* HELPERS */
                 .sl-custom-scroll::-webkit-scrollbar { width: 5px; }
@@ -245,41 +303,44 @@ const VideoAnalysisPage = () => {
                 .tracking-widest { letter-spacing: 0.2em; }
             `}</style>
 
-            <div className="top-bar">
-                <div className="brand-meta">
-                    <h2 style={{ color: 'var(--pep-dark)' }}>Radar de <span style={{ color: 'var(--pep-blue)' }}>Tendencias</span></h2>
-                </div>
+            <div className="main-grid">
+                <aside className="sidebar-container">
+                    <div className="sidebar-filters">
+                        <div className="d-flex p-1 bg-white border rounded-pill mb-2" style={{ gap: '2px' }}>
+                            <button 
+                                className={`btn-pill-px flex-fill ${country === 'MX' ? 'btn-active' : 'btn-ghost'}`} 
+                                onClick={() => setCountry('MX')}
+                                style={{ padding: '4px 0', fontSize: '0.6rem' }}
+                            >MÉXICO</button>
+                            <button 
+                                className={`btn-pill-px flex-fill ${country === 'GT' ? 'btn-active' : 'btn-ghost'}`} 
+                                onClick={() => setCountry('GT')}
+                                style={{ padding: '4px 0', fontSize: '0.6rem' }}
+                            >GUATEMALA</button>
+                        </div>
 
-                <div className="d-flex gap-3">
-                    <Form.Select 
-                        className="rounded-pill border-2 px-4 fw-950 fs-7" 
-                        style={{ width: '180px', height: '50px' }} 
-                        value={selectedDate} 
-                        onChange={e => setSelectedDate(e.target.value)}
-                    >
-                        {availableDates.map(d => <option key={d} value={d}>{d}</option>)}
-                    </Form.Select>
-                    
-                    <div className="d-flex p-1 bg-white border border-2 rounded-pill shadow-sm">
-                        <button 
-                            className={`btn-pill-px px-4 ${country === 'MX' ? 'btn-active' : 'btn-ghost'}`} 
-                            onClick={() => setCountry('MX')}
-                        >MÉXICO</button>
-                        <button 
-                            className={`btn-pill-px px-4 ${country === 'GT' ? 'btn-active' : 'btn-ghost'}`} 
-                            onClick={() => setCountry('GT')}
-                        >GUATEMALA</button>
+                        <Form.Select 
+                            className="rounded-pill px-3 fw-950" 
+                            style={{ 
+                                height: '30px', 
+                                fontSize: '0.65rem', 
+                                border: '1px solid #dBEAFE', 
+                                background: '#f8fafc',
+                                color: 'var(--pep-blue)',
+                                cursor: 'pointer'
+                            }} 
+                            value={selectedDate} 
+                            onChange={e => setSelectedDate(e.target.value)}
+                        >
+                            {availableDates.map(d => <option key={d} value={d}>{d}</option>)}
+                        </Form.Select>
                     </div>
-                </div>
-            </div>
 
-            <div className="intel-layout">
-                <aside className="intel-sidebar">
-                    <div className="sidebar-head">
-                        <span className="fw-950 fs-xs opacity-50 tracking-widest uppercase">Feed Detectado</span>
-                        <Badge bg="primary" className="ms-auto rounded-pill px-3 py-1 fw-900 fs-xxs ms-3">{filteredVideos.length}</Badge>
+                    <div className="feed-header">
+                        <h5>VIDEOS VIRALES</h5>
+                        <Badge bg="primary" className="rounded-pill px-2 py-1 fw-900 fs-xxxs">{filteredVideos.length}</Badge>
                     </div>
-                    <div className="video-feed sl-custom-scroll">
+                    <div className="video-scroller sl-custom-scroll">
                         {loading ? (
                             <div className="h-100 d-flex align-items-center justify-content-center">
                                 <Spinner animation="border" variant="primary" size="sm" />
@@ -287,156 +348,151 @@ const VideoAnalysisPage = () => {
                         ) : filteredVideos.map((v, i) => (
                             <div 
                                 key={i} 
-                                className={`feed-item ${selectedId === v._id ? 'active' : ''}`} 
+                                className={`video-card-mini ${selectedId === v._id ? 'active' : ''}`} 
                                 onClick={() => setSelectedId(v._id)}
                             >
-                                <img src={v.video_data.cover} className="item-thumb" alt="v" />
-                                <div className="item-info">
-                                    <h6>{v.video_data.title || `Video Viral ${v.video_data.platform}`}</h6>
-                                    <span>@{v.video_data.author_username}</span>
+                                <img src={v.video_data.cover} className="mini-thumb" alt="v" />
+                                <div className="mini-meta">
+                                    <h6>{v.video_data.title || `Viral ${v.video_data.platform}`}</h6>
+                                    <p>@{v.video_data.author_username}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </aside>
 
-                <main className="intel-stage">
+                <main className="workspace-container">
                     {activeVideo ? (
                         <>
-                            <div className="stage-top">
-                                <div className="d-flex align-items-center gap-3">
-                                    <img src={activeVideo.video_data.author_avatar} className="rounded-circle border-3 border-white shadow-sm" width="55" height="55" />
-                                    <div className="d-flex flex-column">
-                                        <h4 className="fw-950 m-0">{activeVideo.video_data.author_nickname}</h4>
-                                        <div className="d-flex gap-2 align-items-center mt-1">
-                                            <Badge bg="primary" className="fw-950 fs-xxs rounded-pill px-2">{activeVideo.video_data.viral_tier.toUpperCase()}</Badge>
-                                            {activeVideo.video_analysis.origen_analisis && (
-                                                <Badge bg="light" className="text-dark border fw-900 fs-xxs rounded-pill px-2">
-                                                    <i className="bi bi-shuffle me-1"></i> {activeVideo.video_analysis.origen_analisis}
-                                                </Badge>
-                                            )}
-                                        </div>
+                            <div className="workspace-header">
+                                <div className="d-flex align-items-center gap-2">
+                                    <img src={activeVideo.video_data.author_avatar} className="rounded-circle border border-2 border-white shadow-sm" width="32" height="32" alt="p" />
+                                    <div>
+                                        <h6 className="m-0 fw-950 text-dark" style={{ fontSize: '0.85rem' }}>{activeVideo.video_data.author_nickname}</h6>
+                                        <p className="m-0 text-muted fw-800" style={{ fontSize: '0.65rem' }}>@{activeVideo.video_data.author_username}</p>
                                     </div>
                                 </div>
 
-                                <div className="tab-switcher">
+                                <div className="action-pills">
                                     <button 
-                                        className={`tab-btn ${activeTab === 'ai' ? 'active' : ''}`}
+                                        className={`action-tab ${activeTab === 'ai' ? 'active' : ''}`}
                                         onClick={() => setActiveTab('ai')}
-                                    >Análisis IA</button>
+                                    >Inteligencia Estratégica</button>
                                     <button 
-                                        className={`tab-btn ${activeTab === 'video' ? 'active' : ''}`}
+                                        className={`action-tab ${activeTab === 'video' ? 'active' : ''}`}
                                         onClick={() => setActiveTab('video')}
-                                    >Contenido</button>
+                                    >Métricas de Contenido</button>
+                                </div>
+
+                                <div className="d-flex gap-2">
+                                    <Badge bg="primary" className="fw-950 rounded-pill px-3 py-1 shadow-sm" style={{ fontSize: '0.55rem', letterSpacing: '0.05em' }}>{activeVideo.video_data.viral_tier.toUpperCase()}</Badge>
                                 </div>
                             </div>
 
-                            <div className="stage-content sl-custom-scroll">
+                            <div className="dashboard-body sl-custom-scroll">
                                 {activeTab === 'video' ? (
-                                    <div className="content-grid animate-in">
-                                        <div className="video-preview-v5">
-                                            <img src={activeVideo.video_data.cover} alt="cover" />
-                                        </div>
-                                        <div className="d-flex flex-column gap-4">
-                                            <div className="metric-row-v5" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-                                                <div className="metric-box-v5">
-                                                    <label>Vistas</label>
-                                                    <strong>{formatValue(activeVideo.video_data.play_count)}</strong>
-                                                </div>
-                                                <div className="metric-box-v5">
-                                                    <label>Engagement</label>
-                                                    <strong>{(activeVideo.video_data.engagement_rate * 100).toFixed(1)}%</strong>
-                                                </div>
-                                                <div className="metric-box-v5">
-                                                    <label>Likes</label>
-                                                    <strong>{formatValue(activeVideo.video_data.digg_count)}</strong>
-                                                </div>
-                                                <div className="metric-box-v5">
-                                                    <label>Shares</label>
-                                                    <strong>{formatValue(activeVideo.video_data.share_count)}</strong>
-                                                </div>
-                                                <div className="metric-box-v5">
-                                                    <label>Comments</label>
-                                                    <strong>{formatValue(activeVideo.video_data.comment_count)}</strong>
-                                                </div>
-                                                <div className="metric-box-v5">
-                                                    <label>Downloads</label>
-                                                    <strong>{formatValue(activeVideo.video_data.download_count)}</strong>
-                                                </div>
+                                    <>
+                                        <div className="video-view-grid anim-fade">
+                                            <div className="video-frame">
+                                                <img src={activeVideo.video_data.cover} alt="cover" />
                                             </div>
-
-                                            {activeVideo.video_data.music_info && (
-                                                <div className="ia-card-v5" style={{ padding: '1.25rem' }}>
-                                                    <label className="fs-xxs fw-900 opacity-50 uppercase tracking-widest mb-2 d-block">Audio Original</label>
-                                                    <div className="d-flex align-items-center gap-3">
-                                                        <div className="p-2 bg-dark text-white rounded-circle"><i className="bi bi-music-note-beamed"></i></div>
-                                                        <div>
-                                                            <h6 className="m-0 fw-950">{activeVideo.video_data.music_info.title}</h6>
-                                                            <span className="fs-xs text-muted">{activeVideo.video_data.music_info.author}</span>
+                                            <div>
+                                                <div className="minimal-section-title">Resultados de Performance</div>
+                                                <div className="row g-3">
+                                                    <div className="col-4"><div className="metric-pill"><label>Vistas</label><strong>{formatValue(activeVideo.video_data.play_count)}</strong></div></div>
+                                                    <div className="col-4"><div className="metric-pill"><label>Engagement</label><strong>{(activeVideo.video_data.engagement_rate * 100).toFixed(1)}%</strong></div></div>
+                                                    <div className="col-4"><div className="metric-pill"><label>Likes</label><strong>{formatValue(activeVideo.video_data.digg_count)}</strong></div></div>
+                                                    <div className="col-4"><div className="metric-pill"><label>Shares</label><strong>{formatValue(activeVideo.video_data.share_count)}</strong></div></div>
+                                                    <div className="col-4"><div className="metric-pill"><label>Comments</label><strong>{formatValue(activeVideo.video_data.comment_count)}</strong></div></div>
+                                                    <div className="col-4"><div className="metric-pill"><label>Downloads</label><strong>{formatValue(activeVideo.video_data.download_count)}</strong></div></div>
+                                                </div>
+                                                
+                                                {activeVideo.video_data.music_info && (
+                                                    <div className="mt-3 p-3 rounded-3 bg-light border">
+                                                        <label className="card-label mb-2">Banda Sonora</label>
+                                                        <div className="d-flex align-items-center gap-2">
+                                                            <div className="p-2 bg-dark text-white rounded-circle" style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}><i className="bi bi-music-note-beamed"></i></div>
+                                                            <div>
+                                                                <h5 className="m-0 fw-950 text-dark" style={{ fontSize: '0.85rem' }}>{activeVideo.video_data.music_info.title}</h5>
+                                                                <p className="m-0 text-muted fw-800" style={{ fontSize: '0.7rem' }}>{activeVideo.video_data.music_info.author}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                            <div className="ia-card-v5" style={{ background: '#fffbeb', border: '1px solid #fed7aa' }}>
-                                                <h5 style={{ color: '#c2410c' }}><i className="bi bi-eye"></i> Visión Artificial IA</h5>
-                                                <p className="m-0 fs-7 italic" style={{ color: '#9a3412', lineHeight: '1.6' }}>
-                                                    "{activeVideo.video_data.miniatura_descripcion}"
-                                                </p>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
+
+                                        <div className="ai-vision-wide anim-fade mt-2">
+                                            <label className="card-label mb-2" style={{ color: '#c2410c' }}>Visión Artificial IA</label>
+                                            <p className="m-0 fs-7 fw-700" style={{ color: '#9a3412', lineHeight: '1.5', fontStyle: 'italic', fontSize: '0.75rem' }}>
+                                                "{activeVideo.video_data.miniatura_descripcion}"
+                                            </p>
+                                        </div>
+                                    </>
                                 ) : (
-                                    <div className="animate-in">
-                                        {(() => {
-                                            const analysis = activeVideo.video_analysis || {};
-                                            const strategy = analysis.estrategia_pepsi_gt || analysis.estrategia_pepsi_guatemala || analysis;
-                                            const points = analysis.data_points_clave || {};
-                                            return (
-                                                <>
-                                                    <div className="ia-cards-v5">
-                                                        <div className="ia-card-v5">
-                                                            <h5><i className="bi bi-bullseye"></i> Foco Estratégico</h5>
-                                                            <div className="ia-detail-v5">
-                                                                <label>Interés de Marca</label>
-                                                                <p>{strategy.interes_marca_detallado}</p>
-                                                            </div>
-                                                            <div className="ia-detail-v5 featured-v5">
-                                                                <label>Insight Local (Chapín)</label>
-                                                                <p>{strategy.insight_chapin}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="ia-card-v5">
-                                                            <h5><i className="bi bi-lightning-charge"></i> Viral Data Points</h5>
-                                                            <div className="ia-detail-v5">
-                                                                <label>Potencial del Sonido</label>
-                                                                <p>{points.potencial_audio}</p>
-                                                            </div>
-                                                            <div className="ia-detail-v5">
-                                                                <label>Shareability Factor</label>
-                                                                <p>{points.shareability_factor}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    <div className="anim-fade">
+                                        <div className="minimal-section-title">Foco Estratégico & Insights</div>
+                                        <div className="strat-grid">
+                                            {(() => {
+                                                const analysis = activeVideo.video_analysis || {};
+                                                const strategy = analysis.estrategia_pepsi_gt || analysis.estrategia_pepsi_guatemala || {};
+                                                const points = analysis.data_points_clave || {};
+                                                const creative = analysis.ejecucion_creativa || [];
 
-                                                    <div className="roadmap-v5">
-                                                        <h5 className="fw-950 fs-7 uppercase tracking-extra mb-4">Ejecuciones Creativas</h5>
-                                                        {(activeVideo.video_analysis.ejecucion_creativa || []).map((ex, i) => (
-                                                            <div key={i} className="exec-bar-v5">
-                                                                <div className="exec-score-v5">
-                                                                    <span>URGENCIA</span>
-                                                                    <strong>{ex.urgency_score}</strong>
-                                                                </div>
-                                                                <div className="exec-info-v5">
-                                                                    <Badge bg="primary" className="mb-2 fs-xxs fw-900 rounded-pill">{ex.tipo.toUpperCase()}</Badge>
-                                                                    <h6>{ex.title}</h6>
-                                                                    <p>{ex.idea_activacion_detallada}</p>
-                                                                </div>
+                                                return (
+                                                    <>
+                                                        <div className="strat-card hero">
+                                                            <span className="card-label">Oportunidad de la Marca</span>
+                                                            <h4 className="mb-3">Conexión con la Audiencia</h4>
+                                                            <p className="fs-7">{strategy.interes_marca_detallado}</p>
+                                                            
+                                                            <div className="badge-local gt">Insight Guatemala</div>
+                                                            <div className="mt-2 fw-950" style={{ fontSize: '1.1rem' }}>{strategy.insight_chapin || strategy.insight_guatemala}</div>
+                                                        </div>
+
+                                                        <div className="strat-card shadow-sm border-0">
+                                                            <span className="card-label border-start border-3 border-primary ps-3">Viral Data Points</span>
+                                                            <div className="mb-4">
+                                                                <h6 className="fw-950 text-dark mb-1">Potencial del Audio</h6>
+                                                                <p className="text-muted fs-7 lh-sm">{points.potencial_audio}</p>
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                </>
-                                            );
-                                        })()}
+                                                            <div>
+                                                                <h6 className="fw-950 text-dark mb-1">Shareability Factor</h6>
+                                                                <p className="text-muted fs-7 lh-sm">{points.shareability_factor}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="col-span-2" style={{ gridColumn: '1 / span 2' }}>
+                                                            <div className="roadmap-header mt-4">
+                                                                <h5 className="border-bottom border-4 border-primary pb-2">HOJA DE RUTA CREATIVA</h5>
+                                                                <Badge bg="light" className="text-dark border px-3 py-2 rounded-pill fw-950">{creative.length} PROPUESTAS AI</Badge>
+                                                            </div>
+                                                            
+                                                            <div className="row g-4">
+                                                                {creative.map((ex, i) => (
+                                                                    <div key={i} className="col-12">
+                                                                        <div className="execution-item-v7 shadow-sm border-0">
+                                                                            <div className={`urgency-v7 ${ex.urgency_score > 7 ? 'high' : 'mid shadow-sm'}`}>
+                                                                                <small style={{ fontSize: '0.45rem', opacity: 0.6 }}>URG</small>
+                                                                                <span>{ex.urgency_score}</span>
+                                                                            </div>
+                                                                            <div>
+                                                                                <div className="d-flex align-items-center gap-2 mb-2">
+                                                                                    <Badge bg="dark" className="px-2 py-1 fw-950" style={{ fontSize: '0.5rem' }}>{ex.tipo.toUpperCase()}</Badge>
+                                                                                    <h6 className="m-0 fw-950 fs-5">{ex.title}</h6>
+                                                                                </div>
+                                                                                <p className="text-muted m-0 fs-7 lh-sm">{ex.idea_activacion_detallada}</p>
+                                                                            </div>
+                                                                            <button className="btn btn-primary rounded-pill px-4 fw-950 shadow-sm" style={{ fontSize: '0.65rem' }}>LEER GUION</button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                );
+                                            })()}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -451,11 +507,15 @@ const VideoAnalysisPage = () => {
             </div>
 
             <style>{`
-                .btn-pill-px { border: none; background: transparent; padding: 10px 0; border-radius: 100px; font-weight: 950; font-size: 0.72rem; letter-spacing: 0.1em; transition: 0.3s; }
-                .btn-active { background: var(--pep-blue); color: white; box-shadow: 0 4px 12px rgba(0,92,180,0.2); }
-                .btn-ghost { color: #94a3b8; }
+                .btn-pill-px { border: none; background: transparent; padding: 10px 0; border-radius: 100px; font-weight: 950; font-size: 0.75rem; letter-spacing: 0.05em; transition: 0.3s; cursor: pointer; }
+                .btn-active { background: var(--pep-blue); color: #fff; box-shadow: 0 4px 12px rgba(0,92,180,0.25); }
+                .btn-ghost { color: var(--pep-muted); }
                 .fs-xxs { font-size: 0.55rem; }
+                .fs-xxxs { font-size: 0.45rem; }
+                .fs-7 { font-size: 0.85rem; }
                 .tracking-extra { letter-spacing: 0.15em; }
+                .lh-sm { line-height: 1.4; }
+                .lh-lg { line-height: 1.8; }
             `}</style>
         </div>
     );

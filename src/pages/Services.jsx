@@ -7,6 +7,10 @@ const Services = () => {
     const navigateTo = useNavigate();
 
     const handleButtonClick = (service) => {
+        if (service.external) {
+            window.open(service.path, "_blank", "noopener,noreferrer");
+            return;
+        }
         navigateTo(service.path);
     };
 

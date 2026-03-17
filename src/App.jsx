@@ -23,6 +23,7 @@ import SpectrumLeads from "./clients/Spectrum/Leads/LeadsPage.jsx";
 import PepsiVideoAnalysis from "./clients/Pepsi/VideoAnalysis/VideoAnalysisPage.jsx";
 // ── Garoo services ─────────────────────────────────────────────────────────────
 import AgentOnboarding from "./Garoo/AgentOnboarding/AgentOnboardingPage.jsx";
+import AdminPortal from "./Garoo/Admin/AdminPortal.jsx";
 import Services from "./pages/Services.jsx";
 import MyServices from "./pages/MyServices.jsx";
 import Home from "./pages/Home.jsx";
@@ -54,12 +55,14 @@ function App() {
 function AppContent() {
     const location = useLocation();
     const isLoginPage = location.pathname === "/login";
+    const isPublicForm = location.pathname === "/outbound-call-form";
+    const noLayout = isLoginPage || isPublicForm;
 
     return (
         <>
-            {!isLoginPage && <Header />}
-            <div className={isLoginPage ? "" : "app-container"}>
-                <main className={isLoginPage ? "" : "content"}>
+            {!noLayout && <Header />}
+            <div className={noLayout ? "" : "app-container"}>
+                <main className={noLayout ? "" : "content"}>
                     <Routes>
                         <Route path="/login" element={<LoginPage />} />
                         <Route
@@ -112,11 +115,7 @@ function AppContent() {
                         />
                         <Route
                             path="/outbound-call-form"
-                            element={
-                                <ProtectedRoute serviceId="outbound-call-form">
-                                    <FicohsaCalls />
-                                </ProtectedRoute>
-                            }
+                            element={<FicohsaCalls />}
                         />
                         <Route
                             path="/spectrum-leads"
@@ -139,6 +138,14 @@ function AppContent() {
                             element={
                                 <ProtectedRoute serviceId="agent-onboarding">
                                     <AgentOnboarding />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin-portal"
+                            element={
+                                <ProtectedRoute serviceId="admin-portal">
+                                    <AdminPortal />
                                 </ProtectedRoute>
                             }
                         />

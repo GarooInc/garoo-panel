@@ -49,8 +49,8 @@ const ApplicationsTable = ({
                             const date = getApplicationDate(worker);
 
                             return (
-                                <tr key={worker.id || index}>
-                                    <td className="ps-4 py-3">
+                        <tr key={worker.id || index}>
+                            <td className="ps-4 py-2">
                                         <div className="d-flex align-items-center gap-3">
                                             <div
                                                 className="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
@@ -167,9 +167,9 @@ const ApplicationsTable = ({
                     color: var(--text-secondary);
                     font-weight: 500;
                     text-transform: uppercase;
-                    font-size: 0.75rem;
+                    font-size: 0.65rem;
                     letter-spacing: 0.5px;
-                    padding: 1.25rem 0.5rem;
+                    padding: 0.75rem 0.5rem;
                 }
                 .custom-table tbody tr {
                     transition: all 0.2s ease;

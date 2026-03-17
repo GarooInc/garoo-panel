@@ -40,6 +40,17 @@ const Header = () => {
                                 <i className="bi bi-star-fill"></i>
                                 <span>Mis Servicios</span>
                             </Nav.Link>
+
+                            {user?.client === "admin" && (
+                                <Nav.Link 
+                                    as={Link} 
+                                    to="/admin-portal" 
+                                    className={`nav-pill-item ${location.pathname === '/admin-portal' ? 'is-active' : ''}`}
+                                >
+                                    <i className="bi bi-shield-lock-fill"></i>
+                                    <span>Administración</span>
+                                </Nav.Link>
+                            )}
                         </Nav>
 
                         <Nav className="align-items-center gap-2">

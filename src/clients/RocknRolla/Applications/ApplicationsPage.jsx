@@ -40,47 +40,151 @@ const RocknRollaApplications = () => {
             await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
             setCopyStatus("¡Copiado!");
             setTimeout(() => setCopyStatus("Copy All"), 2000);
-        } catch (err) { setCopyStatus("Error"); }
+        } catch { setCopyStatus("Error"); }
     };
 
     return (
         <div className="page-container animate-in">
             <style>{`
-                .apps-container { display: flex; flex-direction: column; gap: 2rem; }
-                .view-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 0.5rem; }
+                .apps-container { 
+                    display: flex; 
+                    flex-direction: column; 
+                    align-items: center;
+                    width: 100%;
+                    padding: 0 1rem; /* Margen de seguridad lateral */
+                }
                 
                 .main-shell { 
-                    background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px);
-                    border-radius: 28px; border: 1px solid rgba(226, 232, 240, 0.8); 
-                    overflow: hidden; display: flex; flex-direction: column; 
-                    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.04);
+                    background: rgba(255, 255, 255, 0.9); 
+                    backdrop-filter: blur(20px);
+                    border-radius: 20px; 
+                    border: 1px solid #e2e8f0; 
+                    overflow: hidden; 
+                    display: flex; 
+                    flex-direction: column; 
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+                    max-width: 1000px;
+                    width: 100%;
+                    margin: 0 auto;
+                    transition: max-width 0.3s ease;
                 }
-                .filter-strip { padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; background: rgba(248, 250, 252, 0.5); }
-                .table-strip { padding: 0.5rem; }
-                
-                .json-pre { background: #0f172a; color: #94a3b8; padding: 2rem; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; max-height: 600px; overflow: auto; border: 1px solid rgba(255,255,255,0.05); }
 
-                @media (max-width: 768px) { .view-header { flex-direction: column; align-items: flex-start; gap: 1rem; } }
+                .admin-header-v2 {
+                    background: #fff;
+                    padding: 1.5rem 2rem;
+                    border-radius: 20px;
+                    border: 1px solid #e2e8f0;
+                    margin-bottom: 1.5rem;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    max-width: 1000px;
+                    width: 100%;
+                    margin: 0 auto 1.5rem auto;
+                }
+                .admin-title-v2 {
+                    font-size: 1.15rem;
+                    font-weight: 950;
+                    color: #0f172a;
+                    letter-spacing: -1px;
+                    margin: 0;
+                }
+
+                .segmented-control {
+                    display: flex;
+                    background: #f1f5f9;
+                    padding: 2px;
+                    border-radius: 10px;
+                }
+
+                .control-item {
+                    padding: 4px 14px;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 0.7rem;
+                    color: #64748b;
+                    border: none;
+                    background: transparent;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    cursor: pointer;
+                }
+
+                .control-item i {
+                    font-size: 0.9rem;
+                    opacity: 0.7;
+                }
+
+                .control-item.is-active {
+                    background: white;
+                    color: #2563eb;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                }
+
+                .control-item.is-active i {
+                    opacity: 1;
+                }
+
+                .control-item:hover:not(.is-active) {
+                    background: rgba(255, 255, 255, 0.4);
+                }
+
+                .filter-strip { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; background: white; }
+                .table-strip { padding: 0.25rem; }
+                
+                .json-pre { background: #0f172a; color: #94a3b8; padding: 1.5rem; border-radius: 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; max-height: 500px; overflow: auto; border: 1px solid rgba(255,255,255,0.05); }
+
+                @media (max-width: 768px) {
+                    .admin-header-v2 { 
+                        flex-direction: column; 
+                        align-items: center; 
+                        text-align: center;
+                        gap: 1.25rem; 
+                        padding: 1.25rem 1rem; 
+                        margin-bottom: 1rem;
+                    }
+                    .admin-title-v2 { font-size: 1.1rem; }
+                    .segmented-control { width: 100%; }
+                    .control-item { flex: 1; justify-content: center; font-size: 0.65rem; }
+                    .filter-strip { padding: 0.75rem; }
+                }
+
+                @media (max-width: 480px) {
+                    .admin-header-v2 { border-radius: 16px; }
+                    .main-shell { border-radius: 16px; }
+                    .filter-strip { padding: 0.5rem; }
+                }
             `}</style>
 
             <div className="apps-container">
-                <div className="view-header">
-                    <div className="view-title">
-                        <h1 className="premium-title">RocknRolla</h1>
-                        <p className="premium-subtitle">Sistema de selección y gestión inteligente de talento humano.</p>
+                {error && <div className="alert-pill alert-error mb-3">{error.message}</div>}
+
+                <div className="admin-header-v2">
+                    <div>
+                        <h1 className="admin-title-v2">Talento RocknRolla</h1>
+                        <p className="text-muted small fw-700 mb-0 uppercase tracking-widest mt-1" style={{ fontSize: '0.6rem' }}>Identificación y Selección Inteligente</p>
                     </div>
                     
-                    <div className="nav-tabs-pills">
-                        <button className={`nav-pill-item ${activeTab === 'candidates' ? 'is-active' : ''}`} onClick={() => setActiveTab('candidates')} style={{ border: 'none' }}>
-                            <i className="bi bi-people-fill"></i> Candidatos
+                    <div className="segmented-control">
+                        <button 
+                            className={`control-item ${activeTab === 'candidates' ? 'is-active' : ''}`} 
+                            onClick={() => setActiveTab('candidates')}
+                        >
+                            <i className="bi bi-people-fill"></i>
+                            Candidatos
                         </button>
-                        <button className={`nav-pill-item ${activeTab === 'api' ? 'is-active' : ''}`} onClick={() => setActiveTab('api')} style={{ border: 'none' }}>
-                            <i className="bi bi-code-slash"></i> API Data
+                        <button 
+                            className={`control-item ${activeTab === 'api' ? 'is-active' : ''}`} 
+                            onClick={() => setActiveTab('api')}
+                        >
+                            <i className="bi bi-code-slash"></i>
+                            API Data
                         </button>
                     </div>
                 </div>
-
-                {error && <div className="alert-pill alert-error">{error.message}</div>}
 
                 <div className="main-shell">
                     {activeTab === "candidates" ? (

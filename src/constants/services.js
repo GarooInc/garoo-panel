@@ -47,7 +47,8 @@ export const ALL_SERVICES = [
         description: "Herramienta de registro estructurado para campañas de llamadas salientes y seguimiento de prospectos.",
         color: "#f59e0b",
         bgColor: "rgba(245,158,11,0.08)",
-        cardClass: styles.callCard
+        cardClass: styles.callCard,
+        external: true
     },
     {
         id: "spectrum-leads",

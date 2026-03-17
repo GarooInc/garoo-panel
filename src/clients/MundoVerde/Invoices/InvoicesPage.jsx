@@ -56,6 +56,7 @@ const MundoVerdeInvoices = () => {
 
     useEffect(() => {
         if (activeTab === "dashboard") fetchInvoices(1);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab]);
 
     const handleFilterChange = (e) => {
@@ -130,15 +131,12 @@ const MundoVerdeInvoices = () => {
         }
     };
 
-    const formatCurrency = (amount, currency = "GTQ") => {
-        return new Intl.NumberFormat('es-GT', { style: 'currency', currency }).format(amount);
-    };
 
     const formatDate = (dateStr) => {
         if (!dateStr) return "-";
         try {
             return new Date(dateStr).toLocaleDateString('es-GT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        } catch (e) { return dateStr; }
+        } catch (error) { void error; return dateStr; }
     };
 
     return (
@@ -169,9 +167,13 @@ const MundoVerdeInvoices = () => {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 0.75rem;
-                    padding: 0.25rem 0.5rem;
+                    margin-bottom: 1.5rem;
+                    padding: 0.5rem 1rem;
                     border-bottom: 1px solid #e2e8f0;
+                    max-width: 1000px;
+                    width: 100%;
+                    margin-left: auto;
+                    margin-right: auto;
                 }
 
                 .tabs-container-v3 {
@@ -207,8 +209,11 @@ const MundoVerdeInvoices = () => {
                     display: grid;
                     grid-template-columns: 1fr 320px;
                     gap: 1rem;
-                    height: calc(100vh - 140px);
+                    height: calc(100vh - 180px);
                     min-height: 400px;
+                    max-width: 1000px;
+                    width: 100%;
+                    margin: 0 auto;
                 }
 
                 .pane-v3 {
@@ -318,54 +323,74 @@ const MundoVerdeInvoices = () => {
                     overflow: hidden;
                     display: flex;
                     flex-direction: column;
+                    max-width: 1000px;
+                    width: 100%;
+                    margin: 0 auto;
                 }
 
                 .filter-bar-v3 {
                     display: flex;
-                    gap: 1rem;
-                    background: #fcfdfe;
-                    padding: 1.25rem 1.5rem;
-                    border-bottom: 1px solid #f1f5f9;
+                    gap: 0.75rem;
+                    background: #fff;
+                    padding: 0.85rem 1.25rem;
                     align-items: flex-end;
                     flex-wrap: wrap;
                 }
 
-                .filter-group-v3 { display: flex; flex-direction: column; gap: 6px; }
+                .pagination-bar-v3 {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    background: #f8fafc;
+                    padding: 0.6rem 1.25rem;
+                    border-top: 1px solid #e2e8f0;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+
+                .filter-group-v3 { 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                    flex: 1; /* Los filtros ahora crecen para llenar el espacio */
+                    min-width: 120px;
+                }
                 .filter-group-v3 label { 
-                    font-size: 0.6rem; 
-                    font-weight: 900; 
+                    font-size: 0.55rem; 
+                    font-weight: 950; 
                     color: #94a3b8; 
                     text-transform: uppercase; 
                     letter-spacing: 0.05em;
+                    margin-bottom: 2px;
                 }
                 .filter-group-v3 input {
-                    border: 1.5px solid #e2e8f0; 
-                    border-radius: 12px; 
-                    padding: 8px 14px; 
-                    font-size: 0.8rem; 
+                    border: 1px solid #e2e8f0; 
+                    border-radius: 8px; 
+                    padding: 6px 12px; 
+                    font-size: 0.75rem; 
                     font-weight: 700;
-                    color: #334155;
-                    background: white;
+                    color: #1e293b;
+                    background: #f8fafc;
                     transition: all 0.2s;
-                    min-width: 140px;
+                    width: 100%;
+                    height: 34px;
                 }
-                .filter-group-v3 input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06); }
+                .filter-group-v3 input:focus { border-color: var(--primary); background: white; outline: none; }
 
                 .btn-filter-v3 {
                     background: var(--primary);
                     color: white;
                     border: none;
-                    border-radius: 12px;
-                    padding: 9px 20px;
-                    font-size: 0.8rem;
-                    font-weight: 800;
+                    border-radius: 8px;
+                    padding: 0 16px;
+                    font-size: 0.75rem;
+                    font-weight: 850;
                     display: flex;
                     align-items: center;
                     gap: 8px;
                     transition: all 0.2s;
-                    height: 40px;
+                    height: 34px;
                 }
-                .btn-filter-v3:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+                .btn-filter-v3:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
 
                 /* TABLE STYLING */
                 .table-v3 { width: 100%; border-collapse: separate; border-spacing: 0; }
@@ -426,26 +451,43 @@ const MundoVerdeInvoices = () => {
 
                 /* PAGINATION COMPACT */
                 .pagination-compact-v3 {
-                    margin-left: auto;
                     display: flex;
                     align-items: center;
-                    gap: 16px;
-                    padding: 0 1rem;
+                    justify-content: space-between;
+                    width: 100%;
+                    height: 32px;
                 }
-                .pagination-info-v3 { font-size: 0.65rem; font-weight: 950; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+                .pagination-info-v3 { 
+                    font-size: 0.65rem; 
+                    font-weight: 950; 
+                    color: #475569; 
+                    text-transform: uppercase; 
+                    letter-spacing: 0.5px;
+                    background: #fff;
+                    padding: 4px 10px;
+                    border-radius: 6px;
+                    border: 1px solid #e2e8f0;
+                }
                 .pagination-nav-v3 { display: flex; gap: 6px; }
                 .nav-btn-v3 {
                     width: 32px; height: 32px;
-                    border-radius: 10px;
+                    border-radius: 8px;
                     display: flex; align-items: center; justify-content: center;
-                    border: 1.5px solid #e2e8f0;
+                    border: 1px solid #cbd5e1;
                     background: white;
-                    color: #475569;
+                    color: var(--primary);
                     cursor: pointer;
                     transition: all 0.2s;
+                    font-size: 0.9rem;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
                 }
-                .nav-btn-v3:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
-                .nav-btn-v3:disabled { opacity: 0.3; cursor: not-allowed; }
+                .nav-btn-v3:hover:not(:disabled) { 
+                    border-color: var(--primary); 
+                    background: var(--primary); 
+                    color: white;
+                    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
+                }
+                .nav-btn-v3:disabled { opacity: 0.2; cursor: not-allowed; color: #94a3b8; border-color: #e2e8f0; }
 
                 @media (max-width: 1200px) { .layout-grid-v3 { grid-template-columns: 1fr 340px; } }
             `}</style>
@@ -468,7 +510,7 @@ const MundoVerdeInvoices = () => {
                     </div>
                     <div className="tabs-container-v3">
                         <button className={activeTab === 'form' ? 'active-tab px-3' : 'px-3'} onClick={() => setActiveTab('form')}>
-                            <i className="bi bi-plus-lg"></i> Nueva Carga
+                            <i className="bi bi-plus-lg"></i> Nueva Factura
                         </button>
                         <button className={activeTab === 'dashboard' ? 'active-tab px-3' : 'px-3'} onClick={() => setActiveTab('dashboard')}>
                             <i className="bi bi-history"></i> Historial SAT
@@ -542,7 +584,7 @@ const MundoVerdeInvoices = () => {
                     </div>
                 ) : (
                     <div className="dashboard-v3">
-                        <div className="filter-bar-v3">
+                         <div className="filter-bar-v3">
                             <div className="filter-group-v3">
                                 <label>Emisor</label>
                                 <input name="emisor" value={filters.emisor} onChange={handleFilterChange} placeholder="Buscar por nombre..." />
@@ -562,7 +604,9 @@ const MundoVerdeInvoices = () => {
                             <button className="btn-filter-v3" onClick={() => fetchInvoices(1)} disabled={isFetchingInvoices}>
                                 {isFetchingInvoices ? <Spinner animation="border" size="sm" /> : <><i className="bi bi-search"></i> Filtrar</>}
                             </button>
+                        </div>
 
+                        <div className="pagination-bar-v3">
                             <div className="pagination-compact-v3">
                                 <span className="pagination-info-v3 text-nowrap">Pág {currentPage} de {totalPages}</span>
                                 <div className="pagination-nav-v3">
