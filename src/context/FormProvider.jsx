@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { n8nHostingerInstance } from "../api/axios";
 
 const FormContext = createContext();
 
@@ -20,44 +21,18 @@ export const FormProvider = ({ children }) => {
         setError(null);
 
         try {
-            // Para FormData con archivos, no establecer Content-Type manualmente
-            // El navegador lo configurará automáticamente con el boundary correcto
-            const response = await fetch(
-                "https://n8n.srv853599.hstgr.cloud/webhook/8481ab6d-c964-41f6-86a4-17f7e0f84788",
-                {
-                    method: "POST",
-                    body: form_data, // Enviar FormData directamente, sin JSON.stringify
-                },
+            // Para FormData con archivos, no establecer Content-Type manualmente en Axios
+            // Axios lo configurará automáticamente si el body es una instancia de FormData
+            const response = await n8nHostingerInstance.post(
+                "/8481ab6d-c964-41f6-86a4-17f7e0f84788",
+                form_data
             );
 
-            if (!response.ok) {
-                // Intentar obtener más detalles del error
-                let errorMessage = `HTTP error! status: ${response.status}`;
-                try {
-                    const errorText = await response.text();
-                    if (errorText) {
-                        errorMessage += ` - ${errorText}`;
-                    }
-                } catch {
-                    // Si no se puede leer el texto del error, usar el mensaje básico
-                }
-                throw new Error(errorMessage);
-            }
-
-            // Si la respuesta es exitosa, intentar leer como JSON
-            try {
-                const result = await response.json();
-                return result;
-            } catch {
-                // Si no es JSON válido, intentar leer como texto
-                const textResult = await response.text();
-                return {
-                    message: textResult || "Operación completada exitosamente",
-                };
-            }
+            return response.data;
         } catch (err) {
-            setError(err.message);
-            throw err;
+            const errorMessage = err.response?.data?.message || err.message || "Error al enviar datos";
+            setError(errorMessage);
+            throw new Error(errorMessage);
         } finally {
             setLoading(false);
         }

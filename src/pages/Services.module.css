@@ -1,183 +1,164 @@
 .servicesContainer {
-    padding: 2rem 5%;
-    min-height: calc(100vh - var(--header-height, 70px));
-    background: radial-gradient(circle at top right, #f8fafc 0%, #f1f5f9 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Subtle accent glows */
-.servicesContainer::after {
-    content: "";
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.03) 0%, transparent 70%);
-    bottom: -100px;
-    right: -100px;
-    z-index: 0;
+    padding: 1rem 0;
 }
 
 .header {
-    margin-bottom: 3rem;
-    text-align: left;
-    position: relative;
-    z-index: 10;
+    margin-bottom: 2rem;
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
 }
 
 .title {
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
+    font-size: 2.2rem;
+    font-weight: 950;
+    color: var(--text-main);
+    letter-spacing: -0.05em;
+    margin-bottom: 0.75rem;
+    line-height: 1.1;
 }
 
 .subtitle {
-    color: #475569;
-    font-size: 1rem;
-    max-width: 500px;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 500;
     line-height: 1.5;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-    position: relative;
-    z-index: 10;
+    grid-template-columns: 1fr; /* Mobile First: 1 column */
+    gap: 1.5rem;
+    padding: 1rem;
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #e2e8f0; /* New gray base */
+    border-radius: 24px;
+    padding: 2rem;
+    border: 1px solid var(--border-main);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     height: 100%;
     cursor: pointer;
-    text-decoration: none;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    overflow: hidden;
+    min-height: 280px;
 }
 
 .card:hover {
     transform: translateY(-4px);
-    background: #ffffff;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
     border-color: var(--color1);
+    background: #f1f5f9;
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.1);
 }
 
-.iconContainer {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+.topInfo {
+    position: relative;
+    z-index: 1;
+}
+
+.iconWrapper {
+    width: 52px;
+    height: 52px;
+    background: white;
+    color: var(--color1);
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
-    background: var(--bg-light, #f1f5f9);
-    color: var(--color1, #3b82f6);
-    margin-bottom: 1.25rem;
-    transition: all 0.3s ease;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-.card:hover .iconContainer {
+.card:hover .iconWrapper {
     background: var(--color1);
-    color: #fff;
-    transform: scale(1.05);
+    color: white;
+    transform: scale(1.05) rotate(5deg);
+}
+
+.badge {
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color1);
+    background: rgba(255,255,255,0.5);
+    padding: 6px 12px;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+    display: inline-block;
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
 .cardTitle {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--text-main);
     margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
 }
 
 .cardDesc {
-    color: #64748b;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
     line-height: 1.5;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
+    font-weight: 500;
 }
 
-.enterBtn {
+.cardFooter {
+    margin-top: 2rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #94a3b8;
-    background: transparent;
-    border: none;
-    padding: 0;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    justify-content: space-between;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
 }
 
-.card:hover .enterBtn {
+.exploreText {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.card:hover .exploreText {
     color: var(--color1);
-    gap: 0.75rem;
 }
 
-.arrowIcon {
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: all 0.3s ease;
-}
-
-.card:hover .arrowIcon {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* Variation Colors */
-.jobCard {
-    --color1: #3b82f6;
-    --bg-light: #eff6ff;
-}
-
-.formCard {
-    --color1: #10b981;
-    --bg-light: #ecfdf5;
-}
-
-.callCard {
-    --color1: #f59e0b;
-    --bg-light: #fffbeb;
-}
-
-.spectrumCard {
-    --color1: #8b5cf6;
-    --bg-light: #f5f3ff;
-}
-
-.pepsiCard {
-    --color1: #005cb4;
-    --bg-light: #eff6ff;
-}
-
-.agentCard {
-    --color1: #e0c800;
-    --bg-light: #fefce8;
-}
-
-@media (max-width: 640px) {
-    .servicesContainer {
-        padding: 1.5rem;
-    }
-
-    .title {
-        font-size: 1.75rem;
-    }
-
+/* DESKTOP BREAKPOINTS */
+@media (min-width: 768px) {
     .grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        padding: 0;
+    }
+    .title { font-size: 3rem; }
+    .header { margin-bottom: 4rem; }
+    .card { min-height: 320px; padding: 2.5rem; }
+}
+
+@media (min-width: 1200px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     }
 }
+
+/* Variation Colors (More Subdued) */
+.jobCard { --color1: #2563eb; }
+.formCard { --color1: #059669; }
+.callCard { --color1: #d97706; }
+.spectrumCard { --color1: #7c3aed; }
+.pepsiCard { --color1: #005cb4; }
+.agentCard { --color1: #ca8a04; }
+.defaultCard { --color1: #475569; }

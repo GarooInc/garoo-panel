@@ -1,15 +1,20 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useServices } from "../context/ServicesContext";
 
 const ProtectedRoute = ({ children, serviceId }) => {
-    const { user, loading, hasPermission } = useAuth();
+    const { user, loading: authLoading } = useAuth();
+    const { hasServicePermission, loading: servicesLoading } = useServices();
     const location = useLocation();
 
-    if (loading) {
+    if (authLoading || servicesLoading) {
         return (
-            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', color: '#10b981' }}>
-                Cargando sesión...
+            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', color: '#64748b' }}>
+                <div className="text-center">
+                    <div className="spinner-border text-primary mb-3" role="status"></div>
+                    <div>Sincronizando accesos...</div>
+                </div>
             </div>
         );
     }
@@ -18,7 +23,7 @@ const ProtectedRoute = ({ children, serviceId }) => {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    if (serviceId && !hasPermission(serviceId)) {
+    if (serviceId && !hasServicePermission(serviceId)) {
         return <Navigate to="/" replace />;
     }
 

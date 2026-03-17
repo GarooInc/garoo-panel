@@ -24,13 +24,14 @@ import PepsiVideoAnalysis from "./clients/Pepsi/VideoAnalysis/VideoAnalysisPage.
 // ── Garoo services ─────────────────────────────────────────────────────────────
 import AgentOnboarding from "./Garoo/AgentOnboarding/AgentOnboardingPage.jsx";
 import Services from "./pages/Services.jsx";
+import MyServices from "./pages/MyServices.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 
-import Sidebar from "./components/Layout/Sidebar.jsx";
 import Header from "./components/Layout/Header.jsx";
 
 import { AuthProvider } from "./context/AuthContext";
+import { ServicesProvider } from "./context/ServicesContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 
@@ -38,11 +39,13 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <ApplicationsProvider>
-                    <FormProvider>
-                        <AppContent />
-                    </FormProvider>
-                </ApplicationsProvider>
+                <ServicesProvider>
+                    <ApplicationsProvider>
+                        <FormProvider>
+                            <AppContent />
+                        </FormProvider>
+                    </ApplicationsProvider>
+                </ServicesProvider>
             </AuthProvider>
         </Router>
     );
@@ -50,34 +53,13 @@ function App() {
 
 function AppContent() {
     const location = useLocation();
-    const hideLayoutRoutes = [
-        "/login",
-        "/outbound-call-form",
-        "/form",
-        "/applications",
-        "/spectrum-leads",
-        "/video-analysis",
-        "/agent-onboarding",
-    ];
-    const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
-    const [sidebarOpen, setSidebarOpen] = React.useState(false);
-
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
-
-    const closeSidebar = () => {
-        setSidebarOpen(false);
-    };
+    const isLoginPage = location.pathname === "/login";
 
     return (
         <>
-            {!shouldHideLayout && <Header onToggleSidebar={toggleSidebar} />}
-            <div className={shouldHideLayout ? "" : "app-container"}>
-                {!shouldHideLayout && (
-                    <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-                )}
-                <main className={shouldHideLayout ? "" : "content"}>
+            {!isLoginPage && <Header />}
+            <div className={isLoginPage ? "" : "app-container"}>
+                <main className={isLoginPage ? "" : "content"}>
                     <Routes>
                         <Route path="/login" element={<LoginPage />} />
                         <Route
@@ -91,16 +73,24 @@ function AppContent() {
                         <Route
                             path="/dashboard"
                             element={
-                                <ProtectedRoute serviceId="dashboard">
+                                <ProtectedRoute>
                                     <Dashboard />
                                 </ProtectedRoute>
                             }
                         />
-                        <Route
+                         <Route
                             path="/services"
                             element={
-                                <ProtectedRoute serviceId="services">
+                                <ProtectedRoute>
                                     <Services />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/my-services"
+                            element={
+                                <ProtectedRoute>
+                                    <MyServices />
                                 </ProtectedRoute>
                             }
                         />
