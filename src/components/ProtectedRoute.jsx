@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useServices } from "../context/ServicesContext";
 
-const ProtectedRoute = ({ children, serviceId }) => {
+const ProtectedRoute = ({ children, serviceId, requiredRole }) => {
     const { user, loading: authLoading } = useAuth();
     const { hasServicePermission, loading: servicesLoading } = useServices();
     const location = useLocation();
@@ -23,6 +23,12 @@ const ProtectedRoute = ({ children, serviceId }) => {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
+    // Role-based check
+    if (requiredRole && user.client !== requiredRole) {
+        return <Navigate to="/" replace />;
+    }
+
+    // Service-based check
     if (serviceId && !hasServicePermission(serviceId)) {
         return <Navigate to="/" replace />;
     }

@@ -50,7 +50,7 @@ const ApplicationsTable = ({
 
                             return (
                         <tr key={worker.id || index}>
-                            <td className="ps-4 py-2">
+                            <td className="ps-4">
                                         <div className="d-flex align-items-center gap-3">
                                             <div
                                                 className="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold flex-shrink-0"

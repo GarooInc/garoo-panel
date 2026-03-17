@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
+    const { user } = useAuth();
     return (
         <div className="page-container animate-in d-flex align-items-center" style={{ minHeight: "80vh" }}>
             <div className="row w-100 g-5 align-items-center">
@@ -16,10 +18,12 @@ const Home = () => {
                         La plataforma centralizada más potente para la gestión inteligente de datos, optimización de flujos de trabajo y automatización de procesos empresariales críticos.
                     </p>
                     <div className="d-flex flex-wrap gap-3">
-                        <Link to="/services" className="btn-premium btn-premium-primary px-5 py-3 fs-5">
-                            Explorar Servicios
-                            <i className="bi bi-arrow-right"></i>
-                        </Link>
+                        {user?.client === "admin" && (
+                            <Link to="/services" className="btn-premium btn-premium-primary px-5 py-3 fs-5">
+                                Explorar Servicios
+                                <i className="bi bi-arrow-right"></i>
+                            </Link>
+                        )}
                         <Link to="/my-services" className="btn-premium btn-premium-secondary px-5 py-3 fs-5">
                             Mis Herramientas
                         </Link>

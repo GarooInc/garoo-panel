@@ -23,14 +23,16 @@ const Header = () => {
 
                     <Navbar.Collapse id="main-navbar-nav">
                         <Nav className="mx-auto nav-tabs-pills">
-                            <Nav.Link 
-                                as={Link} 
-                                to="/services" 
-                                className={`nav-pill-item ${location.pathname === '/services' ? 'is-active' : ''}`}
-                            >
-                                <i className="bi bi-grid-fill"></i>
-                                <span>Catálogo</span>
-                            </Nav.Link>
+                            {user?.client === "admin" && (
+                                <Nav.Link 
+                                    as={Link} 
+                                    to="/services" 
+                                    className={`nav-pill-item ${location.pathname === '/services' ? 'is-active' : ''}`}
+                                >
+                                    <i className="bi bi-grid-fill"></i>
+                                    <span>Catálogo</span>
+                                </Nav.Link>
+                            )}
 
                             <Nav.Link 
                                 as={Link} 

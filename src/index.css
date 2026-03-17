@@ -90,6 +90,27 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+
+/* Global Table Standardization */
+table th {
+    height: 48px; /* Standardize header height */
+    vertical-align: middle !important;
+}
+
+table td {
+    height: 64px; /* Standardize record height to match RocknRolla's premium look */
+    vertical-align: middle !important;
+}
+
+/* Reset vertical padding on specific table classes to let global height take over */
+.table-leads-premium td, .table-leads-premium th,
+.table-v3 td, .table-v3 th,
+.custom-table td, .custom-table th,
+.custom-table-v2 td, .custom-table-v2 th {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
 .page-container {
     padding: 2.5rem 5%;
     max-width: 1440px;
