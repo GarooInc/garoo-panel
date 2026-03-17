@@ -35,10 +35,10 @@
 }
 
 .card {
-    background: #e2e8f0; /* New gray base */
-    border-radius: 24px;
-    padding: 2rem;
-    border: 1px solid var(--border-main);
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
@@ -46,16 +46,29 @@
     height: 100%;
     cursor: pointer;
     position: relative;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     overflow: hidden;
-    min-height: 280px;
+    min-height: 220px;
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     border-color: var(--color1);
-    background: #f1f5f9;
-    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Color Accent Background - Subtle Tint */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--color1) 0%, transparent 100%);
+    opacity: 0.03;
+    transition: opacity 0.4s ease;
+}
+
+.card:hover::before {
+    opacity: 0.08;
 }
 
 .topInfo {
@@ -64,101 +77,109 @@
 }
 
 .iconWrapper {
-    width: 52px;
-    height: 52px;
-    background: white;
+    width: 44px;
+    height: 44px;
+    background: #f8fafc;
     color: var(--color1);
-    border-radius: 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
     transition: all 0.4s ease;
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
 }
 
 .card:hover .iconWrapper {
     background: var(--color1);
     color: white;
-    transform: scale(1.05) rotate(5deg);
+    transform: scale(1.1) rotate(5deg);
+    border-color: var(--color1);
 }
 
 .badge {
-    font-size: 0.6rem;
-    font-weight: 900;
+    font-size: 0.55rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     color: var(--color1);
-    background: rgba(255,255,255,0.5);
-    padding: 6px 12px;
+    background: #f1f5f9;
+    padding: 4px 10px;
     border-radius: 100px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     display: inline-block;
-    border: 1px solid rgba(0,0,0,0.02);
+    border: 1px solid transparent;
+}
+
+.card:hover .badge {
+    border-color: var(--color1);
+    background: white;
 }
 
 .cardTitle {
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: var(--text-main);
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
 }
 
 .cardDesc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-    font-weight: 500;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
+    font-weight: 400;
 }
 
 .cardFooter {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 1.25rem;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+    position: relative;
+    z-index: 1;
 }
 
 .exploreText {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--text-soft);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.3s ease;
 }
 
 .card:hover .exploreText {
     color: var(--color1);
+    transform: translateX(4px);
 }
 
 /* DESKTOP BREAKPOINTS */
 @media (min-width: 768px) {
     .grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
+        gap: 1.25rem;
         padding: 0;
     }
-    .title { font-size: 3rem; }
-    .header { margin-bottom: 4rem; }
-    .card { min-height: 320px; padding: 2.5rem; }
+    .title { font-size: 2.5rem; }
 }
 
 @media (min-width: 1200px) {
     .grid {
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
     }
 }
 
-/* Variation Colors (More Subdued) */
+/* Variation Colors */
 .jobCard { --color1: #2563eb; }
-.formCard { --color1: #059669; }
-.callCard { --color1: #d97706; }
-.spectrumCard { --color1: #7c3aed; }
-.pepsiCard { --color1: #005cb4; }
+.formCard { --color1: #10b981; }
+.callCard { --color1: #f59e0b; }
+.spectrumCard { --color1: #8b5cf6; }
+.pepsiCard { --color1: #0ea5e9; }
 .agentCard { --color1: #ca8a04; }
-.defaultCard { --color1: #475569; }
+.defaultCard { --color1: #64748b; }

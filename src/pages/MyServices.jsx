@@ -47,16 +47,16 @@ const MyServices = () => {
                         type="text" 
                         className="form-control"
                         style={{ 
-                            background: '#cbd5e1', 
-                            border: '2px solid #94a3b8', 
-                            borderRadius: '16px',
-                            padding: '12px 16px 12px 48px',
-                            fontSize: '0.95rem',
-                            fontWeight: '700',
-                            color: 'var(--text-main)',
-                            boxShadow: 'none'
+                            background: 'white', 
+                            border: '1px solid #e2e8f0', 
+                            borderRadius: '12px',
+                            padding: '10px 16px 10px 44px',
+                            fontSize: '0.9rem',
+                            fontWeight: '600',
+                            color: '#0f172a',
+                            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
                         }}
-                        placeholder="Filtrar servicios..."
+                        placeholder="Buscar entre mis servicios..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
