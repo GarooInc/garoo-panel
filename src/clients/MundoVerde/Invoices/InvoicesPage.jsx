@@ -29,6 +29,10 @@ const MundoVerdeInvoices = () => {
     const [toastMessage, setToastMessage] = useState("");
     const [toastVariant, setToastVariant] = useState("");
     const [isPersistentToast, setIsPersistentToast] = useState(false);
+    
+    // UI Preview States
+    const [showPdfPreview, setShowPdfPreview] = useState(true);
+    const [showXmlPreview, setShowXmlPreview] = useState(false);
 
     const fetchInvoices = async (page = 1) => {
         setIsFetchingInvoices(true);
@@ -200,20 +204,19 @@ const MundoVerdeInvoices = () => {
 
                 .tabs-container-v3 button.active-tab {
                     background: white;
-                    color: var(--primary);
+                    color: #2563eb;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
                 }
 
-                /* GRID LAYOUT V3 */
-                .layout-grid-v3 {
+                /* GRID LAYOUT V4 - DYNAMIC & SYMMETRICAL */
+                .layout-grid-v4 {
                     display: grid;
-                    grid-template-columns: 1fr 320px;
-                    gap: 1rem;
-                    height: calc(100vh - 180px);
-                    min-height: 400px;
-                    max-width: 1000px;
+                    grid-template-columns: 1.2fr 1fr;
+                    gap: 1.5rem;
+                    max-width: 1200px;
                     width: 100%;
                     margin: 0 auto;
+                    align-items: stretch; /* Empuja ambas columnas a la misma altura */
                 }
 
                 .pane-v3 {
@@ -258,13 +261,15 @@ const MundoVerdeInvoices = () => {
                     color: #475569;
                 }
 
-                /* FORM STYLING REFINEMENT */
-                .form-shell-v3 {
-                    padding: 1.25rem;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
+                /* FORM STYLING REFINEMENT V4 */
+                .form-shell-v4 {
+                    padding: 1.5rem;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1.25rem;
                 }
+
+                .full-width-v4 { grid-column: span 2; }
 
                 .field-item-v3 { display: flex; flex-direction: column; gap: 6px; }
                 .field-item-v3 label { 
@@ -286,21 +291,28 @@ const MundoVerdeInvoices = () => {
                 }
                 .field-item-v3 input:focus { border-color: var(--primary); background: white; }
 
-                /* FILE ZONE */
-                .file-zone-v3 {
-                    background: #f1f5f9;
-                    border: 2px dashed #cbd5e1;
-                    padding: 0.75rem 1rem;
-                    border-radius: 14px;
+                /* FILE ZONE V4 - SYMMETRICAL */
+                .file-zone-v4 {
+                    background: #f8fafc;
+                    border: 1.5px dashed #cbd5e1;
+                    padding: 1rem;
+                    border-radius: 12px;
                     cursor: pointer;
                     display: flex;
+                    flex-direction: column;
                     align-items: center;
-                    gap: 10px;
+                    justify-content: center;
+                    gap: 8px;
+                    transition: all 0.3s ease;
+                    text-align: center;
+                    min-height: 100px;
                 }
-                .file-zone-v3 i { font-size: 1.2rem; }
-                .file-zone-v3 .info p { margin: 0; font-size: 0.75rem; font-weight: 850; }
-                .file-zone-v3 .info span { font-size: 0.6rem; font-weight: 700; opacity: 0.7; }
-                .file-zone-v3.is-ready { border-color: #10b981; background: #ecfdf5; border-style: solid; }
+                .file-zone-v4:hover { border-color: var(--primary); background: #f1f5f9; }
+                .file-zone-v4 i { font-size: 1.5rem; color: #94a3b8; }
+                .file-zone-v4 p { margin: 0; font-size: 0.7rem; font-weight: 800; color: #475569; text-transform: uppercase; }
+                .file-zone-v4 span { font-size: 0.55rem; color: #94a3b8; font-weight: 600; }
+                .file-zone-v4.is-ready { border-color: #2563eb; background: #eff6ff; border-style: solid; }
+                .file-zone-v4.is-ready i { color: #2563eb; }
 
                 /* XML SHELL */
                 .xml-shell-v3 {
@@ -489,7 +501,20 @@ const MundoVerdeInvoices = () => {
                 }
                 .nav-btn-v3:disabled { opacity: 0.2; cursor: not-allowed; color: #94a3b8; border-color: #e2e8f0; }
 
-                @media (max-width: 1200px) { .layout-grid-v3 { grid-template-columns: 1fr 340px; } }
+                @media (max-width: 1200px) { .layout-grid-v4 { grid-template-columns: 1fr; height: auto; } }
+
+                /* TOGGLE SWITCH CUSTOM */
+                .form-check-input:checked {
+                    background-color: #2563eb;
+                    border-color: #2563eb;
+                }
+                .switch-label-v4 {
+                    font-size: 0.6rem;
+                    font-weight: 800;
+                    color: #64748b;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
             `}</style>
 
             {/* Portrait Blocker */}
@@ -504,8 +529,8 @@ const MundoVerdeInvoices = () => {
                     <div className="d-flex align-items-center gap-3">
                         <h1 className="fw-950 m-0" style={{ fontSize: '1.5rem', color: '#0f172a', letterSpacing: '-0.5px' }}>Facturación</h1>
                         <div className="d-flex flex-column" style={{ borderLeft: '2px solid #e2e8f0', paddingLeft: '15px' }}>
-                            <span className="fw-900 text-primary" style={{ fontSize: '0.6rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Mundo Verde</span>
-                            <span className="text-muted fw-700" style={{ fontSize: '0.55rem' }}>Gestión SAT</span>
+                            <span className="fw-900" style={{ fontSize: '0.6rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#2563eb' }}>Mundo Verde</span>
+                            <span className="text-muted fw-700" style={{ fontSize: '0.55rem' }}>Gestión Operativa</span>
                         </div>
                     </div>
                     <div className="tabs-container-v3">
@@ -519,65 +544,110 @@ const MundoVerdeInvoices = () => {
                 </div>
 
                 {activeTab === 'form' ? (
-                    <div className="layout-grid-v3">
+                    <div className="layout-grid-v4">
                         <div className="preview-stack-v3">
-                            <div className="pane-v3">
-                                <div className="pane-header-v3">
-                                    <span><i className="bi bi-file-earmark-pdf-fill text-danger me-2"></i> PDF Visor</span>
-                                    {selectedPdf && <span className="badge bg-white text-dark border">{selectedPdf.name}</span>}
+                            {showPdfPreview && (
+                                <div className={`pane-v3 ${!showXmlPreview ? 'h-100' : ''}`} style={{ flex: showXmlPreview ? '1' : 'none' }}>
+                                    <div className="pane-header-v3">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <i className="bi bi-file-earmark-pdf-fill text-danger"></i>
+                                            <span>Visor de Documento</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-grow-1" style={{ background: '#f1f5f9', minHeight: '400px' }}>
+                                        {pdfUrl ? <iframe src={pdfUrl} width="100%" height="100%" title="PDF" style={{ border: 'none', display: 'block' }} /> : 
+                                        <div className="d-flex flex-column align-items-center justify-content-center h-100 opacity-20">
+                                            <i className="bi bi-file-earmark-pdf" style={{ fontSize: '3rem' }}></i>
+                                            <span className="fw-950 x-small mt-3">VISTA PREVIA PDF</span>
+                                        </div>}
+                                    </div>
                                 </div>
-                                <div className="flex-grow-1" style={{ background: '#f1f5f9' }}>
-                                    {pdfUrl ? <iframe src={pdfUrl} width="100%" height="100%" title="PDF" style={{ border: 'none' }} /> : 
-                                    <div className="d-flex flex-column align-items-center justify-content-center h-100 opacity-25">
-                                        <i className="bi bi-file-earmark-arrow-up fs-1"></i>
-                                        <span className="fw-950 x-small mt-2">ESPERANDO DOCUMENTO</span>
-                                    </div>}
+                            )}
+                            
+                            {showXmlPreview && (
+                                <div className="pane-v3 animate-in" style={{ height: '220px', marginTop: showPdfPreview ? '1rem' : '0' }}>
+                                    <div className="pane-header-v3">
+                                        <span><i className="bi bi-code-square text-primary me-2"></i> Estructura de Datos (XML)</span>
+                                    </div>
+                                    <div className="xml-shell-v3">
+                                        {xmlContent ? <pre className="m-0">{xmlContent}</pre> : 
+                                        <div className="d-flex align-items-center justify-content-center h-100 opacity-20 fw-950 x-small">ESTRUCTURA SIN CARGAR</div>}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="pane-v3">
-                                <div className="pane-header-v3">
-                                    <span><i className="bi bi-code-slash text-primary me-2"></i> XML Estructura</span>
+                            )}
+
+                            {!showPdfPreview && !showXmlPreview && (
+                                <div className="pane-v3 h-100 d-flex flex-column align-items-center justify-content-center opacity-20">
+                                    <i className="bi bi-eye-slash" style={{ fontSize: '3.5rem' }}></i>
+                                    <span className="fw-950 x-small mt-3">VISTAS PREVIAS DESACTIVADAS</span>
                                 </div>
-                                <div className="xml-shell-v3">
-                                    {xmlContent ? <pre className="m-0">{xmlContent}</pre> : 
-                                    <div className="d-flex align-items-center justify-content-center h-100 opacity-25 fw-950 x-small italic">SIN DATOS XML</div>}
-                                </div>
-                            </div>
+                            )}
                         </div>
 
                         <div className="preview-stack-v3">
-                            <form className="pane-v3 h-100" style={{ background: 'white' }} onSubmit={handleSubmit(onSubmit)}>
-                                <div className="pane-header-v3"><span><i className="bi bi-shield-lock-fill text-primary me-2"></i> Certificación</span></div>
-                                <div className="form-shell-v3">
+                            <form className="pane-v3" style={{ background: 'white' }} onSubmit={handleSubmit(onSubmit)}>
+                                <div className="pane-header-v3"><span><i className="bi bi-send-fill text-primary me-2"></i> Datos de Envío</span></div>
+                                <div className="form-shell-v4">
                                     <div className="field-item-v3">
                                         <label>NIT del Emisor</label>
-                                        <input {...register("nit", { required: true })} placeholder="Ej: 1234567-k" />
+                                        <input {...register("nit", { required: true })} placeholder="1234567-k" />
                                     </div>
                                     <div className="field-item-v3">
                                         <label>Serie / Correlativo</label>
-                                        <input {...register("serie", { required: true })} placeholder="Ej: A-9988" />
+                                        <input {...register("serie", { required: true })} placeholder="A-9988" />
                                     </div>
-                                    <div className="d-flex flex-column gap-3 mt-2">
-                                        <label className={`file-zone-v3 ${selectedPdf ? 'is-ready' : ''}`}>
-                                            <input type="file" accept=".pdf" hidden {...register("pdf", { required: true, onChange: handlePdfChange })} />
-                                            <i className={`bi ${selectedPdf ? 'bi-check-circle-fill text-success' : 'bi-file-earmark-pdf'}`}></i>
-                                            <div className="info text-start">
-                                                <p>{selectedPdf ? 'PDF Cargado' : 'Subir PDF'}</p>
-                                                <span>Archivo base</span>
+                                    
+                                    <div className="full-width-v4 mt-3">
+                                        <p className="fw-950 text-muted mb-3" style={{ fontSize: '0.65rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Documentos de Soporte</p>
+                                        <div className="d-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                            <div className="d-flex flex-column gap-2">
+                                                <div className="form-check form-switch d-flex align-items-center gap-2 m-0 p-0">
+                                                    <input 
+                                                        className="form-check-input m-0 cursor-pointer" 
+                                                        type="checkbox" 
+                                                        id="pdfToggle"
+                                                        checked={showPdfPreview}
+                                                        onChange={() => setShowPdfPreview(!showPdfPreview)}
+                                                    />
+                                                    <label className="switch-label-v4 cursor-pointer m-0" htmlFor="pdfToggle">Vista PDF</label>
+                                                </div>
+                                                <label className={`file-zone-v4 ${selectedPdf ? 'is-ready' : ''}`}>
+                                                    <input type="file" accept=".pdf" hidden {...register("pdf", { required: true, onChange: handlePdfChange })} />
+                                                    <i className={`bi ${selectedPdf ? 'bi-file-earmark-check-fill' : 'bi-file-earmark-pdf'}`}></i>
+                                                    <p>{selectedPdf ? 'PDF Listo' : 'PDF'}</p>
+                                                    <span>Subir archivo</span>
+                                                </label>
                                             </div>
-                                        </label>
-                                        <label className={`file-zone-v3 ${selectedXml ? 'is-ready' : ''}`}>
-                                            <input type="file" accept=".xml" hidden {...register("xml", { required: true, onChange: handleXmlChange })} />
-                                            <i className={`bi ${selectedXml ? 'bi-check-circle-fill text-primary' : 'bi-filetype-xml'}`}></i>
-                                            <div className="info text-start">
-                                                <p>{selectedXml ? 'XML Cargado' : 'Subir XML'}</p>
-                                                <span>Certificación SAT</span>
+
+                                            <div className="d-flex flex-column gap-2">
+                                                <div className="form-check form-switch d-flex align-items-center gap-2 m-0 p-0">
+                                                    <input 
+                                                        className="form-check-input m-0 cursor-pointer" 
+                                                        type="checkbox" 
+                                                        id="xmlToggle"
+                                                        checked={showXmlPreview}
+                                                        onChange={() => setShowXmlPreview(!showXmlPreview)}
+                                                    />
+                                                    <label className="switch-label-v4 cursor-pointer m-0" htmlFor="xmlToggle">Vista XML</label>
+                                                </div>
+                                                <label className={`file-zone-v4 ${selectedXml ? 'is-ready' : ''}`}>
+                                                    <input type="file" accept=".xml" hidden {...register("xml", { required: true, onChange: handleXmlChange })} />
+                                                    <i className={`bi ${selectedXml ? 'bi-file-earmark-code-fill' : 'bi-filetype-xml'}`}></i>
+                                                    <p>{selectedXml ? 'XML Listo' : 'XML'}</p>
+                                                    <span>Sincronizar Datos</span>
+                                                </label>
                                             </div>
-                                        </label>
+                                        </div>
                                     </div>
-                                    <button type="submit" className="btn-premium btn-premium-primary w-100 py-3 mt-4 justify-content-center" disabled={isLoading}>
-                                        {isLoading ? <Spinner animation="border" size="sm" /> : <><i className="bi bi-send-check me-2"></i> Certificar Factura</>}
-                                    </button>
+
+                                    <div className="full-width-v4 mt-4 text-center">
+                                        <button type="submit" className="btn-modern-primary w-100 py-3 justify-content-center" disabled={isLoading}>
+                                            {isLoading ? <Spinner animation="border" size="sm" /> : <><i className="bi bi-send-plus-fill me-2"></i> Enviar Factura</>}
+                                        </button>
+                                        <p className="text-muted mt-3 mb-0" style={{ fontSize: '0.6rem', fontWeight: 600 }}>
+                                            Validado por sistema de gestión Mundo Verde
+                                        </p>
+                                    </div>
                                 </div>
                             </form>
                         </div>

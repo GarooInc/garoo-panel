@@ -28,6 +28,15 @@ export const AuthProvider = ({ children }) => {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join(''));
             const payload = JSON.parse(jsonPayload);
+            
+            // Check for token expiration (JWT 'exp' field)
+            if (payload.exp) {
+                const currentTime = Math.floor(Date.now() / 1000);
+                if (payload.exp < currentTime) {
+                    console.warn("Session expired based on token timestamp (JWT exp)");
+                    return null;
+                }
+            }
 
             const userData = payload.user || {};
             const role = userData.role || "user";

@@ -35,136 +35,214 @@ const LoginPage = () => {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: #f8fafc;
+                    background-color: #f8fafc;
+                    background-image: 
+                        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
                     padding: 24px;
                     position: relative;
-                    overflow: hidden;
                 }
 
-                .login-page::before {
-                    content: '';
-                    position: absolute;
+                .login-card-v3 {
                     width: 100%;
-                    height: 100%;
-                    background: radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.05) 0%, transparent 40%),
-                                radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.04) 0%, transparent 40%);
-                    pointer-events: none;
+                    max-width: 320px;
+                    background: white;
+                    border-radius: 20px;
+                    padding: 1.75rem 1.5rem;
+                    box-shadow: 
+                        0 10px 25px -5px rgba(0, 0, 0, 0.05),
+                        0 8px 10px -6px rgba(0, 0, 0, 0.05);
+                    border: 1px solid #f1f5f9;
+                    animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
                 }
 
-                .login-card-premium {
-                    width: 100%;
-                    max-width: 440px;
-                    background: rgba(255, 255, 255, 0.8);
-                    backdrop-filter: blur(20px);
-                    border: 1px solid rgba(255, 255, 255, 0.6);
-                    border-radius: 32px;
-                    padding: 3rem 2.5rem;
-                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-                    z-index: 10;
-                    position: relative;
-                    animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+                @keyframes cardEntrance {
+                    from { opacity: 0; transform: translateY(15px); }
+                    to { opacity: 1; transform: translateY(0); }
                 }
 
-                .login-logo-ring {
+                .logo-container {
+                    display: flex;
+                    justify-content: center;
+                    margin-bottom: 1.25rem;
+                }
+
+                .logo-ring {
                     width: 72px;
                     height: 72px;
                     background: white;
-                    border: 1px solid #f1f5f9;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    margin: 0 auto 2.5rem;
-                    padding: 10px;
-                    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+                    padding: 0;
+                    box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.1);
+                    border: 2px solid white;
+                    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    overflow: hidden;
                 }
 
-                .login-logo-ring img {
+                .logo-ring:hover {
+                    transform: scale(1.08) rotate(5deg);
+                }
+
+                .logo-image {
                     width: 100%;
                     height: 100%;
-                    object-fit: contain;
+                    object-fit: cover;
+                    border-radius: 50%;
                 }
 
-                .login-header-group { text-align: center; margin-bottom: 3rem; }
-                .login-header-group h1 { font-size: 2rem; font-weight: 950; color: #0f172a; margin-bottom: 0.5rem; letter-spacing: -0.04em; }
-                .login-header-group p { color: #64748b; font-size: 1rem; font-weight: 500; }
+                .header-section {
+                    text-align: center;
+                    margin-bottom: 1.5rem;
+                }
 
-                .form-control-premium {
+                .header-section h1 {
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    color: #0f172a;
+                    letter-spacing: -0.03em;
+                    margin-bottom: 0.25rem;
+                }
+
+                .header-section p {
+                    font-size: 0.75rem;
+                    color: #64748b;
+                    font-weight: 500;
+                }
+
+                .input-group-v3 {
+                    margin-bottom: 1rem;
+                }
+
+                .label-v3 {
+                    display: block;
+                    font-size: 0.65rem;
+                    font-weight: 700;
+                    color: #475569;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin-bottom: 0.5rem;
+                    margin-left: 0.2rem;
+                }
+
+                .input-v3 {
                     width: 100%;
                     background: #f8fafc;
-                    border: 2px solid #f1f5f9;
-                    border-radius: 16px;
-                    padding: 14px 20px;
-                    color: #0f172a;
-                    font-size: 0.95rem;
+                    border: 1.5px solid #edf2f7;
+                    border-radius: 12px;
+                    padding: 10px 14px;
+                    font-size: 0.85rem;
                     font-weight: 600;
-                    transition: all 0.25s;
+                    color: #1e293b;
+                    transition: all 0.2s ease;
+                }
+
+                .input-v3:focus {
+                    background: white;
+                    border-color: #2563eb;
+                    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.05);
                     outline: none;
                 }
 
-                .form-control-premium:focus {
-                    border-color: #2563eb;
-                    background: white;
-                    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
-                }
-
-                .login-btn-premium {
+                .login-button-v3 {
                     width: 100%;
-                    padding: 16px;
                     background: #2563eb;
+                    color: white;
                     border: none;
-                    border-radius: 16px;
-                    color: #fff;
-                    font-size: 1.05rem;
-                    font-weight: 800;
+                    border-radius: 10px;
+                    padding: 8px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
                     cursor: pointer;
-                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-                    margin-top: 1rem;
-                    box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
+                    margin-top: 0.5rem;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    box-shadow: 0 6px 12px -3px rgba(37, 99, 235, 0.2);
                 }
 
-                .login-btn-premium:hover:not(:disabled) {
+                .login-button-v3:hover:not(:disabled) {
                     background: #1d4ed8;
                     transform: translateY(-2px);
-                    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4);
+                    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
                 }
 
-                @keyframes slideUpFade {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
+                .login-button-v3:active {
+                    transform: translateY(0);
+                }
+
+                .login-button-v3:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+
+                .footer-v3 {
+                    margin-top: 1.5rem;
+                    text-align: center;
+                }
+
+                .footer-v3 p {
+                    font-size: 0.75rem;
+                    color: #94a3b8;
+                    font-weight: 600;
+                }
+
+                .error-pill {
+                    background: #fef2f2;
+                    color: #dc2626;
+                    padding: 10px 16px;
+                    border-radius: 12px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    margin-bottom: 1.5rem;
+                    border: 1px solid #fee2e2;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
                 }
             `}</style>
 
-            <div className="login-card-premium">
-                <div className="login-logo-ring">
-                    <img src={garooLogo} alt="Garoo" />
-                </div>
-                
-                <div className="login-header-group">
-                    <h1>Portal Garoo</h1>
-                    <p>Gestiona tu operación inteligente</p>
+            <div className="login-card-v3">
+                <div className="logo-container">
+                    <div className="logo-ring">
+                        <img src={garooLogo} alt="Garoo" className="logo-image" />
+                    </div>
                 </div>
 
-                {error && <div className="alert-pill alert-error mb-4">{error}</div>}
+                <div className="header-section">
+                    <h1>Bienvenido</h1>
+                    <p>Ingresa tus credenciales para continuar</p>
+                </div>
+
+                {error && (
+                    <div className="error-pill">
+                        <i className="bi bi-exclamation-circle-fill"></i>
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="form-label ms-1" style={{ fontSize: '0.75rem', fontWeight: 850, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.05em' }}>Email Corporativo</label>
+                    <div className="input-group-v3">
+                        <label className="label-v3">Usuario o Email</label>
                         <input 
                             type="email" 
-                            className="form-control-premium" 
-                            placeholder="usuario@redtec.ai"
+                            className="input-v3"
+                            placeholder="admin@garoo.ai"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
 
-                    <div className="mb-5">
-                        <label className="form-label ms-1" style={{ fontSize: '0.75rem', fontWeight: 850, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.05em' }}>Contraseña</label>
+                    <div className="input-group-v3">
+                        <label className="label-v3">Contraseña</label>
                         <input 
                             type="password" 
-                            className="form-control-premium" 
+                            className="input-v3"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -174,16 +252,24 @@ const LoginPage = () => {
 
                     <button 
                         type="submit" 
-                        className="login-btn-premium"
+                        className="login-button-v3"
                         disabled={isLoading}
                     >
                         {isLoading ? (
-                            <><span className="spinner-border spinner-border-sm me-2"></span> Autenticando...</>
-                        ) : "Entrar al Portal"}
+                            <>
+                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Autenticando...
+                            </>
+                        ) : (
+                            <>
+                                Entrar al Portal
+                                <i className="bi bi-arrow-right-short fs-4"></i>
+                            </>
+                        )}
                     </button>
-                    
-                    <div className="text-center mt-5">
-                        <p className="small text-muted mb-0 fw-600">Copyright © 2026 Redtec Intelligence</p>
+
+                    <div className="footer-v3">
+                        <p>© 2026 Ecosistema de Inteligencia Garoo</p>
                     </div>
                 </form>
             </div>
