@@ -100,7 +100,7 @@ export default function RegistroProveedorPage({ embedded = false }) {
     };
 
     const isLoading = status === "loading";
-    const canSubmit = pdfFile || (form.nit.trim() && form.correo.trim());
+    const canSubmit = pdfFile || form.nit.trim();
 
     const alertStyle = (type) => ({
         display: "flex", alignItems: "flex-start", gap: 10,
@@ -147,7 +147,7 @@ export default function RegistroProveedorPage({ embedded = false }) {
                     <InputField label="Dirección fiscal" name="direccion" value={form.direccion}
                         onChange={handleChange} placeholder="Zona 10, Ciudad de Guatemala" />
                     <InputField label="Correo electrónico" name="correo" type="email" value={form.correo}
-                        onChange={handleChange} placeholder="contacto@empresa.com" required={!pdfFile} />
+                        onChange={handleChange} placeholder="contacto@empresa.com" />
                     <InputField label="Teléfono" name="telefono" type="tel" value={form.telefono}
                         onChange={handleChange} placeholder="2222-3333" />
 
