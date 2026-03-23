@@ -35,6 +35,7 @@ export default function RegistroProveedorPage({ embedded = false }) {
     const [dragOver, setDragOver] = useState(false);
     const [status, setStatus] = useState("idle");
     const [message, setMessage] = useState("");
+    const [nombreWarning, setNombreWarning] = useState(false);
     const fileRef = useRef(null);
 
     const handleChange = useCallback(e => {
@@ -69,6 +70,12 @@ export default function RegistroProveedorPage({ embedded = false }) {
         setStatus("loading"); setMessage("");
         try {
             const trimmed = Object.fromEntries(Object.entries(form).map(([k, v]) => [k, v.trim()]));
+            if (!trimmed.nombre) {
+                setNombreWarning(true);
+                trimmed.nombre = "No especificado";
+            } else {
+                setNombreWarning(false);
+            }
             const fd = new FormData();
             Object.entries(trimmed).forEach(([k, v]) => { if (v) fd.append(k, v); });
             if (pdfFile) fd.append("archivo", pdfFile);
@@ -80,7 +87,7 @@ export default function RegistroProveedorPage({ embedded = false }) {
             if (response.ok) {
                 setStatus("success");
                 setMessage(data.mensaje || "¡Solicitud enviada! El proveedor será registrado en breve.");
-                setForm(INITIAL_FORM); setPdfFile(null);
+                setForm(INITIAL_FORM); setPdfFile(null); setNombreWarning(false);
                 if (fileRef.current) fileRef.current.value = "";
             } else {
                 setStatus("error");
@@ -101,6 +108,7 @@ export default function RegistroProveedorPage({ embedded = false }) {
         marginTop: 16, lineHeight: 1.45,
         ...(type === "success" ? { background: "#f0fdf4", border: "1px solid #86efac", color: "#166534" } :
             type === "error"   ? { background: "#fef2f2", border: "1px solid #fca5a5", color: "#991b1b" } :
+            type === "warning" ? { background: "#fffbeb", border: "1px solid #fcd34d", color: "#92400e" } :
                                  { background: "#eff6ff", border: "1px solid #93c5fd", color: "#1e40af" }),
     });
 
@@ -189,6 +197,13 @@ export default function RegistroProveedorPage({ embedded = false }) {
                             ? "🤖 Los datos se extraerán automáticamente del PDF con IA."
                             : "Si adjuntas el documento, los datos se extraerán automáticamente. Si no, completa NIT y correo."}
                     </p>
+
+                    {nombreWarning && (
+                        <div style={alertStyle("warning")}>
+                            <span>⚠️</span>
+                            <span>El formulario necesita que coloques el nombre del proveedor. Como no lo colocaste, se enviará como <strong>"No especificado"</strong>.</span>
+                        </div>
+                    )}
 
                     {status === "success" && (
                         <div style={alertStyle("success")}><span>✅</span><span>{message}</span></div>
