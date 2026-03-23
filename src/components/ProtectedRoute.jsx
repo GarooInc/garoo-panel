@@ -19,9 +19,10 @@ const ProtectedRoute = ({ children, serviceId, requiredRole }) => {
         );
     }
 
-    if (!user) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
+    // LOGIN DESACTIVADO TEMPORALMENTE
+    // if (!user) {
+    //     return <Navigate to="/login" state={{ from: location }} replace />;
+    // }
 
     // Role-based check
     if (requiredRole && user.client !== requiredRole) {
