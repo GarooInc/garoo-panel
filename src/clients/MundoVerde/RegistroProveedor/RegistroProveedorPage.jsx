@@ -29,7 +29,7 @@ function InputField({ label, name, value, onChange, type = "text", placeholder, 
     );
 }
 
-export default function RegistroProveedorPage() {
+export default function RegistroProveedorPage({ embedded = false }) {
     const [form, setForm] = useState(INITIAL_FORM);
     const [pdfFile, setPdfFile] = useState(null);
     const [dragOver, setDragOver] = useState(false);
@@ -104,17 +104,12 @@ export default function RegistroProveedorPage() {
                                  { background: "#eff6ff", border: "1px solid #93c5fd", color: "#1e40af" }),
     });
 
-    return (
+    const card = (
         <div style={{
-            minHeight: "100vh",
-            background: "linear-gradient(135deg, #1a472a 0%, #2d6a4f 50%, #40916c 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "24px 16px",
+            background: "#fff", borderRadius: embedded ? 16 : 16, width: "100%", maxWidth: embedded ? "100%" : 540,
+            boxShadow: embedded ? "none" : "0 24px 64px rgba(0,0,0,0.25)", overflow: "hidden",
+            border: embedded ? "1px solid #e2e8f0" : "none",
         }}>
-            <div style={{
-                background: "#fff", borderRadius: 16, width: "100%", maxWidth: 540,
-                boxShadow: "0 24px 64px rgba(0,0,0,0.25)", overflow: "hidden",
-            }}>
                 {/* Header */}
                 <div style={{
                     background: "linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%)",
@@ -227,6 +222,18 @@ export default function RegistroProveedorPage() {
                     Los datos serán procesados y registrados en Odoo automáticamente.
                 </div>
             </div>
+    );
+
+    if (embedded) return card;
+
+    return (
+        <div style={{
+            minHeight: "100vh",
+            background: "linear-gradient(135deg, #1a472a 0%, #2d6a4f 50%, #40916c 100%)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "24px 16px",
+        }}>
+            {card}
         </div>
     );
 }
