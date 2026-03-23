@@ -1,102 +1,172 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
 
 :root {
-    font-family:
-        "Plus Jakarta Sans",
-        "Inter",
-        system-ui,
-        -apple-system,
-        sans-serif;
-    line-height: 1.5;
+    font-family: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
     font-weight: 400;
 
-    color: #1e293b;
-    --bg-main: #f1f5f9;
-    --bg-white: #ffffff;
-    --bg-light: #f8fafc;
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    --sidebar-width: 260px;
-    --header-height: 70px;
-    --primary-color: #2563eb;
-    --primary-light: rgba(37, 99, 235, 0.08);
-    --text-main: #0f172a;
-    --text-secondary: #64748b;
-    --border-color: #e2e8f0;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-    --shadow-md:
-        0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-}
-
-.bg-light {
-    background-color: var(--bg-light) !important;
-}
-
-.bg-white {
-    background-color: var(--bg-white) !important;
-}
-
-.card {
-    background-color: var(--bg-white);
-    border-color: var(--border-color);
+    /* Premium Color Palette - Refined Contrast */
+    --primary: #1d4ed8;
+    --primary-light: #dbeafe;
+    --primary-dark: #1e3a8a;
+    --primary-glow: rgba(29, 78, 216, 0.1);
+    
+    --bg-page: #f1f5f9; /* Deeper gray base */
+    --bg-card: rgba(255, 255, 255, 0.95);
+    
+    --text-main: #020617; /* Stronger black/dark blue */
+    --text-muted: #475569; /* Darker slate */
+    --text-soft: #64748b; /* Mid-slate for secondary info */
+    
+    --border-light: rgba(203, 213, 225, 0.5);
+    --border-main: rgba(148, 163, 184, 0.4); /* Much more defined edges */
+    
+    --header-height: 72px;
+    --radius-xl: 32px;
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.15);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.15);
+    --shadow-premium: 0 20px 25px -10px rgba(0, 0, 0, 0.08), 0 8px 10px -8px rgba(0, 0, 0, 0.08);
+    
+    --glass-bg: rgba(255, 255, 255, 0.85); /* Less transparent */
+    --glass-border: rgba(203, 213, 225, 0.6); /* Grayer border */
 }
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-main);
+    background-color: var(--bg-page);
     color: var(--text-main);
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-    color: var(--primary-color);
+/* Scrollbar Refinement */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Font Weight Utilities */
+.fw-950 { font-weight: 950; }
+.fw-900 { font-weight: 900; }
+.fw-800 { font-weight: 800; }
+.fw-700 { font-weight: 700; }
+.fw-600 { font-weight: 600; }
+.fw-500 { font-weight: 500; }
+
+/* Global Utility Classes */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-premium);
+    border-radius: var(--radius-lg);
+}
+
+.premium-title {
+    font-size: 2.5rem;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+    color: #0f172a;
+    line-height: 1.05;
+}
+
+@media (min-width: 768px) {
+    .premium-title { font-size: 3.5rem; }
+}
+
+.premium-subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.animate-in {
+    animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Garoo Modern Buttons */
+.btn-modern-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.15);
+    padding: 10px 24px;
 }
 
-a:hover {
-    color: #1d4ed8;
+.btn-modern-primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: var(--text-main);
-    font-weight: 600;
+.btn-modern-outline {
+    background: transparent;
+    color: #475569 !important;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 24px;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
+.btn-modern-outline:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a !important;
+    transform: translateY(-2px);
 }
 
-::-webkit-scrollbar-track {
-    background: #f1f5f9;
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+
+/* Global Table Standardization */
+table th {
+    height: 48px; /* Standardize header height */
+    vertical-align: middle !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+table td {
+    height: 64px; /* Standardize record height to match RocknRolla's premium look */
+    vertical-align: middle !important;
 }
 
-@media (max-width: 767.98px) {
-    :root {
-        --header-height: 64px;
-    }
+/* Reset vertical padding on specific table classes to let global height take over */
+.table-leads-premium td, .table-leads-premium th,
+.table-v3 td, .table-v3 th,
+.custom-table td, .custom-table th,
+.custom-table-v2 td, .custom-table-v2 th {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.page-container {
+    padding: 2.5rem 5%;
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
 }

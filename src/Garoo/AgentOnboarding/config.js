@@ -1,29 +1,25 @@
-// ─── WEBHOOK CONFIG ───────────────────────────────────────────────────────────
-export const WEBHOOK_BASE = "https://tu-n8n.com/webhook"; // reemplazar
+import { redtecInstance } from "../../api/axios";
 
+// ─── WEBHOOK CONFIG ───────────────────────────────────────────────────────────
 export const WEBHOOKS = {
-    phase1: `${WEBHOOK_BASE}/agent-negocio`,
-    phase2: `${WEBHOOK_BASE}/agent-conocimiento`,
-    phase3: `${WEBHOOK_BASE}/agent-comportamiento`,
-    phase4: `${WEBHOOK_BASE}/agent-integraciones`,
-    phase5: `${WEBHOOK_BASE}/agent-canal`,
-    final: `${WEBHOOK_BASE}/agent-final`,
+    phase1: "/agent-negocio",
+    phase2: "/agent-conocimiento",
+    phase3: "/agent-comportamiento",
+    phase4: "/agent-integraciones",
+    phase5: "/agent-canal",
+    final: "/agent-final",
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 export const generateClientId = () =>
     `client_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-export const sendWebhook = async (url, payload) => {
+export const sendWebhook = async (endpoint, payload) => {
     try {
-        await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            mode: "no-cors",
-            body: JSON.stringify(payload),
-        });
+        await redtecInstance.post(endpoint, payload);
         return true;
-    } catch {
+    } catch (error) {
+        console.error("Error sending webhook:", error);
         return false;
     }
 };

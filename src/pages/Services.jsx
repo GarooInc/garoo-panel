@@ -1,120 +1,53 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { ALL_SERVICES } from "../constants/services";
 import styles from "./Services.module.css";
 
 const Services = () => {
     const navigateTo = useNavigate();
 
-    const services = [
-        {
-            title: "RocknRolla Aplicaciones",
-            description:
-                "Selección de talento calificado para tu empresa, adaptado a tus necesidades específicas.",
-            icon: "bi-person-vcard",
-            path: "/applications",
-            cardClass: styles.jobCard,
-            openInNewTab: true,
-        },
-        {
-            title: "Formulario Mundo Verde",
-            description:
-                "Envío rápido y seguro de datos de facturas para procesamiento eficiente.",
-            icon: "bi-receipt-cutoff",
-            path: "/form",
-            cardClass: styles.formCard,
-            openInNewTab: true,
-        },
-        {
-            title: "Formulario de Llamadas",
-            description:
-                "Gestiona y registra llamadas outbound de forma rápida y estructurada.",
-            icon: "bi-telephone-outbound",
-            path: "/outbound-call-form",
-            cardClass: styles.callCard,
-            openInNewTab: true,
-        },
-        {
-            title: "Spectrum Leads",
-            description:
-                "Panel de leads en tiempo real conectado al agente de Spectrum vía webhook.",
-            icon: "bi-graph-up-arrow",
-            path: "/spectrum-leads",
-            cardClass: styles.spectrumCard,
-            openInNewTab: true,
-        },
-        {
-            title: "Pepsi Video Analysis",
-            description:
-                "Visualización de métricas, engagement y análisis de sentimiento para contenido en video.",
-            icon: "bi-play-circle",
-            path: "/video-analysis",
-            cardClass: styles.pepsiCard,
-            openInNewTab: true,
-        },
-        {
-            title: "Garoo Agent",
-            description:
-                "Configura y personaliza tu agente conversacional con conocimiento, comportamiento e integraciones para tu negocio.",
-            icon: "bi-robot",
-            path: "/agent-onboarding",
-            cardClass: styles.agentCard,
-            openInNewTab: true,
-        },
-    ];
     const handleButtonClick = (service) => {
-        if (service.openInNewTab) {
+        if (service.external) {
             window.open(service.path, "_blank", "noopener,noreferrer");
-        } else {
-            navigateTo(service.path);
+            return;
         }
+        navigateTo(service.path);
     };
 
     return (
-        <div className={styles.servicesContainer}>
+        <div className="page-container animate-in">
             <div className={styles.header}>
-                <h1 className={styles.title}>Nuestros Servicios</h1>
+                <h1 className={styles.title}>Catálogo</h1>
                 <p className={styles.subtitle}>
-                    Soluciones tecnológicas diseñadas para impulsar el
-                    crecimiento, la eficiencia y la automatización en tu
-                    empresa.
+                    Explora nuestra suite de herramientas inteligentes diseñadas para transformar y automatizar tu operación diaria.
                 </p>
             </div>
 
             <div className={styles.grid}>
-                {services.map((service, index) => (
+                {ALL_SERVICES.map((service, index) => (
                     <div
                         key={index}
-                        className={`${styles.card} ${service.cardClass}`}
+                        className={`${styles.card} ${service.cardClass || styles.defaultCard}`}
                         onClick={() => handleButtonClick(service)}
                         role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                                handleButtonClick(service);
-                            }
-                        }}
                     >
-                        <div className={styles.iconContainer}>
-                            <i className={`bi ${service.icon}`}></i>
+                        <div className={styles.topInfo}>
+                            <div className={styles.iconWrapper}>
+                                <i className={service.icon}></i>
+                            </div>
+                            <span className={styles.badge}>{service.sublabel || 'Garoo Service'}</span>
+                            <h3 className={styles.cardTitle}>{service.label}</h3>
+                            <p className={styles.cardDesc}>
+                                {service.description}
+                            </p>
                         </div>
 
-                        <h3 className={styles.cardTitle}>{service.title}</h3>
-
-                        <p className={styles.cardDesc}>{service.description}</p>
-
-                        <button
-                            className={styles.enterBtn}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleButtonClick(service);
-                            }}
-                            aria-label={`Entrar a ${service.title}`}
-                        >
-                            Explorar servicio
-                            <i
-                                className={`bi bi-arrow-right ${styles.arrowIcon}`}
-                            ></i>
-                        </button>
+                        <div className={styles.cardFooter}>
+                            <span className={styles.exploreText}>
+                                Acceder herramienta
+                                <i className="bi bi-arrow-right-short fs-4"></i>
+                            </span>
+                        </div>
                     </div>
                 ))}
             </div>

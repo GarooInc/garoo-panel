@@ -1,27 +1,15 @@
-import { useState } from "react";
-import axios from "axios";
-import garooLogo from "../../../assets/img/garoo-logo.png";
+import React, { useState } from "react";
+import { redtecInstance } from "../../../api/axios";
 
 const FicohsaCalls = () => {
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        productOfInterest: "",
-        otherProduct: "",
+        firstName: "", lastName: "", email: "", phoneNumber: "", productOfInterest: "", otherProduct: "",
     });
 
     const [submitting, setSubmitting] = useState(false);
-    const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
+    const [submitStatus, setSubmitStatus] = useState(null);
 
-    const products = [
-        "Cuenta de Ahorros",
-        "Tarjeta de Crédito",
-        "Préstamo",
-        "Seguro",
-        "Otro",
-    ];
+    const products = ["Cuenta de Ahorros", "Tarjeta de Crédito", "Préstamo", "Seguro", "Otro"];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,540 +20,217 @@ const FicohsaCalls = () => {
         e.preventDefault();
         setSubmitting(true);
         setSubmitStatus(null);
-
         try {
-            await axios.post(
-                "https://agents.redtec.ai/webhook/419bb751-1cc3-43d6-923b-c0b77e078802",
-                {
-                    "First Name": formData.firstName,
-                    "Last Name": formData.lastName,
-                    Email: formData.email,
-                    "Phone Number": formData.phoneNumber,
-                    "Products Of Interest": formData.productOfInterest,
-                    "Other (Only Fill this if product isn't available above)":
-                        formData.otherProduct,
-                },
-                { headers: { "Content-Type": "application/json" } },
-            );
-
+            await redtecInstance.post("/form-call", {
+                "Nombre": formData.firstName,
+                "Apellido": formData.lastName,
+                "Correo electrónico": formData.email,
+                "Número de teléfono": formData.phoneNumber,
+                "Producto de interés": formData.productOfInterest,
+                "Otro producto": formData.otherProduct,
+            }, { isPublic: true });
             setSubmitStatus("success");
-            setFormData({
-                firstName: "",
-                lastName: "",
-                email: "",
-                phoneNumber: "",
-                productOfInterest: "",
-                otherProduct: "",
-            });
+            setFormData({ firstName: "", lastName: "", email: "", phoneNumber: "", productOfInterest: "", otherProduct: "" });
         } catch (error) {
-            console.error("Error al enviar el formulario:", error);
+            void error;
             setSubmitStatus("error");
         } finally {
             setSubmitting(false);
         }
-    };
-
-    return (
-        <>
+    };    return (
+        <div className="public-form-wrapper animate-in">
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-                .ocf-page {
+                .public-form-wrapper {
                     min-height: 100vh;
-                    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    padding: 2rem 1rem;
-                    font-family: 'Inter', system-ui, sans-serif;
-                    position: relative;
-                    overflow: hidden;
+                    padding: 3rem 1.5rem;
+                    background: #1a2332; /* Deep Navy Dark Mode */
+                    color: #fff;
+                    font-family: 'Inter', sans-serif;
                 }
-
-                /* Background orbs */
-                .ocf-page::before {
-                    content: '';
-                    position: absolute;
-                    top: -20%;
-                    right: -10%;
-                    width: 600px;
-                    height: 600px;
-                    background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
-                    filter: blur(60px);
-                    pointer-events: none;
-                }
-
-                .ocf-page::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -20%;
-                    left: -10%;
-                    width: 500px;
-                    height: 500px;
-                    background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
-                    filter: blur(60px);
-                    pointer-events: none;
-                }
-
-                .ocf-card {
-                    background: rgba(255,255,255,0.035);
-                    border: 1px solid rgba(255,255,255,0.09);
-                    backdrop-filter: blur(20px);
-                    -webkit-backdrop-filter: blur(20px);
-                    border-radius: 24px;
-                    padding: 2.75rem 2.5rem;
+                .ficohsa-container {
                     width: 100%;
-                    max-width: 540px;
-                    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
-                    position: relative;
-                    z-index: 1;
+                    max-width: 600px;
+                    margin: 0 auto;
                 }
 
-                /* Header */
-                .ocf-header {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    text-align: center;
-                    margin-bottom: 2.25rem;
+                .ficohsa-header { 
+                    margin-bottom: 2.5rem; 
+                    text-align: center; 
                 }
 
-                .ocf-logo-ring {
-                    width: 72px;
-                    height: 72px;
-                    border-radius: 50%;
-                    background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05));
-                    border: 1.5px solid rgba(245,158,11,0.3);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin-bottom: 1.25rem;
-                    box-shadow: 0 0 30px rgba(245,158,11,0.15);
-                }
-
-                .ocf-logo-ring img {
-                    width: 48px;
-                    height: 48px;
-                    border-radius: 50%;
-                    object-fit: cover;
-                }
-
-                .ocf-badge {
+                .badge-v2 {
                     display: inline-flex;
                     align-items: center;
-                    gap: 6px;
-                    background: rgba(245,158,11,0.12);
-                    border: 1px solid rgba(245,158,11,0.25);
-                    color: #fbbf24;
-                    font-size: 0.72rem;
-                    font-weight: 600;
-                    letter-spacing: 0.07em;
-                    text-transform: uppercase;
-                    padding: 4px 12px;
+                    gap: 8px;
+                    padding: 6px 16px;
+                    background: rgba(255, 215, 0, 0.05); /* Subtle gold tint */
+                    border: 1px solid rgba(255, 215, 0, 0.3);
                     border-radius: 100px;
-                    margin-bottom: 0.85rem;
+                    color: #fbbf24;
+                    font-size: 0.65rem;
+                    font-weight: 950;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    margin-bottom: 1.5rem;
                 }
-
-                .ocf-badge::before {
+                .badge-v2::before {
                     content: '';
                     width: 6px;
                     height: 6px;
+                    background: #fbbf24;
                     border-radius: 50%;
-                    background: #f59e0b;
-                    box-shadow: 0 0 6px #f59e0b;
-                    animation: pulse-dot 2s ease-in-out infinite;
                 }
 
-                @keyframes pulse-dot {
-                    0%, 100% { opacity: 1; transform: scale(1); }
-                    50% { opacity: 0.5; transform: scale(0.8); }
+                .premium-title-v3 {
+                    font-size: 2.8rem;
+                    font-weight: 950;
+                    color: #fff;
+                    letter-spacing: -1.5px;
+                    margin-bottom: 0.75rem;
                 }
 
-                .ocf-title {
-                    font-size: 1.8rem;
-                    font-weight: 800;
-                    color: #f8fafc;
-                    margin: 0 0 0.4rem;
-                    letter-spacing: -0.03em;
-                }
-
-                .ocf-subtitle {
+                .premium-subtitle-v3 {
+                    font-size: 1rem;
+                    font-weight: 500;
                     color: #94a3b8;
-                    font-size: 0.92rem;
-                    margin: 0;
+                    margin-bottom: 3rem;
                 }
 
-                /* Form fields */
-                .ocf-grid-2 {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 1rem;
+                .form-grid-v3 { 
+                    display: grid; 
+                    grid-template-columns: 1fr 1fr; 
+                    gap: 1.25rem; 
                 }
 
-                .ocf-group {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.45rem;
-                    margin-bottom: 1rem;
+                .form-group-v3 { 
+                    margin-bottom: 1.5rem; 
                 }
 
-                .ocf-label {
-                    font-size: 0.82rem;
-                    font-weight: 600;
-                    color: #cbd5e1;
-                    letter-spacing: 0.01em;
+                .form-label-v3 { 
+                    display: block; 
+                    font-size: 0.85rem; 
+                    font-weight: 700; 
+                    color: #e2e8f0; 
+                    margin-bottom: 0.75rem; 
                 }
+                .form-label-v3 .asterisk { color: #fbbf24; font-weight: 950; margin-left: 4px; }
+                .form-label-v3 .sub-text { font-size: 0.75rem; color: #64748b; font-weight: 500; margin-left: 6px; }
 
-                .ocf-label .req {
-                    color: #f59e0b;
-                    margin-left: 2px;
-                }
-
-                .ocf-input,
-                .ocf-select {
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 10px;
-                    padding: 0.65rem 0.9rem;
-                    font-size: 0.9rem;
-                    color: #f1f5f9;
-                    font-family: inherit;
-                    transition: all 0.2s ease;
+                .form-input-v3, .form-select-v3 { 
+                    width: 100%; 
+                    padding: 14px 20px; 
+                    border: 1px solid rgba(255, 255, 255, 0.1); 
+                    border-radius: 12px; 
+                    background: rgba(255, 255, 255, 0.05); 
+                    font-size: 1rem; 
+                    font-weight: 500; 
+                    color: #fff; 
+                    transition: 0.3s; 
                     outline: none;
-                    width: 100%;
-                    box-sizing: border-box;
-                    -webkit-appearance: none;
+                }
+                .form-input-v3::placeholder { color: #475569; }
+
+                .form-input-v3:focus, .form-select-v3:focus { 
+                    border-color: #fbbf24; 
+                    background: rgba(255, 255, 255, 0.08); 
                 }
 
-                .ocf-input::placeholder {
-                    color: #475569;
-                }
-
-                .ocf-input:focus,
-                .ocf-select:focus {
-                    border-color: rgba(245,158,11,0.5);
-                    background: rgba(245,158,11,0.05);
-                    box-shadow: 0 0 0 3px rgba(245,158,11,0.1);
-                }
-
-                .ocf-select {
-                    cursor: pointer;
-                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-                    background-repeat: no-repeat;
-                    background-position: right 0.9rem center;
-                    padding-right: 2.5rem;
-                }
-
-                .ocf-select option {
-                    background: #1e293b;
-                    color: #f1f5f9;
-                }
-
-                /* Submit button */
-                .ocf-btn {
-                    width: 100%;
-                    padding: 0.8rem 1.5rem;
-                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                .btn-submit-v3 {
+                    background: #fff;
+                    color: #1a2332;
                     border: none;
                     border-radius: 12px;
-                    color: #0f172a;
-                    font-size: 0.95rem;
-                    font-weight: 700;
-                    font-family: inherit;
+                    width: 100%;
+                    padding: 16px;
+                    font-size: 1rem;
+                    font-weight: 950;
+                    margin-top: 1rem;
+                    transition: 0.3s;
                     cursor: pointer;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.6rem;
-                    margin-top: 0.5rem;
-                    box-shadow: 0 4px 15px rgba(245,158,11,0.3);
-                    letter-spacing: 0.01em;
                 }
-
-                .ocf-btn:hover:not(:disabled) {
+                .btn-submit-v3:hover:not(:disabled) {
+                    background: #fbbf24;
                     transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(245,158,11,0.4);
-                    background: linear-gradient(135deg, #fbbf24, #f59e0b);
                 }
 
-                .ocf-btn:active:not(:disabled) {
-                    transform: translateY(0);
-                }
-
-                .ocf-btn:disabled {
-                    opacity: 0.6;
-                    cursor: not-allowed;
-                }
-
-                /* Spinner */
-                .ocf-spinner {
-                    width: 16px;
-                    height: 16px;
-                    border: 2px solid rgba(15,23,42,0.3);
-                    border-top-color: #0f172a;
-                    border-radius: 50%;
-                    animation: spin 0.7s linear infinite;
-                    flex-shrink: 0;
-                }
-
-                @keyframes spin {
-                    to { transform: rotate(360deg); }
-                }
-
-                /* Alerts */
-                .ocf-alert {
+                .status-toast-v3 {
+                    padding: 1rem;
                     border-radius: 12px;
-                    padding: 0.9rem 1.1rem;
-                    font-size: 0.87rem;
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 0.75rem;
-                    margin-bottom: 1.5rem;
-                    border: 1px solid;
-                }
-
-                .ocf-alert-success {
-                    background: rgba(16,185,129,0.1);
-                    border-color: rgba(16,185,129,0.25);
-                    color: #6ee7b7;
-                }
-
-                .ocf-alert-error {
-                    background: rgba(239,68,68,0.1);
-                    border-color: rgba(239,68,68,0.25);
-                    color: #fca5a5;
-                }
-
-                .ocf-alert-icon {
-                    font-size: 1.1rem;
-                    flex-shrink: 0;
-                    margin-top: 1px;
-                }
-
-                /* Divider */
-                .ocf-divider {
-                    height: 1px;
-                    background: rgba(255,255,255,0.07);
-                    margin: 1.25rem 0;
-                }
-
-                /* Footer note */
-                .ocf-footer-note {
+                    margin-bottom: 2rem;
                     text-align: center;
-                    color: #475569;
-                    font-size: 0.75rem;
-                    margin-top: 1.5rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.4rem;
+                    font-weight: 700;
                 }
+                .status-success { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+                .status-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
 
-                @media (max-width: 480px) {
-                    .ocf-card {
-                        padding: 2rem 1.5rem;
-                        border-radius: 20px;
-                    }
-                    .ocf-grid-2 {
-                        grid-template-columns: 1fr;
-                    }
-                    .ocf-title {
-                        font-size: 1.5rem;
-                    }
+                @media (max-width: 600px) { 
+                    .form-grid-v3 { grid-template-columns: 1fr; }
+                    .premium-title-v3 { font-size: 2.2rem; }
                 }
             `}</style>
 
-            <div className="ocf-page">
-                <div className="ocf-card">
-                    {/* Header */}
-                    <div className="ocf-header">
-                        <div className="ocf-logo-ring">
-                            <img src={garooLogo} alt="Garoo Servicios" />
+            <div className="ficohsa-container">
+                <div className="ficohsa-header">
+                    <div className="badge-v2">Formulario de Llamadas</div>
+                    <h1 className="premium-title-v3">Banco Ficohsa</h1>
+                    <p className="premium-subtitle-v3">Completa el formulario y te contactaremos pronto</p>
+                </div>
+
+                {submitStatus === "success" && (
+                    <div className="status-toast-v3 status-success">
+                        ¡Registro exitoso! Te contactaremos pronto.
+                    </div>
+                )}
+                {submitStatus === "error" && (
+                    <div className="status-toast-v3 status-error">
+                        Error al enviar. Intenta de nuevo.
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="form-grid-v3">
+                        <div className="form-group-v3">
+                            <label className="form-label-v3">Nombre<span className="asterisk">*</span></label>
+                            <input className="form-input-v3" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Juan" required />
                         </div>
-                        <span className="ocf-badge">
-                            Formulario de Llamadas
-                        </span>
-                        <h1 className="ocf-title">Banco Ficohsa</h1>
-                        <p className="ocf-subtitle">
-                            Completa el formulario y te contactaremos pronto
-                        </p>
+                        <div className="form-group-v3">
+                            <label className="form-label-v3">Apellido<span className="asterisk">*</span></label>
+                            <input className="form-input-v3" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Pérez" required />
+                        </div>
                     </div>
 
-                    {/* Alerts */}
-                    {submitStatus === "success" && (
-                        <div className="ocf-alert ocf-alert-success">
-                            <i className="bi bi-check-circle-fill ocf-alert-icon"></i>
-                            <span>
-                                ¡Formulario enviado exitosamente! Nos pondremos
-                                en contacto contigo pronto.
-                            </span>
-                        </div>
-                    )}
-                    {submitStatus === "error" && (
-                        <div className="ocf-alert ocf-alert-error">
-                            <i className="bi bi-exclamation-circle-fill ocf-alert-icon"></i>
-                            <span>
-                                Hubo un error al enviar. Por favor, inténtalo de
-                                nuevo más tarde.
-                            </span>
-                        </div>
-                    )}
+                    <div className="form-group-v3">
+                        <label className="form-label-v3">Correo electrónico<span className="asterisk">*</span></label>
+                        <input className="form-input-v3" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="correo@ejemplo.com" required />
+                    </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} noValidate>
-                        {/* Nombre y Apellido en grid */}
-                        <div className="ocf-grid-2">
-                            <div className="ocf-group">
-                                <label
-                                    className="ocf-label"
-                                    htmlFor="firstName"
-                                >
-                                    Nombre <span className="req">*</span>
-                                </label>
-                                <input
-                                    id="firstName"
-                                    className="ocf-input"
-                                    type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    placeholder="Juan"
-                                    required
-                                />
-                            </div>
-                            <div className="ocf-group">
-                                <label className="ocf-label" htmlFor="lastName">
-                                    Apellido <span className="req">*</span>
-                                </label>
-                                <input
-                                    id="lastName"
-                                    className="ocf-input"
-                                    type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    placeholder="Pérez"
-                                    required
-                                />
-                            </div>
-                        </div>
+                    <div className="form-group-v3">
+                        <label className="form-label-v3">Número de teléfono<span className="asterisk">*</span></label>
+                        <input className="form-input-v3" type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="+504 0000-0000" required />
+                    </div>
 
-                        <div className="ocf-group">
-                            <label className="ocf-label" htmlFor="email">
-                                Correo electrónico{" "}
-                                <span className="req">*</span>
-                            </label>
-                            <input
-                                id="email"
-                                className="ocf-input"
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="correo@ejemplo.com"
-                                required
-                            />
-                        </div>
+                    <div className="form-group-v3">
+                        <label className="form-label-v3">Producto de interés<span className="asterisk">*</span></label>
+                        <select className="form-select-v3" name="productOfInterest" value={formData.productOfInterest} onChange={handleChange} required>
+                            <option value="">Selecciona una opción...</option>
+                            {products.map(p => <option key={p} value={p}>{p}</option>)}
+                        </select>
+                    </div>
 
-                        <div className="ocf-group">
-                            <label className="ocf-label" htmlFor="phoneNumber">
-                                Número de teléfono{" "}
-                                <span className="req">*</span>
-                            </label>
-                            <input
-                                id="phoneNumber"
-                                className="ocf-input"
-                                type="tel"
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                placeholder="+504 0000-0000"
-                                required
-                            />
-                        </div>
+                    <div className="form-group-v3">
+                        <label className="form-label-v3">Otro producto <span className="sub-text">(solo si no está en la lista)</span></label>
+                        <input className="form-input-v3" name="otherProduct" value={formData.otherProduct} onChange={handleChange} placeholder="Describe el producto..." required={formData.productOfInterest === "Otro"} />
+                    </div>
 
-                        <div className="ocf-group">
-                            <label
-                                className="ocf-label"
-                                htmlFor="productOfInterest"
-                            >
-                                Producto de interés{" "}
-                                <span className="req">*</span>
-                            </label>
-                            <select
-                                id="productOfInterest"
-                                className="ocf-select"
-                                name="productOfInterest"
-                                value={formData.productOfInterest}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">
-                                    Selecciona una opción...
-                                </option>
-                                {products.map((product, index) => (
-                                    <option key={index} value={product}>
-                                        {product}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="ocf-divider"></div>
-
-                        <div className="ocf-group">
-                            <label className="ocf-label" htmlFor="otherProduct">
-                                Otro producto
-                                <span
-                                    style={{
-                                        color: "#475569",
-                                        fontWeight: 400,
-                                        marginLeft: "6px",
-                                    }}
-                                >
-                                    (solo si no está en la lista)
-                                </span>
-                            </label>
-                            <input
-                                id="otherProduct"
-                                className="ocf-input"
-                                type="text"
-                                name="otherProduct"
-                                value={formData.otherProduct}
-                                onChange={handleChange}
-                                placeholder="Describe el producto..."
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="ocf-btn"
-                            disabled={submitting}
-                            id="submit-outbound-form"
-                        >
-                            {submitting ? (
-                                <>
-                                    <span className="ocf-spinner"></span>
-                                    Enviando...
-                                </>
-                            ) : (
-                                <>
-                                    <i className="bi bi-send-fill"></i>
-                                    Enviar formulario
-                                </>
-                            )}
-                        </button>
-                    </form>
-
-                    <p className="ocf-footer-note">
-                        <i className="bi bi-lock-fill"></i>
-                        Tus datos están protegidos y no serán compartidos con
-                        terceros
-                    </p>
-                </div>
+                    <button type="submit" className="btn-submit-v3" disabled={submitting}>
+                        {submitting ? "Enviando..." : "Registrar Información"}
+                    </button>
+                </form>
             </div>
-        </>
+        </div>
     );
 };
 

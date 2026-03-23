@@ -10,6 +10,7 @@ import {
     BrowserRouter as Router,
     Routes,
     useLocation,
+    Navigate,
 } from "react-router-dom";
 
 import { ApplicationsProvider } from "./clients/RocknRolla/Applications/context/ApplicationsProvider";
@@ -22,80 +23,133 @@ import SpectrumLeads from "./clients/Spectrum/Leads/LeadsPage.jsx";
 import PepsiVideoAnalysis from "./clients/Pepsi/VideoAnalysis/VideoAnalysisPage.jsx";
 // ── Garoo services ─────────────────────────────────────────────────────────────
 import AgentOnboarding from "./Garoo/AgentOnboarding/AgentOnboardingPage.jsx";
+import AdminPortal from "./Garoo/Admin/AdminPortal.jsx";
 import Services from "./pages/Services.jsx";
+import MyServices from "./pages/MyServices.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 
-import Sidebar from "./components/Layout/Sidebar.jsx";
 import Header from "./components/Layout/Header.jsx";
+
+import { AuthProvider } from "./context/AuthContext";
+import { ServicesProvider } from "./context/ServicesContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
     return (
         <Router>
-            <ApplicationsProvider>
-                <FormProvider>
-                    <AppContent />
-                </FormProvider>
-            </ApplicationsProvider>
+            <AuthProvider>
+                <ServicesProvider>
+                    <ApplicationsProvider>
+                        <FormProvider>
+                            <AppContent />
+                        </FormProvider>
+                    </ApplicationsProvider>
+                </ServicesProvider>
+            </AuthProvider>
         </Router>
     );
 }
 
 function AppContent() {
     const location = useLocation();
-    const hideLayoutRoutes = [
-        "/outbound-call-form",
-        "/form",
-        "/applications",
-        "/spectrum-leads",
-        "/video-analysis",
-        "/agent-onboarding",
-    ];
-    const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
-    const [sidebarOpen, setSidebarOpen] = React.useState(false);
-
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
-
-    const closeSidebar = () => {
-        setSidebarOpen(false);
-    };
+    const isLoginPage = location.pathname === "/login";
+    const isPublicForm = location.pathname === "/outbound-call-form";
+    const noLayout = isLoginPage || isPublicForm;
 
     return (
         <>
-            {!shouldHideLayout && <Header onToggleSidebar={toggleSidebar} />}
-            <div className={shouldHideLayout ? "" : "app-container"}>
-                {!shouldHideLayout && (
-                    <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-                )}
-                <main className={shouldHideLayout ? "" : "content"}>
+            {!noLayout && <Header />}
+            <div className={noLayout ? "" : "app-container"}>
+                <main className={noLayout ? "" : "content"}>
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/services" element={<Services />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route
+                            path="/"
+                            element={
+                                <ProtectedRoute>
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                         <Route
+                            path="/services"
+                            element={
+                                <ProtectedRoute requiredRole="admin">
+                                    <Services />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/my-services"
+                            element={
+                                <ProtectedRoute>
+                                    <MyServices />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route
                             path="/applications"
-                            element={<RocknRollaApplications />}
+                            element={
+                                <ProtectedRoute serviceId="applications">
+                                    <RocknRollaApplications />
+                                </ProtectedRoute>
+                            }
                         />
-                        <Route path="/form" element={<MundoVerdeInvoices />} />
+                        <Route
+                            path="/form"
+                            element={
+                                <ProtectedRoute serviceId="form">
+                                    <MundoVerdeInvoices />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route
                             path="/outbound-call-form"
                             element={<FicohsaCalls />}
                         />
                         <Route
                             path="/spectrum-leads"
-                            element={<SpectrumLeads />}
+                            element={
+                                <ProtectedRoute serviceId="spectrum-leads">
+                                    <SpectrumLeads />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route
                             path="/video-analysis"
-                            element={<PepsiVideoAnalysis />}
+                            element={
+                                <ProtectedRoute serviceId="video-analysis">
+                                    <PepsiVideoAnalysis />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route
                             path="/agent-onboarding"
-                            element={<AgentOnboarding />}
+                            element={
+                                <ProtectedRoute serviceId="agent-onboarding">
+                                    <AgentOnboarding />
+                                </ProtectedRoute>
+                            }
                         />
-                        <Route path="*" element={<Home />} />
+                        <Route
+                            path="/admin-portal"
+                            element={
+                                <ProtectedRoute serviceId="admin-portal">
+                                    <AdminPortal />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </main>
             </div>

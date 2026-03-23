@@ -7,15 +7,15 @@ export const Avatar = ({ name, size = 32 }) => {
             style={{
                 width: size,
                 height: size,
-                borderRadius: "14px",
-                background: "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "#fff",
-                fontWeight: 800,
-                fontSize: size * 0.45,
-                boxShadow: "0 4px 12px rgba(139,92,246,0.3)",
+                fontWeight: 900,
+                fontSize: size * 0.4,
+                boxShadow: "0 4px 12px rgba(139,92,246,0.15)",
                 flexShrink: 0,
             }}
         >
@@ -24,46 +24,16 @@ export const Avatar = ({ name, size = 32 }) => {
     );
 };
 
-export const StatusBadge = ({ active }) => (
-    <span
-        style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "5px",
-            padding: "2px 8px",
-            borderRadius: "100px",
-            fontSize: "0.62rem",
-            fontWeight: 800,
-            background: active ? "rgba(16,185,129,.1)" : "rgba(239,68,68,.1)",
-            border: `1px solid ${active ? "rgba(16,185,129,.3)" : "rgba(239,68,68,.3)"}`,
-            color: active ? "#10b981" : "#f87171",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-        }}
-    >
-        <div
+export const ModalSection = ({ label, children, style = {}, light }) => (
+    <div style={{ ...style }}>
+        <h3
             style={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: "currentColor",
-                boxShadow: "0 0 4px currentColor",
-            }}
-        />
-        {active ? "Activo" : "Inactivo"}
-    </span>
-);
-
-export const ModalSection = ({ label, children, style = {} }) => (
-    <div style={{ marginBottom: "1.5rem", ...style }}>
-        <p
-            style={{
-                margin: "0 0 1rem 0",
-                fontSize: "0.65rem",
-                fontWeight: 800,
-                color: "#475569",
+                margin: "0 0 0.85rem 0",
+                fontSize: "0.58rem",
+                fontWeight: 950,
+                color: light ? "#94a3b8" : "#475569",
                 textTransform: "uppercase",
-                letterSpacing: "0.12em",
+                letterSpacing: "0.2em",
                 display: "flex",
                 alignItems: "center",
                 gap: "0.75rem",
@@ -74,37 +44,38 @@ export const ModalSection = ({ label, children, style = {} }) => (
                 style={{
                     flex: 1,
                     height: "1px",
-                    background:
-                        "linear-gradient(to right, rgba(255,255,255,0.08), transparent)",
+                    background: light ? "#f1f5f9" : "linear-gradient(to right, rgba(255,255,255,0.05), transparent)",
                 }}
             />
-        </p>
+        </h3>
         <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
         >
             {children}
         </div>
     </div>
 );
 
-export const ModalChip = ({ label, value, icon, color, bg, border }) => (
+export const ModalChip = ({ label, value, icon, color, bg, border, light }) => (
     <div
         style={{
-            background: bg || "rgba(255,255,255,.03)",
-            border: `1px solid ${border || "rgba(255,255,255,.07)"}`,
-            borderRadius: "12px",
-            padding: "0.65rem 0.85rem",
+            background: bg || (light ? "#f8fafc" : "rgba(255,255,255,0.02)"),
+            border: `1px solid ${border || (light ? "#e2e8f0" : "rgba(255,255,255,0.05)")}`,
+            borderRadius: "10px",
+            padding: "0.5rem 0.75rem",
             display: "flex",
             flexDirection: "column",
             gap: "2px",
+            transition: "all 0.2s"
         }}
     >
         <span
             style={{
-                fontSize: "0.58rem",
-                fontWeight: 700,
-                color: "#475569",
+                fontSize: "0.5rem",
+                fontWeight: 800,
+                color: "#94a3b8",
                 textTransform: "uppercase",
+                letterSpacing: '0.05em'
             }}
         >
             {label}
@@ -114,13 +85,13 @@ export const ModalChip = ({ label, value, icon, color, bg, border }) => (
                 display: "flex",
                 alignItems: "center",
                 gap: "0.5rem",
-                fontSize: "0.82rem",
-                fontWeight: 700,
-                color: color || "#f1f5f9",
+                fontSize: "0.75rem",
+                fontWeight: 900,
+                color: color || (light ? "#334155" : "#f1f5f9"),
             }}
         >
             {icon && (
-                <i className={`bi ${icon}`} style={{ fontSize: "0.85rem" }} />
+                <i className={`bi ${icon}`} style={{ fontSize: "0.85rem", color: color || "#8b5cf6" }} />
             )}
             <span
                 style={{
@@ -135,26 +106,27 @@ export const ModalChip = ({ label, value, icon, color, bg, border }) => (
     </div>
 );
 
-export const ModalField = ({ icon, label, value }) => (
+export const ModalField = ({ icon, label, value, light }) => (
     <div
         style={{
             display: "flex",
             alignItems: "center",
             gap: "0.75rem",
-            padding: "0.25rem 0",
+            padding: "0.35rem 0",
         }}
     >
         <div
             style={{
-                width: 32,
-                height: 32,
-                borderRadius: "10px",
-                background: "rgba(255,255,255,.04)",
+                width: 30,
+                height: 30,
+                borderRadius: "8px",
+                background: light ? "#f1f5f9" : "rgba(139, 92, 246, 0.04)",
+                border: light ? "1px solid #e2e8f0" : "1px solid rgba(139, 92, 246, 0.08)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#64748b",
-                fontSize: "0.9rem",
+                color: "#8b5cf6",
+                fontSize: "0.85rem",
                 flexShrink: 0,
             }}
         >
@@ -164,10 +136,11 @@ export const ModalField = ({ icon, label, value }) => (
             <p
                 style={{
                     margin: 0,
-                    fontSize: "0.58rem",
-                    fontWeight: 700,
-                    color: "#475569",
+                    fontSize: "0.5rem",
+                    fontWeight: 850,
+                    color: "#94a3b8",
                     textTransform: "uppercase",
+                    letterSpacing: '0.05em',
                 }}
             >
                 {label}
@@ -175,9 +148,9 @@ export const ModalField = ({ icon, label, value }) => (
             <p
                 style={{
                     margin: 0,
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    color: "#e2e8f0",
+                    fontSize: "0.82rem",
+                    fontWeight: 700,
+                    color: light ? "#334155" : "#f1f5f9",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                 }}
@@ -188,7 +161,7 @@ export const ModalField = ({ icon, label, value }) => (
     </div>
 );
 
-export const ChatBubble = ({ type, content }) => {
+export const ChatBubble = ({ type, content, timestamp, light }) => {
     const isAI = type === "ai";
     let text = content || "";
     if (isAI) {
@@ -206,117 +179,72 @@ export const ChatBubble = ({ type, content }) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: isAI ? "flex-start" : "flex-end",
-                marginBottom: "1rem",
+                marginBottom: "1.75rem",
                 width: "100%",
             }}
         >
             <div
                 style={{
-                    maxWidth: "85%",
-                    padding: "0.85rem 1.1rem",
+                    maxWidth: "80%",
+                    padding: "1rem 1.25rem",
                     borderRadius: isAI
-                        ? "0 18px 18px 18px"
-                        : "18px 0 18px 18px",
+                        ? "2px 20px 20px 20px"
+                        : "20px 2px 20px 20px",
                     background: isAI
-                        ? "rgba(139,92,246,0.1)"
-                        : "rgba(255,255,255,0.05)",
-                    border: `1px solid ${isAI ? "rgba(139,92,246,0.2)" : "rgba(255,255,255,0.08)"}`,
-                    color: isAI ? "#c4b5fd" : "#e2e8f0",
-                    fontSize: "0.85rem",
+                        ? (light ? "white" : "rgba(15, 23, 42, 0.6)")
+                        : (light ? "#8b5cf6" : "linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%)"),
+                    border: light ? "1px solid #e2e8f0" : (isAI ? "1px solid rgba(255, 255, 255, 0.05)" : "1px solid rgba(139, 92, 246, 0.2)"),
+                    color: isAI 
+                        ? (light ? "#334155" : "#94a3b8") 
+                        : "#ffffff",
+                    fontSize: "0.88rem",
                     lineHeight: 1.5,
                     position: "relative",
-                    boxShadow: isAI
-                        ? "0 4px 15px rgba(139,92,246,0.05)"
-                        : "none",
+                    boxShadow: light ? "0 4px 10px -2px rgba(0,0,0,0.05)" : "none",
                 }}
             >
-                <span
+                <div
                     style={{
                         position: "absolute",
-                        top: "-1.2rem",
+                        top: "-1.35rem",
                         [isAI ? "left" : "right"]: "4px",
                         fontSize: "0.6rem",
-                        fontWeight: 800,
-                        color: isAI ? "#8b5cf6" : "#64748b",
+                        fontWeight: 900,
+                        color: isAI ? "#8b5cf6" : (light ? "#94a3b8" : "#64748b"),
                         textTransform: "uppercase",
-                        letterSpacing: "0.05em",
+                        letterSpacing: "0.1em",
+                        display: 'flex',
+                        gap: '8px',
+                        alignItems: 'center'
                     }}
                 >
-                    {isAI ? "Agente Sofía" : "Lead"}
-                </span>
+                    <span>{isAI ? "SOFÍA IA" : "CLIENTE"}</span>
+                    {timestamp && <span style={{ opacity: 0.5 }}>• {timestamp}</span>}
+                </div>
                 {text}
             </div>
         </div>
     );
 };
 
-export const ChatHistory = ({ chatData }) => {
+export const ChatHistory = ({ chatData, light }) => {
     if (!chatData || !chatData.chat) return null;
-    const part1 = chatData.chat["1ra_parte"] || [];
-    const part2 = chatData.chat["2da_parte"] || [];
+
+    const messages = Array.isArray(chatData.chat) 
+        ? chatData.chat 
+        : [...(chatData.chat["1ra_parte"] || []), ...(chatData.chat["2da_parte"] || [])];
 
     return (
-        <ModalSection label="Historial de Conversación">
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem",
-                }}
-            >
-                {part1.map((msg, idx) => (
-                    <ChatBubble
-                        key={`p1-${idx}`}
-                        type={msg.type}
-                        content={msg.data?.content}
-                    />
-                ))}
-                {part2.length > 0 && (
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1rem",
-                            margin: "1.5rem 0",
-                            opacity: 0.6,
-                        }}
-                    >
-                        <div
-                            style={{
-                                flex: 1,
-                                height: "1px",
-                                background:
-                                    "linear-gradient(to right, transparent, rgba(52,211,153,0.1))",
-                            }}
-                        />
-                        <span
-                            style={{
-                                fontSize: "0.55rem",
-                                fontWeight: 800,
-                                color: "#475569",
-                                letterSpacing: "0.15em",
-                            }}
-                        >
-                            CONTINUACIÓN
-                        </span>
-                        <div
-                            style={{
-                                flex: 1,
-                                height: "1px",
-                                background:
-                                    "linear-gradient(to left, transparent, rgba(52,211,153,0.1))",
-                            }}
-                        />
-                    </div>
-                )}
-                {part2.map((msg, idx) => (
-                    <ChatBubble
-                        key={`p2-${idx}`}
-                        type={msg.type}
-                        content={msg.data?.content}
-                    />
-                ))}
-            </div>
-        </ModalSection>
+        <div style={{ width: "100%", display: 'flex', flexDirection: 'column' }}>
+            {messages.map((msg, idx) => (
+                <ChatBubble
+                    key={idx}
+                    type={msg.role === "assistant" || msg.role === "ai" || msg.type === "ai" ? "ai" : "user"}
+                    content={msg.content || msg.text || msg.data?.content}
+                    timestamp={msg.timestamp}
+                    light={light}
+                />
+            ))}
+        </div>
     );
 };
