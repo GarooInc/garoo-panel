@@ -1,3 +1,1 @@
-/api/* https://n8n.srv853599.hstgr.cloud/:splat 200
-/spectrum-proxy/* https://agentsprod.redtec.ai/:splat 200
-/* /index.html 200
+/*    /index.html   200
